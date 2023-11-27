@@ -1,0 +1,34 @@
+{
+  "name": "wds-adventure-player",
+  "version": "1.0.0",
+  "description": "A self made event viewer to render events in game",
+  "author": "CPK",
+  "license": "MIT",
+  "keywords": [
+    "pixiJS",
+    "World-dai-star",
+    "ADV"
+  ],
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite --port 5500",
+    "build:vite": "rimraf dist && tsc && vite build",
+    "build": "rimraf dist && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.1",
+    "rimraf": "^5.0.1",
+    "terser": "^5.19.2",
+    "typescript": "^4.6.4",
+    "vite": "^3.2.3"
+  },
+  "dependencies": {
+    "@pixi/sound": "^5.2.1",
+    "pixi-spine": "^4.0.4",
+    "pixi.js": "^7.3.2",
+    "tweedle.js": "^2.1.0"
+  }
+}

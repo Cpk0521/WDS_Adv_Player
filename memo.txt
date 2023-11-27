@@ -1,0 +1,174 @@
+[
+    //frame id
+    //stort id
+    1, 
+    // index
+    null,
+    //speaker
+    2,
+    //dialogue content ""就收起來?
+    null,
+    //background id
+    null,
+    //轉場動畫id? 1黑色 2白色
+    //BGM? 999:stop聲音
+    //SE id
+    null,
+    null,
+    null,//濾鏡? 1:sepia 2:白邊框
+    null,//背景移動方式?
+    //voice id
+    [
+        [
+            //block id
+            //Facial Expression id
+            null, 
+            //head
+            //Body Motions id
+            //lip
+            //spine id 0:same
+            0,
+            //position 1|2|3|4|5
+            1,
+            2
+        ]
+    ],
+    //charactor base id
+    null, //轉場動畫?
+    null, //轉場動畫
+    null //轉場動畫
+],
+
+
+
+//Id
+//EpisodeMasterId
+//Order
+//GroupOrder
+//Effect
+//SpeakerName
+//FontSize
+//Phrase
+//Title
+//BackgroundImageFileName
+//BackgroundCharacterImageFileName
+//BackgroundImageFileFadeType (FadeTypes)
+//BgmFileName
+//SeFileName
+//StillPhotoFileName
+//MovieFileName
+//WindowEffect (WindowEffects)
+//SceneCameraMasterId
+//VoiceFileName
+[
+    //slotNumber
+    //FacialExpressionMasterId
+    //HeadMotionMasterId
+    //HeadDirectionMasterId
+    //BodyMotionMasterId
+    //LipSyncMasterId
+    //SpineId
+    //CharacterApperanceTypes
+    //CharacterPositionTypes
+    //CharacterLayerTypes
+]
+//SpeakerIconId
+//FadeValue1
+//FadeValue2
+//FadeValue3
+
+
+public enum FadeTypes
+{
+	BlackFadeOutFadeIn = 1,
+	WhiteFadeOutFadeIn,
+	TimeElapsed,
+	CrossFade
+}
+
+public enum WindowEffects
+{
+	Sepia = 1,
+	WhiteBlur
+}
+
+public enum FontSizes
+{
+	Small = 1,
+	Middle,
+	Large
+}
+
+enum CharacterAppearanceTypes
+{
+	FadeIn,
+	SlideInFromRight,
+	SlideInFromLeft,
+	SlideInFromBottom
+}
+
+enum CharacterPositions
+{
+	None,
+	OuterLeft,
+	InnerLeft,
+	Center,
+	InnerRight,
+	OuterRight
+}
+
+enum CharacterLayerTypes
+{
+	None,
+	Layer1,
+	Layer2,
+	Layer3
+}
+
+enum SpineSizes
+{
+	Small = 1,
+	Middle,
+	Large
+}
+
+
+
+// const serif_window_bg_texture = await PIXI.Assets.load('https://raw.githubusercontent.com/WDS-Sirius/WDS_Adv_Resources/main/ui/frm_story_scene_serif_window_bg.png');
+// const scene_serif_window_bg = new PIXI.NineSlicePlane(serif_window_bg_texture, 68, 120, 68, 120);
+// app.stage.addChild(scene_serif_window_bg)
+// scene_serif_window_bg.width = 1628
+// scene_serif_window_bg.height = 248
+// scene_serif_window_bg.x = (app.screen.width - scene_serif_window_bg.width) /2
+// scene_serif_window_bg.y = 808//(app.screen.height / 2) + ((248 / 2) + 148)
+
+// const name_bg_texture = await PIXI.Assets.load('https://raw.githubusercontent.com/WDS-Sirius/WDS_Adv_Resources/main/ui/frm_story_scene_name_bg.png');
+// const name_bg = new PIXI.NineSlicePlane(name_bg_texture, 56, 0, 19, 62);
+// scene_serif_window_bg.addChild(name_bg)
+// name_bg.width = 400
+// name_bg.height = 80
+// name_bg.x = 188 - (name_bg.width / 2)
+// name_bg.y = -20
+
+// const font = await PIXI.Assets.load('./RoNOWStd-GBs.otf');
+// const text = new PIXI.Text('……オーディション、また落ちちゃった。', {
+//     fill: "#4a424b",
+//     fontFamily : 'Ronowstd Gbs',
+//     fontSize : 40,
+//     leading: 4,
+//     letterSpacing: -1,
+// })
+// scene_serif_window_bg.addChild(text);
+// text.x = 93.5
+// text.y = 76
+
+// const name = new PIXI.Text('ここな', {
+//     fill: "#ffffff",
+//     fontFamily : 'Ronowstd Gbs',
+//     fontSize : 40,
+//     letterSpacing: -1,
+// })
+// name_bg.addChild(name);
+// name.anchor.set(0.5)
+// name.x = 200
+// name.y = 30
