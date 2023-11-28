@@ -56,6 +56,7 @@ export const baseAssets = {
     illust_jugon_1 : './img_story_scene_illust_jugon_1.png',
     illust_jugon_2 : './img_story_scene_illust_jugon_1.png',
     illust_jugon_3 : './img_story_scene_illust_jugon_1.png',
+	jugon_progress : './jugon_progress/jugon_progress.skel',
 }
 
 export const baseAssetsUrl = 'https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/'

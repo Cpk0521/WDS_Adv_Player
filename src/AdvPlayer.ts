@@ -69,13 +69,11 @@ export class AdvPlayer extends Container {
 		
 		//remove later
 		this._touchText = new Sprite(Texture.from(baseAssets.tap_to_start));
-		this._touchText.visible = false;
 		this._touchText.anchor.set(0.5);
 		this._touchText.position.set(1920/2, 1080/2);
-		this.addChild(this._touchText);
     }
 
-    public static new(){
+    public static create(){
         return new this();
     }
 
@@ -222,13 +220,13 @@ export class AdvPlayer extends Container {
 		this._loadPromise = undefined;
 		//click
 		this.cursor = 'pointer';
-		this._touchText.visible = true;
+		this.addChild(this._touchText);
 		this.once('click', this._play, this);
 	}
 
 	protected _play(){
 		this.cursor = 'default';
-		this._touchText.visible = false;
+		this.removeChild(this._touchText);
 		this.on('pointerdown', this._tap, this);
 		this._renderFrame();
 	}
@@ -239,7 +237,7 @@ export class AdvPlayer extends Container {
 	}
 
 	protected _renderFrame(){
-		if(!this.currentTrack || this._processing.length > 0){
+		if(!this.currentTrack){
 			return
 		}
 
@@ -253,18 +251,22 @@ export class AdvPlayer extends Container {
 		// 	SpeakerIconId, FadeValue1, FadeValue2, FadeValue3,
 		// } = this.currentTrack
 
-		// if(BackgroundImageFileName || BackgroundCharacterImageFileName){}
+		this._soundManager.execute(this.currentTrack);
+		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
 		
-		this._historyView?.execute(this.currentTrack);
+		let bg_process = this._backgroundView?.execute(this.currentTrack);
+		if(bg_process){
+			this._processing.push(bg_process);
+		}
+
 		this._characterView?.execute(this.currentTrack);
-		this._backgroundView?.execute(this.currentTrack);
 		this._textView?.execute(this.currentTrack);
 		this._movieView?.execute(this.currentTrack)
-		this._soundManager.execute(this.currentTrack);
+		this._historyView?.execute(this.currentTrack);
+		
 		// this._effectView.process(WindowEffect)
 		// this._fadeView.process(BackgroundImageFileFadeType, FadeValue1, FadeValue2, FadeValue3)
-
-		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
+		
 		// let duration = this._soundManager.voiceDuration;
 
 
@@ -284,13 +286,12 @@ export class AdvPlayer extends Container {
 
 		// }
 
-
-		// if(this._processing.length > 0){
-		// 	Promise.all(this._processing).then(()=>{
-		// 		this._renderFrame();
-		// 		this._processing = [];
-		// 	})
-		// }
+		if(this._processing.length > 0){
+			Promise.all(this._processing).then(()=>{
+				this._renderFrame();
+				this._processing = [];
+			})
+		}
 	}
 
 	protected _onBlur(){

@@ -95,8 +95,6 @@ export class AdventureAnimationStandCharacter {
             headMotionName 
         } = characterAnimation
 
-        
-        
         if(bodyAnimationName){    
             this._model.state.setAnimation(1, bodyAnimationName, false);
         }
@@ -218,11 +216,13 @@ export class CharacterView extends IView implements IController{
             return;
         }
 
+        this.offAllLipSync();
         this._prevCharacters = [...this._motionCharacters];
         this._motionCharacters = [];
         //find not need model
         const notneed = this._prevCharacters.filter(prev => !CharacterMotions.find(data => data.slotNumber === prev.slotNumber));
         notneed.forEach(char => char.character?.hideCharacter());
+        
 
         CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
 

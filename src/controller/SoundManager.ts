@@ -60,6 +60,11 @@ export class SoundManager implements IController{
     };
 
     _playBgm(FileName : string){
+        if(FileName = '999'){
+            this._currentBgm?.stop(); 
+            return
+        }
+
         if (this._currentBgm) {
             this._currentBgm.stop(); 
         }
@@ -68,7 +73,8 @@ export class SoundManager implements IController{
             this._currentBgm = Assets.get(`bgm_${FileName}`);
             this._currentBgm?.play({
                 loop: true,
-                singleInstance: true
+                singleInstance: true,
+                volume: 0.6,
             });
         }
     }
