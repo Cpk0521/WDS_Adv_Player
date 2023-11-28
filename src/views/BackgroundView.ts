@@ -185,13 +185,13 @@ export class BackgroundView extends IView implements IController{
                     newbg!.alpha = 1;
                     this._currentBG && this.removeChild(this._currentBG);
                     this._currentBG = newbg;
-                }, 1000)
+                }, (FadeValue1 ?? 0) * 1000 + 200)
             })
 
             return new Promise<void>((res, _) => {
                 setTimeout(()=>{
                     res()
-                }, ((FadeValue1 ?? 0) + (FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000)
+                }, ((FadeValue1 ?? 0) + (FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000 + 800)
             })
         }
         else{

@@ -1,6 +1,9 @@
 import * as PIXI from "pixi.js";
 import { getUrlParams } from './utils/UrlParams'
 import { AdvPlayer } from "./AdvPlayer";
+// import '@pixi-spine/loader-uni'
+// import { Spine } from 'pixi-spine';
+// import { Tween, Group } from "tweedle.js";
 
 
 function createApp() {
@@ -18,6 +21,8 @@ function createApp() {
 
     pixiapp.view.setAttribute("id", "WDS");
     document.body.appendChild(pixiapp.view);
+
+    // PIXI.Ticker.shared.add(() => Group.shared.update());
 
     let resize = () => {
         let width = document.documentElement.clientWidth;

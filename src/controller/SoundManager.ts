@@ -60,7 +60,7 @@ export class SoundManager implements IController{
     };
 
     _playBgm(FileName : string){
-        if(FileName = '999'){
+        if(FileName === '999'){
             this._currentBgm?.stop(); 
             return
         }

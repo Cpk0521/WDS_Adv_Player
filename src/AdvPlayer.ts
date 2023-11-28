@@ -288,8 +288,9 @@ export class AdvPlayer extends Container {
 
 		if(this._processing.length > 0){
 			Promise.all(this._processing).then(()=>{
-				this._renderFrame();
 				this._processing = [];
+				console.log('_processing');
+				this._renderFrame();
 			})
 		}
 	}
