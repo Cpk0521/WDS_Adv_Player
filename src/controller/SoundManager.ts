@@ -46,6 +46,11 @@ export class SoundManager implements IController{
         VoiceFileName
     } : IEpisodeSound){
 
+        this._voiceDuration = 0;
+
+        this._currentSe?.stop();
+        this._currentVoice?.stop();
+        
         if (BgmFileName) {
             this._playBgm(BgmFileName);
         }
@@ -63,10 +68,6 @@ export class SoundManager implements IController{
         if(FileName === '999'){
             this._currentBgm?.stop(); 
             return
-        }
-
-        if (this._currentBgm) {
-            this._currentBgm.stop(); 
         }
 
         if(Assets.cache.has(`bgm_${FileName}`)){
@@ -87,14 +88,10 @@ export class SoundManager implements IController{
     }
 
     _playVoice(FileName : string){
-        if (this._currentVoice) {
-            this._currentVoice.stop(); 
-        }
-        
         if(Assets.cache.has(`voice_${FileName}`)){
             this._currentVoice = Assets.get(`voice_${FileName}`);
             let instance = this._currentVoice?.play();
-            this._voiceDuration = this._currentVoice?.duration ?? 0;
+            this._voiceDuration = (this._currentVoice?.duration ?? 0) * 1000;
 
             (instance as IMediaInstance).on('end', () => {
                 this._onVoiceEnd.forEach(func => func())
@@ -102,7 +99,6 @@ export class SoundManager implements IController{
                 this._currentVoice = null;
             })
         }
-
     }
 
     get voiceDuration(){

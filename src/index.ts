@@ -47,6 +47,35 @@ const { id } = getUrlParams('id');
 
 const app = createApp();
 
+// for Test
+// const container = new PIXI.Container();
+// app.stage.addChild(container)
+
+// const check_texture = await PIXI.Assets.load('https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/background/700.png');
+// const check = new PIXI.Sprite(check_texture)
+// container.addChild(check)
+// check.x = app.screen.width / 2
+// check.y = app.screen.height / 2
+// check.anchor.set(0.5)
+
+// const spinedata = await PIXI.Assets.load('./jugon_progress/jugon_progress.skel');
+// const spine = new Spine(spinedata.spineData)
+// container.addChild(spine);
+// spine.scale.set(.25);
+// const s_h = spine.getBounds().height / 2
+// spine.position.set(app.screen.width / 2, app.screen.height / 2 - (-s_h));
+// const aplha_f = new PIXI.AlphaFilter();
+// spine.filters = [aplha_f];
+// spine.state.setAnimation(0, "animation", false);
+
+// let obj = new PIXI.Graphics();
+// obj.beginFill(0xECD543);
+// obj.drawRect(0, 0, app.screen.width, app.screen.height);
+// obj.alpha = 0.5
+// app.stage.addChild(obj)
+// obj.blendMode = PIXI.BLEND_MODES.MULTIPLY;
+
+
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
@@ -54,3 +83,5 @@ advplayer.addTo(app.stage);
 if(id){
     advplayer.loadAndPlay(id);
 }
+
+

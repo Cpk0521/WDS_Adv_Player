@@ -12,6 +12,7 @@ export class TextView extends IView implements IController{
     protected _nextIcon : Sprite;
     protected _nextIconAnimtor : Tween<any>;
     protected _typingEffect : number | NodeJS.Timeout | undefined;
+    protected _typingTotalDuration : number = 0;
     protected readonly _fontSize = [
         {
             fontsize : FontSizes.Small,
@@ -94,8 +95,9 @@ export class TextView extends IView implements IController{
         Phrase,
         // FontSize
     } : IEpisodeText){
-        
+
         if(!SpeakerName){
+            this._typingTotalDuration = 0;
             return this._hideTextPanel();
         }
 
@@ -110,6 +112,7 @@ export class TextView extends IView implements IController{
         //text
         this._sprakerText.text = SpeakerName ?? '';
         this._phrase.text = '';
+        this._typingTotalDuration = Phrase.length * 50 + 500;
 
         let phrase = Phrase.replace('/n', '\n');
         let phrase_index = 0;
@@ -140,6 +143,10 @@ export class TextView extends IView implements IController{
         this._nextIcon.alpha = 1;
         this._nextIcon.y = 195;
         this._nextIconAnimtor?.start();
+    }
+
+    get typingTotalDuration(){
+        return this._typingTotalDuration;
     }
 
 }

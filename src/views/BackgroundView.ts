@@ -1,73 +1,16 @@
-import { Sprite, Texture, Assets, AlphaFilter, Graphics} from "pixi.js";
+import { Sprite, Assets } from "pixi.js";
 import { Tween } from "tweedle.js";
-import '@pixi-spine/loader-uni';
-import { Spine } from '@pixi-spine/runtime-4.1';
 import { IController, IView } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
 import createEmptySprite from "../utils/emptySprite";
-import { baseAssets } from "../constant/advConstant";
-
-
-class Jugon_Fade extends Graphics{
-
-    protected _jugon : Spine | undefined;
-    protected aplha_filter = new AlphaFilter();
-
-    constructor(){
-        super();
-        // this.width = 1920;
-        // this.height = 1080;
-        // this.anchor.set(.5);
-        // this.position.set(1920/2, 1080/2);
-        this.beginFill(0xffffff);
-        this.drawRect(0, 0, 1920, 1080);
-        this.alpha = 0;
-
-        Assets.load(baseAssets.jugon_progress).then((asset)=>{
-            this._jugon = new Spine(asset.spineData);
-            this.addChild(this._jugon);
-            this._jugon.visible = false;
-            this._jugon.scale.set(.25);
-            let jugon_height = this._jugon.getBounds().height;
-            this._jugon.position.set(1920 / 2, 1080 / 2 + (jugon_height/2));
-            this._jugon.filters = [this.aplha_filter];
-            this._jugon.state.addListener({
-                complete :() => this._hide(),
-            })
-        })
-    }
-
-    static create(){
-        return new this();
-    }
-
-
-    get FadeIn(){
-        return new Tween(this).to({alpha : 1}, 800).onComplete(()=>{
-            this._jugon!.visible = true;
-            this._jugon!.state.setAnimation(0, "animation", false); 
-        })
-    }
-
-    _hide(){
-        let jugonhide =  new Tween(this.aplha_filter).to({alpha : 0}, 800).start();
-        jugonhide.chain(
-            new Tween(this)
-                .to({alpha : 0}, 800)
-                .delay(1200)
-                .onComplete(()=>{
-                    this._jugon!.visible = false;
-                })
-                .start())
-    }
-}
+import { JugonFadePanel } from '../utils/jugonFadePanel'
 
 export class BackgroundView extends IView implements IController{
     
     protected readonly _whiteFadePanel : Sprite = createEmptySprite({alpha: 0});
     protected readonly _blackFadePanel : Sprite = createEmptySprite({color: 0x000000, alpha: 0});
-    protected readonly _jugonFadePanel : Jugon_Fade = Jugon_Fade.create();
+    protected readonly _jugonFadePanel : JugonFadePanel = JugonFadePanel.create();
     protected readonly _bgMap : Map<string, Sprite> = new Map();
     protected readonly _SceneCameraEffects = SceneCameraList;
     protected _currentBG : Sprite | undefined;
@@ -107,7 +50,6 @@ export class BackgroundView extends IView implements IController{
         }
 
         let fadein : Tween<any> | undefined
-        let fadeout : Tween<any> | undefined
         let newbg : Sprite | undefined = undefined;
             
         // 如果有 BackgroundImageFileName
@@ -155,13 +97,11 @@ export class BackgroundView extends IView implements IController{
             switch (BackgroundImageFileFadeType) {
                 case FadeTypes.BlackFadeOutFadeIn:
                     fadein = new Tween(this._blackFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadeout = new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000);
-                    fadein.chain(fadeout);
+                    fadein.chain(new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000));
                     break;
                 case FadeTypes.WhiteFadeOutFadeIn:
                     fadein = new Tween(this._whiteFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadeout = new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000);
-                    fadein.chain(fadeout);
+                    fadein.chain(new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000));
                     break;
                 case FadeTypes.TimeElapsed:
                     fadein = this._jugonFadePanel.FadeIn;

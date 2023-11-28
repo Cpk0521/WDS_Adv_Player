@@ -17,10 +17,10 @@ export function createEmptySprite(options? : Partial<EmptySpriteoptions>){
     sprite.alpha = options?.alpha ?? 1;
 
     if(options?.color != undefined) {
-        sprite.tint = options.color
+        sprite.tint = options.color;
     }
 
-    return sprite
+    return sprite;
 }
 
 export default createEmptySprite

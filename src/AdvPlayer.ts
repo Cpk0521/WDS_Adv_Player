@@ -12,7 +12,7 @@ import { CharacterView } from './views/CharacterView';
 import { EffectView } from './views/EffectView';
 import { MovieView } from './views/MovieView';
 import { TextView } from './views/TextView';
-import { FadeView } from './views/FadeView';
+// import { FadeView } from './views/FadeView';
 import { UIView } from './views/UIView';
 import { HistoryView } from './views/HistoryView';
 //manager
@@ -37,7 +37,7 @@ export class AdvPlayer extends Container {
 	protected _effectView : EffectView | undefined;
 	protected _textView : TextView | undefined;
 	protected _movieView : MovieView | undefined;
-	protected _fadeView : FadeView | undefined;
+	// protected _fadeView : FadeView | undefined;
 	protected _uiView : UIView | undefined;
 	protected _historyView : HistoryView | undefined;
 	//Manager
@@ -83,9 +83,6 @@ export class AdvPlayer extends Container {
     }
 
 	protected async _init(){
-		// Assets.addBundle('Common', baseAssets);
-		// await Assets.loadBundle('Common');
-
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
 		// this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
@@ -227,6 +224,13 @@ export class AdvPlayer extends Container {
 	protected _play(){
 		this.cursor = 'default';
 		this.removeChild(this._touchText);
+		// this._uiView?.show();
+		// this._uiView?.AutoBtn.addclickFun(()=>{
+		// 	this._isAuto = !this._isAuto;
+		// 	if(this._isAuto){
+		// 		this._renderFrame();	
+		// 	}
+		// })
 		this.on('pointerdown', this._tap, this);
 		this._renderFrame();
 	}
@@ -267,38 +271,39 @@ export class AdvPlayer extends Container {
 		// this._effectView.process(WindowEffect)
 		// this._fadeView.process(BackgroundImageFileFadeType, FadeValue1, FadeValue2, FadeValue3)
 		
-		// let duration = this._soundManager.voiceDuration;
-
-
 		this._next();
 
-		// if(this._isAuto){
-
-		// 	if(VoiceFileName){
-		// 		let duration = this._soundManager.voiceDuration;
-	
-		// 		let timeout : any = setTimeout(()=>{
-		// 			clearTimeout(timeout);
-		// 			timeout = null;
-		// 			this._renderFrame();
-		// 		}, duration + 2000)
-		// 	}
-
-		// }
-
+		// Fade Animation 
 		if(this._processing.length > 0){
 			Promise.all(this._processing).then(()=>{
 				this._processing = [];
-				console.log('_processing');
 				this._renderFrame();
 			})
+			return;
+		}
+
+		let voice_duration = this._soundManager.voiceDuration;
+		let text_duration = this._textView?.typingTotalDuration ?? 0;
+
+		let duration = Math.max(voice_duration, text_duration);
+		
+		if(this._isAuto){
+
+			let timeout : any = setTimeout(()=>{
+				clearTimeout(timeout);
+				timeout = null;
+				this._renderFrame();
+			}, (duration + advConstant.ProcessingWaitTime * 1000))
+
+			return;
 		}
 	}
 
 	protected _onBlur(){
-		if(this._isAuto){
-			this._isAuto = false
-		}
+		// if(this._isAuto){
+		// 	this._isAuto = false
+		// 	this._uiView!.AutoBtn.Pressed = false;
+		// }
 	}
 
 	protected _tap(e : FederatedPointerEvent){
@@ -317,7 +322,9 @@ export class AdvPlayer extends Container {
 	}
 
 	get nextTrack() {
-        return this._episode?.EpisodeDetail[this._currentIndex + 1];
+		return (this._currentIndex + 1 >= (this._episode?.EpisodeDetail.length ?? 0))
+			? undefined
+			: this._episode?.EpisodeDetail[this._currentIndex + 1]
     }
 
 }
