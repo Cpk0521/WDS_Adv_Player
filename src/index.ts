@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 import { getUrlParams } from './utils/UrlParams'
 import { AdvPlayer } from "./AdvPlayer";
-// import '@pixi-spine/loader-uni'
-// import { Spine } from 'pixi-spine';
-// import { Tween, Group } from "tweedle.js";
+import '@pixi-spine/loader-uni'
+import { Spine } from 'pixi-spine';
+import { Tween, Group } from "tweedle.js";
 
 
 function createApp() {
@@ -22,7 +22,7 @@ function createApp() {
     pixiapp.view.setAttribute("id", "WDS");
     document.body.appendChild(pixiapp.view);
 
-    // PIXI.Ticker.shared.add(() => Group.shared.update());
+    PIXI.Ticker.shared.add(() => Group.shared.update());
 
     let resize = () => {
         let width = document.documentElement.clientWidth;
@@ -60,7 +60,7 @@ const app = createApp();
 
 // const spinedata = await PIXI.Assets.load('./jugon_progress/jugon_progress.skel');
 // const spine = new Spine(spinedata.spineData)
-// container.addChild(spine);
+// app.stage.addChild(spine);
 // spine.scale.set(.25);
 // const s_h = spine.getBounds().height / 2
 // spine.position.set(app.screen.width / 2, app.screen.height / 2 - (-s_h));
@@ -69,7 +69,7 @@ const app = createApp();
 // spine.state.setAnimation(0, "animation", false);
 
 // let obj = new PIXI.Graphics();
-// obj.beginFill(0xECD543);
+// obj.beginFill(0xFFFF50);
 // obj.drawRect(0, 0, app.screen.width, app.screen.height);
 // obj.alpha = 0.5
 // app.stage.addChild(obj)
@@ -79,9 +79,12 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
+advplayer.loadAndPlay('1000000');
+// advplayer.loadAndPlay('1010101');
 // advplayer.loadAndPlay('2000101');
-if(id){
-    advplayer.loadAndPlay(id);
-}
+// if(id){
+//     advplayer.loadAndPlay(id);
+// }
+
 
 

@@ -18,7 +18,7 @@ export class MovieView extends IView implements IController{
         this.addChild(this._currentMovie);
 
         const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
-        controller.play().then(()=>{
+        return controller.play().then(()=>{
             this.removeChild(this._currentMovie);
             this.hide()
         });

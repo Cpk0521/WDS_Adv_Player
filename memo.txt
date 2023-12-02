@@ -200,3 +200,24 @@ enum SpineSizes
 //         new Tween(aplha_f).to({alpha : 0}, 800).start();
 //     }
 // })
+
+if(Phrase.length === 0){
+    let timeout : any = setTimeout(()=>{
+        clearTimeout(timeout);
+        timeout = undefined;
+        if(this._currentIndex === currIndex){
+            this._renderFrame();
+        }
+    }, (duration))
+}
+
+if(this._isAuto){
+
+    let timeout : any = setTimeout(()=>{
+        clearTimeout(timeout);
+        timeout = null;
+        this._renderFrame();
+    }, (duration + advConstant.ProcessingWaitTime * 1000))
+
+    return;
+}

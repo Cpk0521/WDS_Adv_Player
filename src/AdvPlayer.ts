@@ -89,6 +89,7 @@ export class AdvPlayer extends Container {
 		this._textView = TextView.new().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
 		// this._fadeView = new FadeView().addTo(this, Layer.FadeLayer);
+
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
 		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
 
@@ -225,11 +226,10 @@ export class AdvPlayer extends Container {
 		this.cursor = 'default';
 		this.removeChild(this._touchText);
 		// this._uiView?.show();
+		// this._uiView?.toggle();
 		// this._uiView?.AutoBtn.addclickFun(()=>{
 		// 	this._isAuto = !this._isAuto;
-		// 	if(this._isAuto){
-		// 		this._renderFrame();	
-		// 	}
+		// 	this._uiView?.toggle();
 		// })
 		this.on('pointerdown', this._tap, this);
 		this._renderFrame();
@@ -240,63 +240,66 @@ export class AdvPlayer extends Container {
 		return this.currentTrack;
 	}
 
-	protected _renderFrame(){
+	protected async _renderFrame(){
+		let index = this._currentIndex;
 		if(!this.currentTrack){
 			return
 		}
-
-		console.log(this.currentTrack)
 		
-		// const { 
-		// 	Order, GroupOrder, Effect, SpeakerName,
-		// 	FontSize, Phrase, Title, BackgroundImageFileName, BackgroundCharacterImageFileName,
-		// 	BackgroundImageFileFadeType, BgmFileName, SeFileName, StillPhotoFileName,
-		// 	MovieFileName, WindowEffect, SceneCameraMasterId, VoiceFileName, CharacterMotions,
-		// 	SpeakerIconId, FadeValue1, FadeValue2, FadeValue3,
-		// } = this.currentTrack
+		console.log(this.currentTrack);
+		
+		this._characterView?.hideAllCharacter();
+		this._soundManager.stopPrevSound();
+		this._textView?.hideTextPanel();
+
+		this._historyView?.execute(this.currentTrack);
+
+		let bg_process = this._backgroundView?.execute(this.currentTrack);
+		if(bg_process){
+			this._processing.push(bg_process);
+			await bg_process;
+		}
+
+		let movie_process = this._movieView?.execute(this.currentTrack)
+		if(movie_process){
+			this._processing.push(movie_process);
+			await movie_process;
+		}
+		
+		// this._effectView.process(WindowEffect)
+		this._characterView?.execute(this.currentTrack);
+		this._textView?.execute(this.currentTrack);
 
 		this._soundManager.execute(this.currentTrack);
 		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
 		
-		let bg_process = this._backgroundView?.execute(this.currentTrack);
-		if(bg_process){
-			this._processing.push(bg_process);
-		}
-
-		this._characterView?.execute(this.currentTrack);
-		this._textView?.execute(this.currentTrack);
-		this._movieView?.execute(this.currentTrack)
-		this._historyView?.execute(this.currentTrack);
-		
-		// this._effectView.process(WindowEffect)
-		// this._fadeView.process(BackgroundImageFileFadeType, FadeValue1, FadeValue2, FadeValue3)
-		
-		this._next();
-
-		// Fade Animation 
+		// Animations
 		if(this._processing.length > 0){
-			Promise.all(this._processing).then(()=>{
+			await Promise.all(this._processing).then(()=>{
 				this._processing = [];
-				this._renderFrame();
 			})
-			return;
 		}
 
 		let voice_duration = this._soundManager.voiceDuration;
 		let text_duration = this._textView?.typingTotalDuration ?? 0;
-
 		let duration = Math.max(voice_duration, text_duration);
-		
-		if(this._isAuto){
+
+		if(this._isAuto || this.currentTrack.Phrase.length === 0){
+			if(this._isAuto){
+				duration += (advConstant.ProcessingWaitTime * 1000);
+			}
 
 			let timeout : any = setTimeout(()=>{
 				clearTimeout(timeout);
-				timeout = null;
-				this._renderFrame();
-			}, (duration + advConstant.ProcessingWaitTime * 1000))
-
-			return;
+				timeout = undefined;
+				if(index + 1 === this._currentIndex){
+					this._renderFrame();
+				}
+			}, duration);
 		}
+
+		this._next();
+		return Promise.resolve();
 	}
 
 	protected _onBlur(){

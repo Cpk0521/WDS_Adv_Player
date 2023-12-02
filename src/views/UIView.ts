@@ -2,10 +2,17 @@ import { Texture } from "pixi.js";
 import { IView } from "../types/View";
 import { baseAssets } from '../constant/advConstant'
 import { Tween } from "tweedle.js";
-import { UIButton } from "../utils/uiButton";
+import { UIButton } from "../object/uiButton";
+
+enum UIViewStatus {
+    Hide,
+    Show,
+    ShortShow,
+}
 
 export class UIView extends IView {
 
+    protected _currentStatus : UIViewStatus = UIViewStatus.Hide;
     protected _isHidden : boolean = false;
     protected _autoBtn : UIButton;
 
@@ -22,9 +29,29 @@ export class UIView extends IView {
             .create(autoIconTexture, auto_bg, auto_clicked_bg)
             .addTo(this)
             .pos(1846.5, 75)
-            // .addclickFun(()=>{
-            //     this._isHidden = !this._isHidden;
-            // })
+    }
+
+    public toggle(){
+
+        // hidden -> show -> hidden
+        // show -> nothing -> hidden
+        // BtnClicked(Off) -> show
+        // BtnClicked(On) -> hidden
+
+        if(this._currentStatus === UIViewStatus.Show || this._currentStatus === UIViewStatus.ShortShow){
+            return;
+        }
+
+        if(this._currentStatus === UIViewStatus.Hide){
+            if(this.AutoBtn.Pressed){
+                this._currentStatus = UIViewStatus.ShortShow;
+                this.show().chain(this.hide().delay(1000))
+            }else{
+                this._currentStatus = UIViewStatus.Show;
+                this.show().chain();
+            }
+        }
+
     }
 
     public show(){

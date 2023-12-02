@@ -96,13 +96,13 @@ export class TextView extends IView implements IController{
         // FontSize
     } : IEpisodeText){
 
-        if(!SpeakerName){
+        if(!SpeakerName && Phrase.length === 0){
             this._typingTotalDuration = 0;
-            return this._hideTextPanel();
+            return this._hideTextPanelAnimation();
         }
 
         if(this._textPanelContainer.alpha === 0){
-            this._showTextPanel();
+            this._showTextPanelAnimation();
         }
         
         //next
@@ -131,12 +131,16 @@ export class TextView extends IView implements IController{
         }, 50)
     }
 
-    _hideTextPanel(){        
+    _hideTextPanelAnimation(){        
         new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
     }
 
-    _showTextPanel(){
+    _showTextPanelAnimation(){
         new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
+    }
+
+    hideTextPanel(){
+        this._textPanelContainer.alpha = 0;
     }
     
     _playNextIconAnim(){

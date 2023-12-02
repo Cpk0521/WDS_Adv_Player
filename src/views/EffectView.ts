@@ -1,4 +1,3 @@
-import { Container } from "@pixi/display";
 import { Sprite } from "pixi.js";
 import { IController, IView } from "../types/View";
 import { IEpisodeEffect, WindowEffects } from "../types/Episode";

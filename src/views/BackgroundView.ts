@@ -4,7 +4,18 @@ import { IController, IView } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
 import createEmptySprite from "../utils/emptySprite";
-import { JugonFadePanel } from '../utils/jugonFadePanel'
+import { JugonFadePanel } from '../object/jugonFadePanel'
+
+type CameraEffect = {
+    Id: number;
+    StartPositionX: number;
+    StartPositionY: number;
+    StartZoomRatio: number;
+    EndPositionX: number;
+    EndPositionY: number;
+    EndZoomRatio: number;
+    CameraMoveTurnaroundTimeSeconds: number;
+}
 
 export class BackgroundView extends IView implements IController{
     
@@ -14,6 +25,8 @@ export class BackgroundView extends IView implements IController{
     protected readonly _bgMap : Map<string, Sprite> = new Map();
     protected readonly _SceneCameraEffects = SceneCameraList;
     protected _currentBG : Sprite | undefined;
+    protected _currentCameraEffects: CameraEffect | undefined;
+    protected _cuttentZoom : Tween<any> | undefined;
 
     constructor(){
         super();
@@ -45,12 +58,21 @@ export class BackgroundView extends IView implements IController{
         FadeValue3,
     } : IEpisodeBackground & IEpisodeFade){
 
+        if(this._currentCameraEffects && this._cuttentZoom){
+            this._cuttentZoom.stop();
+            this._cuttentZoom = undefined;
+            this._currentBG?.position.set(1920/2 - (this._currentCameraEffects?.EndPositionX ?? 0), 1080/2 - (this._currentCameraEffects?.EndPositionY ?? 0))
+            this._currentCameraEffects = undefined
+        }
+
         if(!BackgroundImageFileName && !BackgroundCharacterImageFileName && !StillPhotoFileName){
             return;
         }
 
         let fadein : Tween<any> | undefined
         let newbg : Sprite | undefined = undefined;
+        // let zoom : Tween<any> | undefined;
+        let zoomtime : number = 0;
             
         // 如果有 BackgroundImageFileName
         if(BackgroundImageFileName){
@@ -92,16 +114,32 @@ export class BackgroundView extends IView implements IController{
             this.addChild(newbg!);
         }
 
+        //Zoom Animataion
+        if(SceneCameraMasterId){
+            //未諗到點做
+            this._currentCameraEffects = this._SceneCameraEffects.find(e => e.Id == SceneCameraMasterId)
+            newbg?.scale.set(1.235); // 條數唔識計
+            newbg?.position.set(1920/2 - (this._currentCameraEffects?.StartPositionX ?? 0), 1080/2 - (this._currentCameraEffects?.StartPositionY ?? 0));
+            this._cuttentZoom = new Tween(newbg).to({
+                    position : {
+                        x : 1920/2 - (this._currentCameraEffects?.EndPositionX ?? 0),
+                        y : 1080/2 - (this._currentCameraEffects?.EndPositionY ?? 0)
+                    },
+                    scale : 1.235 // 條數唔識計
+                }, this._currentCameraEffects?.CameraMoveTurnaroundTimeSeconds);
+            zoomtime = this._currentCameraEffects?.CameraMoveTurnaroundTimeSeconds ?? 0;
+        }
+
         // Fade Animation
         if(BackgroundImageFileFadeType){
             switch (BackgroundImageFileFadeType) {
                 case FadeTypes.BlackFadeOutFadeIn:
                     fadein = new Tween(this._blackFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadein.chain(new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000));
+                    fadein.chain(new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000 + 800));
                     break;
                 case FadeTypes.WhiteFadeOutFadeIn:
                     fadein = new Tween(this._whiteFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadein.chain(new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000));
+                    fadein.chain(new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000 + 800));
                     break;
                 case FadeTypes.TimeElapsed:
                     fadein = this._jugonFadePanel.FadeIn;
@@ -112,34 +150,38 @@ export class BackgroundView extends IView implements IController{
             }
         }
      
-        if(SceneCameraMasterId){
-            //未諗到點做
-            let sceneCameraEffect = this._SceneCameraEffects.find(e => e.Id == SceneCameraMasterId)
-            console.log(sceneCameraEffect)
-        }
-
         // run
         if(fadein){
-            fadein.start().onStart(()=>{
-                setTimeout(()=>{
-                    newbg!.alpha = 1;
-                    this._currentBG && this.removeChild(this._currentBG);
-                    this._currentBG = newbg;
+            fadein?.start().onStart(()=>{
+                setTimeout(async ()=>{
+                    this._insertBG(newbg, this._cuttentZoom);
                 }, (FadeValue1 ?? 0) * 1000 + 200)
             })
 
             return new Promise<void>((res, _) => {
                 setTimeout(()=>{
                     res()
-                }, ((FadeValue1 ?? 0) + (FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000 + 800)
+                }, ((FadeValue1 ?? 0) + (FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000 + (zoomtime) + 800)
             })
         }
         else{
-            newbg!.alpha = 1;
+            this._insertBG(newbg, this._cuttentZoom);
+        }
+    }
+
+    _insertBG(newbg? : Sprite, zoom? : Tween<any>){
+        if(newbg){
+            newbg.alpha = 1;
             this._currentBG && this.removeChild(this._currentBG);
             this._currentBG = newbg;
         }
-        
+
+        if(zoom){
+            this._cuttentZoom?.start().onComplete(()=>{
+                this._cuttentZoom = undefined;
+                this._currentCameraEffects = undefined
+            });
+        }
     }
 
 }
