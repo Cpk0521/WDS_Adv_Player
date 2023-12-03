@@ -70,6 +70,7 @@ export class TextView extends IView implements IController{
             fontFamily : 'Ronowstd Gbs',
             fontSize : 40,
             letterSpacing: -1,
+            fontVariant : 'small-caps'
         }));
         name_bg.addChild(this._sprakerText);
         this._sprakerText.anchor.set(0.5);
@@ -111,6 +112,11 @@ export class TextView extends IView implements IController{
 
         //text
         this._sprakerText.text = SpeakerName ?? '';
+        if(this._sprakerText.width >= 275){
+            this._sprakerText.style.fontSize = 35;
+        }else{
+            this._sprakerText.style.fontSize = 40;
+        }
         this._phrase.text = '';
         this._typingTotalDuration = Phrase.length * 50 + 500;
 

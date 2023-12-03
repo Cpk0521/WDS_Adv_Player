@@ -88,7 +88,7 @@ export class AdvPlayer extends Container {
 	protected async _init(){
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
-		// this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
+		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
 		this._textView = TextView.new().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
 
@@ -269,6 +269,8 @@ export class AdvPlayer extends Container {
 
 		this._historyView?.execute(this.currentTrack);
 
+		this._effectView?.execute(this.currentTrack);
+		
 		let bg_process = this._backgroundView?.execute(this.currentTrack);
 		let phrase = this.currentTrack.Phrase
 		if(bg_process){
@@ -282,7 +284,6 @@ export class AdvPlayer extends Container {
 			await movie_process;
 		}
 		
-		// this._effectView.process(WindowEffect)
 		this._characterView?.execute(this.currentTrack);
 		this._textView?.execute(this.currentTrack);
 
@@ -352,10 +353,10 @@ export class AdvPlayer extends Container {
 	}
 
 	protected _onBlur(){
-		// if(this._isAuto){
-		// 	this._isAuto = false;
-		// 	this._uiView!.AutoBtn.Pressed = false;
-		// }
+		if(this._isAuto){
+			this._isAuto = false;
+			this._uiView!.AutoBtn.Pressed = false;
+		}
 	}
 
 	protected _tap(e : FederatedPointerEvent){
