@@ -6,7 +6,7 @@ export class UIButton extends Sprite {
     protected _base_bg : Texture;
     protected _pressed_bg : Texture;
     protected _isPressed : boolean = false;
-    // protected _onPressed : Function = () => {};
+    protected _onClickList : Function[] = [];
     protected _config : any;
 
     constructor(contentIcon : Texture, base_bg : Texture, pressed_bg : Texture, config? : any){
@@ -20,7 +20,7 @@ export class UIButton extends Sprite {
         this.addChild(this._content);
         this.eventMode = 'static';
         this.cursor = 'pointer';
-        this.on('pointerdown', this._onclick, this)
+        this.on('click', this._onclick, this)
         this.anchor.set(0.5);
 
         this._content.anchor.set(0.5);
@@ -42,13 +42,12 @@ export class UIButton extends Sprite {
     }
 
     addclickFun(callback : (event: FederatedPointerEvent) => void){
-        this.on('pointerdown', callback);
+        this._onClickList.push(callback);
         return this;
     }
 
     _onclick(){
         this.Pressed = !this._isPressed;
-        // this._onPressed(this._isPressed);
     }
 
     get Pressed(){
@@ -66,6 +65,8 @@ export class UIButton extends Sprite {
             this.texture = this._base_bg;
             this._content.tint = 0x4b4b4b;
         }
+
+        this._onClickList.forEach(callback => callback(this));
     }
 
 }

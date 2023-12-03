@@ -27,9 +27,8 @@ export class AdventureAnimationStandCharacter {
         this._spineId = spineId;
         this._model = new Spine(skeletonData);
         this._model.scale.set(.75);
-        console.log('height', this._model.getBounds().height)
+        // console.log('height', this._model.getBounds().height)
         this._model.state.setAnimation(0, "breath", true);
-        // console.log('model', this._model.getBounds())
         this._model.y = 1080 / 2 - (-550);
     }
 

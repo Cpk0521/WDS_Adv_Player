@@ -25,6 +25,8 @@ import { checkImplements, isURL } from "./utils/check";
 import createEmptySprite from "./utils/emptySprite";
 import loadJson from "./utils/loadJson";
 import resPath from "./utils/resPath";
+//object
+
 
 export class AdvPlayer extends Container {
 
@@ -37,7 +39,6 @@ export class AdvPlayer extends Container {
 	protected _effectView : EffectView | undefined;
 	protected _textView : TextView | undefined;
 	protected _movieView : MovieView | undefined;
-	// protected _fadeView : FadeView | undefined;
 	protected _uiView : UIView | undefined;
 	protected _historyView : HistoryView | undefined;
 	//Manager
@@ -48,6 +49,7 @@ export class AdvPlayer extends Container {
 	protected _isAuto : boolean = false;
 	protected _isAdventureEnded : boolean = false;
 	protected _processing : Promise<any>[] = [];
+	protected _trackPromise : Promise<boolean> | undefined;
 	// remove later
 	private _touchText : Sprite
     
@@ -58,14 +60,15 @@ export class AdvPlayer extends Container {
 		Assets.setPreferences({
 			preferCreateImageBitmap: false
 		});
-		//register the tweedle timer to pixi ticker
-		Ticker.shared.add(() => Group.shared.update());
 
-		//player
+		//register the tweedle timer to pixi ticker
+		// Ticker.shared.add(() => Group.shared.update());
+
+		//player setting
 		this.addChild(createEmptySprite({color : 0x000000}));
 		this.sortableChildren = true;
 		this.eventMode = 'static';
-		this.addEventListener('blur', this._onBlur.bind(this));
+		globalThis.addEventListener('blur', this._onBlur.bind(this));
 		
 		//remove later
 		this._touchText = new Sprite(Texture.from(baseAssets.tap_to_start));
@@ -88,7 +91,6 @@ export class AdvPlayer extends Container {
 		// this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
 		this._textView = TextView.new().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
-		// this._fadeView = new FadeView().addTo(this, Layer.FadeLayer);
 
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
 		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
@@ -225,13 +227,21 @@ export class AdvPlayer extends Container {
 	protected _play(){
 		this.cursor = 'default';
 		this.removeChild(this._touchText);
-		// this._uiView?.show();
-		// this._uiView?.toggle();
-		// this._uiView?.AutoBtn.addclickFun(()=>{
-		// 	this._isAuto = !this._isAuto;
-		// 	this._uiView?.toggle();
-		// })
-		this.on('pointerdown', this._tap, this);
+		//ui view
+		this._uiView!.alpha = 1;
+		this._uiView?.AutoBtn.addclickFun(()=>{
+			this._isAuto = this._uiView!.AutoBtn.Pressed;
+			if(this._isAuto && this._trackPromise){
+				this._trackPromise.then((bool) => {
+					//不要在等待過程中
+					if(bool){
+						this._renderFrame();
+					}
+				})
+			}
+		})
+		//click
+		this.on('click', this._tap, this);
 		this._renderFrame();
 	}
 
@@ -241,13 +251,18 @@ export class AdvPlayer extends Container {
 	}
 
 	protected async _renderFrame(){
+		// 儲存目前的index
 		let index = this._currentIndex;
+		// 
+		this._trackPromise = undefined;
+		// 如果完結了或找不到當前的Track
 		if(!this.currentTrack){
 			return
 		}
 		
 		console.log(this.currentTrack);
 		
+		// 隱藏上個
 		this._characterView?.hideAllCharacter();
 		this._soundManager.stopPrevSound();
 		this._textView?.hideTextPanel();
@@ -255,6 +270,7 @@ export class AdvPlayer extends Container {
 		this._historyView?.execute(this.currentTrack);
 
 		let bg_process = this._backgroundView?.execute(this.currentTrack);
+		let phrase = this.currentTrack.Phrase
 		if(bg_process){
 			this._processing.push(bg_process);
 			await bg_process;
@@ -273,6 +289,9 @@ export class AdvPlayer extends Container {
 		this._soundManager.execute(this.currentTrack);
 		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
 		
+		//
+		this._next();
+
 		// Animations
 		if(this._processing.length > 0){
 			await Promise.all(this._processing).then(()=>{
@@ -280,31 +299,61 @@ export class AdvPlayer extends Container {
 			})
 		}
 
+		// 計算等候時間
 		let voice_duration = this._soundManager.voiceDuration;
 		let text_duration = this._textView?.typingTotalDuration ?? 0;
 		let duration = Math.max(voice_duration, text_duration);
 
-		if(this._isAuto || this.currentTrack.Phrase.length === 0){
-			if(this._isAuto){
-				duration += (advConstant.ProcessingWaitTime * 1000);
-			}
+		//處理沒有文字 自動跳下一個
+		if(phrase.length === 0){
 
 			let timeout : any = setTimeout(()=>{
 				clearTimeout(timeout);
 				timeout = undefined;
+				//確保按下了一次後不會繼續
 				if(index + 1 === this._currentIndex){
 					this._renderFrame();
 				}
 			}, duration);
+
+			return;
 		}
 
-		this._next();
-		return Promise.resolve();
+		if(this._isAuto){
+			// 計算auto等候時間
+			duration += (advConstant.ProcessingWaitTime * 1000) + 800;
+	
+			return this._trackPromise = Promise.resolve(index).then((index)=>{
+				return new Promise((res, _)=>{
+					let timeout : any = setTimeout(()=>{
+						clearTimeout(timeout);
+						timeout = null;
+						// 確保等候完是auto狀態
+						if(this._isAuto && index + 1 === this._currentIndex) { 
+							this._trackPromise = undefined;
+							this._renderFrame();
+							res(false);
+						}
+						res(true);
+					}, duration);
+				})
+			})
+		}
+
+		// 如果不是auto 就return
+		return this._trackPromise = new Promise((res, _)=>{
+			let timeout : any = setTimeout(()=>{
+				clearTimeout(timeout);
+				timeout = null;
+				res(true);
+			}, duration + 1000);
+		});
+		
 	}
 
 	protected _onBlur(){
 		// if(this._isAuto){
-		// 	this._isAuto = false
+		// 	this._isAuto = false;
 		// 	this._uiView!.AutoBtn.Pressed = false;
 		// }
 	}
@@ -313,6 +362,9 @@ export class AdvPlayer extends Container {
 		if(e.target !== this) {return;}
 		if(this._processing.length === 0 && !this._isAuto){
 			this._renderFrame();
+		}
+		if(this._isAuto){
+			this._uiView?.ShortShow();
 		}
 	}
 

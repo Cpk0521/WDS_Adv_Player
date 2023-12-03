@@ -7,14 +7,13 @@ import { UIButton } from "../object/uiButton";
 enum UIViewStatus {
     Hide,
     Show,
-    ShortShow,
 }
 
 export class UIView extends IView {
 
-    protected _currentStatus : UIViewStatus = UIViewStatus.Hide;
-    protected _isHidden : boolean = false;
+    protected _currentStatus : UIViewStatus = UIViewStatus.Show;
     protected _autoBtn : UIButton;
+    protected _Animation : Tween<this> | undefined
 
     constructor(){
         super();
@@ -29,37 +28,39 @@ export class UIView extends IView {
             .create(autoIconTexture, auto_bg, auto_clicked_bg)
             .addTo(this)
             .pos(1846.5, 75)
+            .addclickFun(()=>{
+                let isauto = this._autoBtn.Pressed
+                this._Animation?.stop();
+                this._Animation?.stopChainedTweens();
+                if(!isauto){
+                    this._Animation = this._showAnimation().start();
+                    this._currentStatus = UIViewStatus.Show;
+                }
+                else{
+                    this._Animation = this._hideAnimation().delay(1000).start();
+                    this._currentStatus = UIViewStatus.Hide;
+                }
+            })
     }
-
-    public toggle(){
-
-        // hidden -> show -> hidden
-        // show -> nothing -> hidden
-        // BtnClicked(Off) -> show
-        // BtnClicked(On) -> hidden
-
-        if(this._currentStatus === UIViewStatus.Show || this._currentStatus === UIViewStatus.ShortShow){
-            return;
+    
+    // hidden -> show -> hidden
+    // show -> nothing -> hidden
+    // show -> BtnClicked(Off) -> show
+    // BtnClicked(On) -> hidden
+    public ShortShow(){
+        if(this._currentStatus === UIViewStatus.Hide && this.alpha === 0){
+            this._Animation = this._showAnimation();
+            this._Animation.chain(this._hideAnimation().delay(3000));
+            this._Animation.start();
         }
-
-        if(this._currentStatus === UIViewStatus.Hide){
-            if(this.AutoBtn.Pressed){
-                this._currentStatus = UIViewStatus.ShortShow;
-                this.show().chain(this.hide().delay(1000))
-            }else{
-                this._currentStatus = UIViewStatus.Show;
-                this.show().chain();
-            }
-        }
-
     }
 
-    public show(){
-        return new Tween(this).to({alpha : 1}, 500).start();
+    public _showAnimation(){
+        return new Tween(this).to({alpha : 1}, 500)
     }
 
-    public hide() {
-        return new Tween(this).to({alpha : 0}, 500).start();
+    public _hideAnimation() {
+        return new Tween(this).to({alpha : 0}, 500)
     }
 
     get AutoBtn() {

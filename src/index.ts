@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 import { getUrlParams } from './utils/UrlParams'
 import { AdvPlayer } from "./AdvPlayer";
-import '@pixi-spine/loader-uni'
-import { Spine } from 'pixi-spine';
+// import '@pixi-spine/loader-uni'
+// import { Spine } from 'pixi-spine';
 import { Tween, Group } from "tweedle.js";
 
 
@@ -79,8 +79,8 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
-advplayer.loadAndPlay('1000000');
-// advplayer.loadAndPlay('1010101');
+// advplayer.loadAndPlay('1000000');
+advplayer.loadAndPlay('1010101');
 // advplayer.loadAndPlay('2000101');
 // if(id){
 //     advplayer.loadAndPlay(id);
