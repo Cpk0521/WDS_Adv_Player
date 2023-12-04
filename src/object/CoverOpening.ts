@@ -1,14 +1,21 @@
-import { Assets, Container, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, BLEND_MODES, SpriteMaskFilter} from "pixi.js";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite } from "pixi.js";
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
+import { StoryTypes } from "../types/Episode";
 
 export class CoverOpening extends IView {
 
     protected ptn_bg : TilingSprite;
     protected _anim_jugon : AnimatedSprite;
     protected _animation : Tween<any>;
+    protected _touch_Animation : Tween<any>;
+    //text
+    protected _top_text : Text | undefined;
+    protected _middle_text : Text | undefined;
+    protected _bottom_text : Text | undefined;
+    protected _anim_arr : Tween<any>[] = []
     
     constructor(){
         super();
@@ -28,10 +35,13 @@ export class CoverOpening extends IView {
         graphics.beginFill(0xFFFFFF, 1);
         graphics.drawRect(-(1920/2) -10, -(410/2) , 1940, 410);
         graphics.endFill();
-        graphics.position.set(1920/2, 1080/2)
+
+        graphics.position.set(1920/2, 530)
+        graphics.scale.set(1);
         this.addChild(graphics);
         graphics.height = 0;
-        let graphicsAnim = new Tween(graphics).to({height : 410 }, 500)
+        // let graphicsAnim = new Tween(graphics).to({height : 410 }, 500)
+        this._animation = new Tween(graphics).to({height : 410 }, 500)
         
         const jugonArr = [
             Texture.from(baseAssets.illust_jugon_1),
@@ -40,8 +50,9 @@ export class CoverOpening extends IView {
         ]
 
         this._anim_jugon = new AnimatedSprite(jugonArr);
-        this._anim_jugon.position.set(1030, 305);
+        this._anim_jugon.position.set(1030, 290);
         this.addChild(this._anim_jugon)
+        this._anim_jugon.scale.set(1.2)
         this._anim_jugon.anchor.set(0.5);
         this._anim_jugon.animationSpeed = .13;
         this._anim_jugon.alpha = 0
@@ -50,13 +61,14 @@ export class CoverOpening extends IView {
             .onStart(()=>{
                 this._anim_jugon.play();
             })
+        this._anim_arr.push(anim_jugon_Anim);
 
         let touchText = new Sprite(Texture.from(baseAssets.tap_to_start));
 		touchText.anchor.set(0.5);
 		touchText.position.set(1920/2, 915);
         touchText.alpha = 0;
         this.addChild(touchText);
-        let touch_Anim = new Tween(touchText)
+        this._touch_Animation = new Tween(touchText)
             .to({alpha : 1 }, 1500)
             .repeat()
             .yoyo()
@@ -64,9 +76,9 @@ export class CoverOpening extends IView {
                 this.eventMode = 'dynamic';
                 this.cursor = 'pointer';
             });
-
-        this._animation = graphicsAnim.chain(anim_jugon_Anim)
-        anim_jugon_Anim.chain(touch_Anim)
+        
+        // this._animation = graphicsAnim.chain(anim_jugon_Anim)
+        // anim_jugon_Anim.chain(touch_Anim)
         
         // const gr1 = new Graphics();
         // gr1.beginFill(0x000000, 1);
@@ -87,18 +99,66 @@ export class CoverOpening extends IView {
     static new(){
         return new this();
     }
+
+    init(type : StoryTypes, title : string, order : number){
+        //text
+        if(type === StoryTypes.Main || type === StoryTypes.Event){
+            this._top_text = new Text('', {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 41.5,
+                leading: 4,
+                letterSpacing: -1,
+            });
+            this._top_text.x = 1920/2;
+            this._top_text.y = 410;
+            this._top_text.anchor.set(.5);
+            this._top_text.alpha = 0;
+            this.addChild(this._top_text);
+            this._anim_arr.push(new Tween(this._top_text).to({alpha : 1}, 1000));
     
-    hide(){
-        this.visible = false;
-        Ticker.shared.remove(this._BGupdate, this);
-        this._anim_jugon.stop();
-        this._animation.stop();
-        this._animation.stopChainedTweens();
-        // this.destroy(true);
+            this._middle_text = new Text(`第　${order}　話`, {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 100,
+                leading: 4,
+                letterSpacing: -1,
+            });
+            this._middle_text.x = 1920/2;
+            this._middle_text.y = 530;
+            this._middle_text.anchor.set(.5);
+            this._middle_text.alpha = 0;
+            this.addChild(this._middle_text);
+            this._anim_arr.push(new Tween(this._middle_text).to({alpha : 1}, 1000));
+
+            this._bottom_text = new Text(title, {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 48.5,
+                leading: 4,
+                letterSpacing: -1,
+            });
+            this._bottom_text.x = 1920/2;
+            this._bottom_text.y = 650;
+            this._bottom_text.anchor.set(.5);
+            this._bottom_text.alpha = 0;
+            this.addChild(this._bottom_text)
+            this._anim_arr.push(new Tween(this._bottom_text).to({alpha : 1}, 1000));
+        }
+        
+        this._animation.chain(...this._anim_arr).start();
     }
 
     start(){
-        this._animation.start();
+        this._touch_Animation.start();
+    }
+    
+    close(){
+        this.visible = false;
+        Ticker.shared.remove(this._BGupdate, this);
+        this._anim_jugon.stop();
+        this._touch_Animation.start();
+        this.destroy(true);
     }
 
     _BGupdate(){

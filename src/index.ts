@@ -50,6 +50,7 @@ advplayer.addTo(app.stage);
 // advplayer.loadAndPlay('1000000');
 // advplayer.loadAndPlay('1010101');
 // advplayer.loadAndPlay('2000901');
+
 if(id){
     advplayer.loadAndPlay(id);
 }

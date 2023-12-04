@@ -59,7 +59,7 @@ export class SoundManager implements IViewController{
             this._playSe(SeFileName);
         }
 
-        if (VoiceFileName && this._isVoice) {
+        if (VoiceFileName) {
             this._playVoice(VoiceFileName);
         }
 
@@ -95,6 +95,16 @@ export class SoundManager implements IViewController{
     }
 
     _playVoice(FileName : string){
+        if(!this._isVoice){
+            this._voiceDuration = Math.max(5000, this._voiceDuration);
+            let timeout = setTimeout(()=>{
+                clearTimeout(timeout);
+                this._onVoiceEnd.forEach(func => func())
+                this._onVoiceEnd = []
+            }, 5000);
+            return;
+        }
+
         if(Assets.cache.has(`voice_${FileName}`)){
             this._currentVoice = Assets.get(`voice_${FileName}`);
             let instance = this._currentVoice?.play();

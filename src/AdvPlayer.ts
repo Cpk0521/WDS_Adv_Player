@@ -87,7 +87,7 @@ export class AdvPlayer extends Container {
     }
 
 	protected async _init(){
-		
+
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
 		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
@@ -135,6 +135,7 @@ export class AdvPlayer extends Container {
 			}
 
 			this._episode = source as IEpisodeModel;
+			this._coverView.init(this._episode.StoryType, this._episode.Title, this._episode.Order)
 			await this._loadResourcesFromEpisode(source);
 
 			res(this._episode);
@@ -226,12 +227,12 @@ export class AdvPlayer extends Container {
 		}
 		this._loadPromise = undefined;
 		//cover
-		this._coverView?.start();
-		this._coverView?.once('click', this._play, this)
+		this._coverView.start();
+		this._coverView.once('click', this._play, this)
 	}
 
 	protected _play(){
-		this._coverView?.hide();
+		this._coverView.close();
 		//ui view
 		this._uiView!.alpha = 1;
 		this._uiView?.AutoBtn.addclickFun(()=>{
@@ -335,22 +336,20 @@ export class AdvPlayer extends Container {
 
 		if(this._isAuto){
 			// 計算auto等候時間
-			duration += (advConstant.ProcessingWaitTime * 1000) + 800;
+			duration += (advConstant.ProcessingWaitTime * 1000);
 	
-			return this._trackPromise = Promise.resolve(index).then((index)=>{
-				return new Promise((res, _)=>{
-					let timeout : any = setTimeout(()=>{
-						clearTimeout(timeout);
-						timeout = null;
-						// 確保等候完是auto狀態
-						if(this._isAuto && index + 1 === this._currentIndex) { 
-							this._trackPromise = undefined;
-							this._renderFrame();
-							res(false);
-						}
-						res(true);
-					}, duration);
-				})
+			return this._trackPromise = new Promise((res, _)=>{
+				let timeout : any = setTimeout(()=>{
+					clearTimeout(timeout);
+					timeout = null;
+					// 確保等候完是auto狀態
+					if(this._isAuto && index + 1 === this._currentIndex) { 
+						this._trackPromise = undefined;
+						this._renderFrame();
+						res(false);
+					}
+					res(true);
+				}, duration);
 			})
 		}
 
@@ -395,4 +394,9 @@ export class AdvPlayer extends Container {
 			: this._episode?.EpisodeDetail[this._currentIndex + 1]
     }
 
+	get isVoice(){
+		return this._isVoice;
+	}
+
+	
 }
