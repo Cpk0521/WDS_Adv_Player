@@ -1,13 +1,11 @@
 import { Container } from "@pixi/display"
 import { IEpisodeDetail } from "./Episode";
 
-export interface IController {
+export interface IViewController {
     execute<T extends IEpisodeDetail>(arr : T): any
 }
 
 export abstract class IView extends Container{
-    
-    // public abstract execute<T extends IEpisodeDetail>(arr : T): any;
     
     public addTo<T extends Container>(parent : T, order? : number): this {
         parent.addChild(this);

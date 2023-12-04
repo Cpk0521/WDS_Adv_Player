@@ -3,21 +3,23 @@
 // import { Assets } from "@pixi/assets";
 import { Container, FederatedPointerEvent, Assets , Ticker, Sprite, Texture} from 'pixi.js';
 import '@pixi-spine/loader-uni'
+import '@pixi/sound';
 import { Group, Tween } from 'tweedle.js';
 //type
-import { IEpisodeModel } from "./types/Episode";
+import { IEpisodeModel, IEpisodeTranslate } from "./types/Episode";
 //views
 import { BackgroundView } from './views/BackgroundView';
 import { CharacterView } from './views/CharacterView';
 import { EffectView } from './views/EffectView';
 import { MovieView } from './views/MovieView';
 import { TextView } from './views/TextView';
-// import { FadeView } from './views/FadeView';
-import { UIView } from './views/UIView';
 import { HistoryView } from './views/HistoryView';
+//object
+import { UIView } from './views/UIView';
+import { CoverOpening } from './object/CoverOpening';
 //manager
-import '@pixi/sound';
 import { SoundManager } from "./controller/SoundManager";
+import { TranslationManager } from './controller/TranslationManager';
 //constant
 import { advConstant, baseAssets, Layer } from './constant/advConstant';
 //utils
@@ -25,7 +27,6 @@ import { checkImplements, isURL } from "./utils/check";
 import createEmptySprite from "./utils/emptySprite";
 import loadJson from "./utils/loadJson";
 import resPath from "./utils/resPath";
-//object
 
 
 export class AdvPlayer extends Container {
@@ -39,19 +40,20 @@ export class AdvPlayer extends Container {
 	protected _effectView : EffectView | undefined;
 	protected _textView : TextView | undefined;
 	protected _movieView : MovieView | undefined;
-	protected _uiView : UIView | undefined;
 	protected _historyView : HistoryView | undefined;
+	protected _uiView : UIView;
+	protected _coverView : CoverOpening;
 	//Manager
 	protected _soundManager : SoundManager = new SoundManager();
+	protected _translationManager : TranslationManager = new TranslationManager();
 	//player Info
 	protected _episode! : IEpisodeModel | undefined;
 	protected _currentIndex : number = 0;
 	protected _isAuto : boolean = false;
+	protected _isVoice : boolean = true;
 	protected _isAdventureEnded : boolean = false;
 	protected _processing : Promise<any>[] = [];
 	protected _trackPromise : Promise<boolean> | undefined;
-	// remove later
-	private _touchText : Sprite
     
     constructor(){
         super();
@@ -65,15 +67,14 @@ export class AdvPlayer extends Container {
 		// Ticker.shared.add(() => Group.shared.update());
 
 		//player setting
-		this.addChild(createEmptySprite({color : 0x000000}));
+		this.addChild(createEmptySprite({color : 0x00DD00}));
 		this.sortableChildren = true;
 		this.eventMode = 'static';
 		globalThis.addEventListener('blur', this._onBlur.bind(this));
-		
-		//remove later
-		this._touchText = new Sprite(Texture.from(baseAssets.tap_to_start));
-		this._touchText.anchor.set(0.5);
-		this._touchText.position.set(1920/2, 1080/2);
+
+		//object
+		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
+		this._uiView = new UIView().addTo(this, Layer.UILayer);
     }
 
     public static create(){
@@ -86,13 +87,12 @@ export class AdvPlayer extends Container {
     }
 
 	protected async _init(){
+		
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
 		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
 		this._textView = TextView.new().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
-
-		this._uiView = new UIView().addTo(this, Layer.UILayer);
 		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
 
 		await Assets.load(baseAssets.font);
@@ -106,7 +106,7 @@ export class AdvPlayer extends Container {
 		this._episode = undefined;
 	}
 
-	public async load(source : string | IEpisodeModel) {
+	public async load(source : string | IEpisodeModel, translate? : IEpisodeTranslate[]) {
 		return this._loadPromise = new Promise<IEpisodeModel>(async (res, _) => {
 			if(typeof source === 'string') {
 				if(!isURL(source)){
@@ -116,6 +116,10 @@ export class AdvPlayer extends Container {
 					.catch(()=>{
 						throw new Error('The episode ID is wrong, please reconfirm.');
 					});
+			}
+
+			if(translate){
+				this._translationManager.load(translate);
 			}
 
 			if(!checkImplements<IEpisodeModel>(source)){
@@ -137,8 +141,8 @@ export class AdvPlayer extends Container {
 		})
 	}
 
-	public loadAndPlay(source : string | IEpisodeModel){
-		this.load(source).then(() => this._onready())
+	public loadAndPlay(source : string | IEpisodeModel, translate? : IEpisodeTranslate[]){
+		this.load(source, translate).then(() => this._onready())
 	}
 
 	protected async _loadResourcesFromEpisode(episodeTrack : IEpisodeModel){
@@ -196,10 +200,13 @@ export class AdvPlayer extends Container {
 		})
 
 		//voice
-		let voicemanifest = await loadJson<string[]>(resPath.manifest(episodeTrack.EpisodeId));
-		voicemanifest.forEach((VoiceFileName)=>{
-			resources[`voice_${VoiceFileName}`] = resPath.voice(episodeTrack.EpisodeId, VoiceFileName);
-		})
+		this._soundManager.isVoice = this._isVoice;
+		if(this._isVoice){
+			let voicemanifest = await loadJson<string[]>(resPath.manifest(episodeTrack.EpisodeId));
+			voicemanifest.forEach((VoiceFileName)=>{
+				resources[`voice_${VoiceFileName}`] = resPath.voice(episodeTrack.EpisodeId, VoiceFileName);
+			})
+		}
 		
 		Assets.addBundle(`${this._episode!.EpisodeId}_bundle`, resources)
 		return Assets.loadBundle(`${this._episode!.EpisodeId}_bundle`);
@@ -218,15 +225,13 @@ export class AdvPlayer extends Container {
 			return
 		}
 		this._loadPromise = undefined;
-		//click
-		this.cursor = 'pointer';
-		this.addChild(this._touchText);
-		this.once('click', this._play, this);
+		//cover
+		this._coverView?.start();
+		this._coverView?.once('click', this._play, this)
 	}
 
 	protected _play(){
-		this.cursor = 'default';
-		this.removeChild(this._touchText);
+		this._coverView?.hide();
 		//ui view
 		this._uiView!.alpha = 1;
 		this._uiView?.AutoBtn.addclickFun(()=>{
@@ -261,16 +266,23 @@ export class AdvPlayer extends Container {
 		}
 		
 		console.log(this.currentTrack);
+
+		if(this._translationManager.isTranslate){
+			let tl = this._translationManager.getTranslate(this.currentTrack.Id)
+			if(tl){
+				this.currentTrack.Phrase = tl.Phrase;
+				this.currentTrack.SpeakerName = tl.SpeakerName;
+			}
+		}
 		
-		// 隱藏上個
+		// 隱藏上輪的
 		this._characterView?.hideAllCharacter();
 		this._soundManager.stopPrevSound();
 		this._textView?.hideTextPanel();
+		this._effectView?.hideEffect(this.currentTrack);
 
 		this._historyView?.execute(this.currentTrack);
 
-		this._effectView?.execute(this.currentTrack);
-		
 		let bg_process = this._backgroundView?.execute(this.currentTrack);
 		let phrase = this.currentTrack.Phrase
 		if(bg_process){
@@ -283,7 +295,8 @@ export class AdvPlayer extends Container {
 			this._processing.push(movie_process);
 			await movie_process;
 		}
-		
+
+		this._effectView?.execute(this.currentTrack);
 		this._characterView?.execute(this.currentTrack);
 		this._textView?.execute(this.currentTrack);
 
@@ -349,7 +362,6 @@ export class AdvPlayer extends Container {
 				res(true);
 			}, duration + 1000);
 		});
-		
 	}
 
 	protected _onBlur(){

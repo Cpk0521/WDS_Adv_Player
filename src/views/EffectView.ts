@@ -1,10 +1,9 @@
 import { Graphics, BLEND_MODES, BlurFilter } from "pixi.js";
-import { IController, IView } from "../types/View";
+import { IViewController, IView } from "../types/View";
 import { IEpisodeEffect, WindowEffects } from "../types/Episode";
 import { Tween } from "tweedle.js";
 
-
-export class EffectView extends IView implements IController{
+export class EffectView extends IView implements IViewController{
 
     protected _sepiaEffectObject : Graphics;
     protected _whiteBlurEffectObject : Graphics;
@@ -65,8 +64,10 @@ export class EffectView extends IView implements IController{
                     break
             }
         }
-        else{
+    }
 
+    hideEffect(effect : IEpisodeEffect){
+        if(!effect.WindowEffect){
             if(this._sepiaEffectObject.visible){
                 this._sepiaEffectObject.visible = false;
             }

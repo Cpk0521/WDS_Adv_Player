@@ -221,3 +221,211 @@ if(this._isAuto){
 
     return;
 }
+
+let tl = [
+    {
+        order : 2000901001,
+        SpeakerName : 'Kokona',
+        Phrase : 'My plans for tomorrow?'
+    },
+    {
+        order : 2000901002,
+        SpeakerName : 'Chisa',
+        Phrase : 'Yeah, if you don’t have any, wanna hang out tomorrow?'
+    },
+    {
+        order : 2000901003,
+        SpeakerName : 'Panda',
+        Phrase : 'The Panda at Ueno Zoological Park is having its birthday tomorrow.'
+    },
+    {
+        order : 2000901004,
+        SpeakerName : 'Panda',
+        Phrase : 'So I wonder if we can go together.'
+    },
+    {
+        order : 2000901005,
+        SpeakerName : 'Kokona',
+        Phrase : 'Eh? Sounds fun, count me in!'
+    },
+    {
+        order : 2000901006,
+        SpeakerName : 'Chisa',
+        Phrase : 'Hehehe. Then it’s settled.'
+    },
+    {
+        order : 2000901007,
+        SpeakerName : 'Panda',
+        Phrase : 'I know Koko-chan would say that!'
+    },
+    {
+        order : 2000901008,
+        SpeakerName : 'Panda',
+        Phrase : ' But are you sure you’re not having anything in mind? I mean it’s too sudden.'
+    },
+    {
+        order : 2000901009,
+        SpeakerName : 'Kokona',
+        Phrase : 'No problem. I don’t have any plans tomorrow, If anything I was wondering what to do.'
+    },
+    {
+        order : 2000901010,
+        SpeakerName : 'Panda',
+        Phrase : 'By the way, Koko-chan what do you usually do in your day off?'
+    },
+    {
+        order : 2000901011,
+        SpeakerName : 'Kokona',
+        Phrase : 'Hmm, Reading Sirius’ old scripts, watching other theater troupe’s performances—'
+    },
+    {
+        order : 2000901012,
+        SpeakerName : 'Kokona',
+        Phrase : 'acting practice with Shizuka, or joining improv troupes’ practice with Katrina-chan.'
+    },
+    {
+        order : 2000901013,
+        SpeakerName : 'Panda・Chisa',
+        Phrase : '…'
+    },
+    {
+        order : 2000901014,
+        SpeakerName : 'Panda・Chisa',
+        Phrase : '(Incredibly serious.)'
+    },
+    {
+        order : 2000901015,
+        SpeakerName : 'Panda',
+        Phrase : 'Sounds like what Koko-chan would do, We might need to learn a thing or two from you though.'
+    },
+    {
+        order : 2000901016,
+        SpeakerName : 'Chisa',
+        Phrase : 'Kinda.. not youngster-ish?'
+    },
+    {
+        order : 2000901017,
+        SpeakerName : 'Kokona',
+        Phrase : 'What do you mean by that!?'
+    },
+
+    {
+        order : 2000901018,
+        SpeakerName : 'Panda',
+        Phrase : 'You see, It doesn’t sound like what female high school students nowadays would do.'
+    },
+    {
+        order : 2000901019,
+        SpeakerName : 'Kokona',
+        Phrase : 'But I work at Kisate-'
+    },
+    {
+        order : 2000901020,
+        SpeakerName : 'Kokona',
+        Phrase : 'I mean I’m doing part-time at Café.'
+    },
+    {
+        order : 2000901021,
+        SpeakerName : 'Panda',
+        Phrase : 'Ahh.. Now that you say it, that’s right.'
+    },
+    {
+        order : 2000901022,
+        SpeakerName : 'Kokona',
+        Phrase : 'Well? Am I youngster-ish?'
+    },{
+        order : 2000901023,
+        SpeakerName : 'Chisa',
+        Phrase : 'You’re right.. It’s kinda youngster-ish.'
+    },{
+        order : 2000901024,
+        SpeakerName : 'Panda',
+        Phrase : 'Even so, Koko-chan has a lot of stamina, doesn’t she?'
+    },
+    {
+        order : 2000901025,
+        SpeakerName : 'Panda',
+        Phrase : 'She goes to school, then Sirius’ training, and still has a part-time job.'
+    },
+    {
+        order : 2000901026,
+        SpeakerName : 'Chisa',
+        Phrase : 'Don’t tell me you also have club activity?'
+    },
+    {
+        order : 2000901027,
+        SpeakerName : 'Kokona',
+        Phrase : 'Ahahah..'
+    },
+    {
+        order : 2000901028,
+        SpeakerName : 'Kokona',
+        Phrase : 'I don’t have time for that.'
+    },
+    {
+        order : 2000901029,
+        SpeakerName : 'Kokona',
+        Phrase : 'Because we don’t have much money, I did some newspaper delivery.'
+    },
+    {
+        order : 2000901030,
+        SpeakerName : 'Kokona',
+        Phrase : 'Maybe it helps me build some stamina.'
+    },
+    {
+        order : 2000901031,
+        SpeakerName : 'Chisa',
+        Phrase : 'Eh.. Newspaper delivery is quite tough, isn’t it?'
+    },
+    {
+        order : 2000901032,
+        SpeakerName : 'Panda',
+        Phrase : 'Seems like you need to wake up early in the morning and do some manual labor, that’s what I heard.'
+    },
+    {
+        order : 2000901033,
+        SpeakerName : 'Kokona',
+        Phrase : 'It wasn’t really early in the morning. Because it was a rural area near the sea, the newspaper was usually late.'
+    },
+    {
+        order : 2000901034,
+        SpeakerName : 'Panda',
+        Phrase : 'Ahh.. Now that you say it, Koko-chan you moved when you were still a elementary grade, weren’t you?'
+    },
+    {
+        order : 2000901035,
+        SpeakerName : 'Kokona',
+        Phrase : 'Yeah.. Because of my parents’ circumstances.'
+    },
+    {
+        order : 2000901036,
+        SpeakerName : 'Kokona',
+        Phrase : 'It was very far from Asakusa, At first it was hard because I couldn’t make any friends.'
+    },
+    {
+        order : 2000901037,
+        SpeakerName : 'Panda',
+        Phrase : 'Oh my.. sounds tough.'
+    },
+    {
+        order : 2000901038,
+        SpeakerName : 'Kokona',
+        Phrase : 'But, because of that I built some stamina and I don’t easily get discouraged anymore.'
+    },
+    {
+        order : 2000901039,
+        SpeakerName : 'Kokona',
+        Phrase : 'If I were to say, when I’m talking with girls my age, there are times when I can’t keep up with the conversation.'
+    },
+    {
+        order : 2000901040,
+        SpeakerName : 'Yae',
+        Phrase : 'Everyone, good work today.'
+    },
+    {
+        order : 2000901041,
+        SpeakerName : 'Kokona',
+        Phrase : 'Ah.. It’s Yae-chan!'
+    },
+]
+

@@ -47,12 +47,9 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
-// advplayer.loadAndPlay('1000000');
+advplayer.loadAndPlay('1000000');
 // advplayer.loadAndPlay('1010101');
-// advplayer.loadAndPlay('120122');
-if(id){
-    advplayer.loadAndPlay(id);
-}
-
-
-
+// advplayer.loadAndPlay('2000901');
+// if(id){
+//     advplayer.loadAndPlay(id);
+// }

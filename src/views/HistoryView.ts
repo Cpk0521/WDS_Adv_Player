@@ -1,9 +1,9 @@
 import { NineSlicePlane, Text , Texture, Assets} from 'pixi.js'
-import { IController, IView } from "../types/View";
+import { IViewController, IView } from "../types/View";
 import { baseAssets } from '../constant/advConstant';
 import { IEpisodeText } from '../types/Episode';
 
-export class HistoryView extends IView implements IController{
+export class HistoryView extends IView implements IViewController{
 
     protected _historyRecord : IEpisodeText[] = []
 

@@ -25,6 +25,7 @@
 //     FadeValue3 : number | null
 // }
 
+// Episode
 export interface IEpisodeModel {
     EpisodeId : number
     StoryType : StoryTypes
@@ -163,4 +164,11 @@ export enum CharacterPositions
 	Center,//1920/2
 	InnerRight,//1920/2 +320
 	OuterRight
+}
+
+// Episode Translation
+export interface IEpisodeTranslate {
+    Id : number
+    SpeakerName? : string
+    Phrase : string
 }

@@ -1,6 +1,6 @@
 import { Sprite, Assets } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IController, IView } from "../types/View";
+import { IViewController, IView } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
 import createEmptySprite from "../utils/emptySprite";
@@ -17,7 +17,7 @@ type CameraEffect = {
     CameraMoveTurnaroundTimeSeconds: number;
 }
 
-export class BackgroundView extends IView implements IController{
+export class BackgroundView extends IView implements IViewController{
     
     protected readonly _whiteFadePanel : Sprite = createEmptySprite({alpha: 0});
     protected readonly _blackFadePanel : Sprite = createEmptySprite({color: 0x000000, alpha: 0});

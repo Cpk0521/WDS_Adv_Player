@@ -1,10 +1,11 @@
 import { Assets } from '@pixi/assets'
 import { IMediaInstance, sound, Sound} from '@pixi/sound'
 import { IEpisodeSound } from '../types/Episode';
-import { IController } from '../types/View';
+import { IViewController } from '../types/View';
 
-export class SoundManager implements IController{
+export class SoundManager implements IViewController{
     
+    protected _isVoice : boolean = true;
     protected _voiceDuration : number = 0;
     protected _currentBgm : Sound | undefined | null = null;
     protected _currentVoice : Sound | undefined | null = null;
@@ -58,7 +59,7 @@ export class SoundManager implements IController{
             this._playSe(SeFileName);
         }
 
-        if (VoiceFileName) {
+        if (VoiceFileName && this._isVoice) {
             this._playVoice(VoiceFileName);
         }
 
@@ -120,5 +121,12 @@ export class SoundManager implements IController{
         return this._onVoiceEnd;
     }
     
+    set isVoice(bool : boolean){
+        this._isVoice = bool;
+    }
+
+    get isVoice(){
+        return this._isVoice;
+    }
 
 }
