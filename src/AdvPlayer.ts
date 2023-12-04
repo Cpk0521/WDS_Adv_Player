@@ -75,6 +75,7 @@ export class AdvPlayer extends Container {
 		//object
 		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
+
     }
 
     public static create(){
@@ -87,14 +88,14 @@ export class AdvPlayer extends Container {
     }
 
 	protected async _init(){
-
+		
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
 		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
 		this._textView = TextView.new().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
 		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
-
+		
 		await Assets.load(baseAssets.font);
 
 		return this._isinited = true;
