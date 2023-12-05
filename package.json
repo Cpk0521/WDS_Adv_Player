@@ -17,8 +17,8 @@
     "build:vite": "rimraf dist && tsc && vite build",
     "build": "rimraf dist && vite build",
     "preview": "vite preview",
-    "predeploy" : "rimraf dist && vite build && node scripts/patch-gh-dist.js",
-    "deploy": "rimraf dist && vite build && node scripts/patch-gh-dist.js && gh-pages -d dist"
+    "predeploy" : "npm run build && node scripts/patch-gh-dist.js",
+    "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
     "@types/node": "^20.5.1",
