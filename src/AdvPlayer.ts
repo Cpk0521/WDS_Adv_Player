@@ -132,7 +132,7 @@ export class AdvPlayer extends Container {
 			}
 
 			if(this._episode){
-				await this.clear()
+				await this.clear();
 			}
 
 			this._episode = source as IEpisodeModel;
@@ -144,7 +144,7 @@ export class AdvPlayer extends Container {
 	}
 
 	public loadAndPlay(source : string | IEpisodeModel, translate? : IEpisodeTranslate[]){
-		this.load(source, translate).then(() => this._onready())
+		this.load(source, translate).then(() => this._onready());
 	}
 
 	protected async _loadResourcesFromEpisode(episodeTrack : IEpisodeModel){
@@ -280,13 +280,15 @@ export class AdvPlayer extends Container {
 		}
 		
 		// 隱藏上輪的
-		this._characterView?.hideCharacter();
+		this._characterView?.hideCharacter(); //隱藏在場上的角色
 		this._soundManager.stopPrevSound();
 		this._textView?.hideTextPanel(this.currentTrack.Phrase);
 		this._effectView?.hideEffect(this.currentTrack);
-
+		
+		//對話列表
 		this._historyView?.execute(this.currentTrack);
 
+		//背景處理
 		let bg_process = this._backgroundView?.execute(this.currentTrack);
 		let phrase = this.currentTrack.Phrase
 		if(bg_process){
@@ -294,20 +296,28 @@ export class AdvPlayer extends Container {
 			await bg_process;
 		}
 
+		//影片處理
 		let movie_process = this._movieView?.execute(this.currentTrack)
 		if(movie_process){
 			this._processing.push(movie_process);
 			await movie_process;
 		}
 
+		//effect處理
 		this._effectView?.execute(this.currentTrack);
+		//spine處理
 		this._characterView?.execute(this.currentTrack);
+		//對話處理
+		let nextorder = this.nextTrack?.Order ?? 1
+		this._textView!.allowNextIconDisplay = nextorder;
 		this._textView?.execute(this.currentTrack);
 
+		//聲音處理
 		this._soundManager.execute(this.currentTrack);
+		//當播完聲音後 停止spine的口部動作
 		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
 		
-		//
+		//下一個unit
 		this._next();
 
 		// Animations
@@ -322,10 +332,10 @@ export class AdvPlayer extends Container {
 		let text_duration = this._textView?.typingTotalDuration ?? 0;
 		let duration = Math.max(voice_duration, text_duration);
 
-		//處理沒有文字 自動跳下一個
-		if(phrase.length === 0 || this.currentTrack.Order > 1){
-			if(this.currentTrack.Order > 1){
-				duration += 1200;
+		// 處理沒有文字 自動跳下一個
+		if(phrase.length === 0 || nextorder > 1){
+			if(nextorder > 1){
+				duration += 500;
 			}
 
 			let timeout : any = setTimeout(()=>{

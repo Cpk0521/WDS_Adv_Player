@@ -11,6 +11,7 @@ export class TextView extends IView implements IViewController{
     protected _phrase : Text;
     protected _nextIcon : Sprite;
     protected _nextIconAnimtor : Tween<any>;
+    protected _allowNextIconDisplay : boolean = true;
     protected _typingEffect : number | NodeJS.Timeout | undefined;
     protected _typingTotalDuration : number = 0;
     protected readonly _fontSize = [
@@ -131,7 +132,7 @@ export class TextView extends IView implements IViewController{
         }
         this._typingEffect = setInterval(()=>{
             if(phrase_index === phrase.length){
-                this._playNextIconAnim(); //order check?
+                this._allowNextIconDisplay && this._playNextIconAnim(); //order check?
                 clearInterval(this._typingEffect);
                 this._typingEffect = undefined;
             }
@@ -162,6 +163,10 @@ export class TextView extends IView implements IViewController{
 
     get typingTotalDuration(){
         return this._typingTotalDuration;
+    }
+
+    set allowNextIconDisplay(order : number){
+        this._allowNextIconDisplay = !(order > 1);
     }
 
 }
