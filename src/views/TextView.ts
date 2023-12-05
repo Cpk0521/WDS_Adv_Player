@@ -92,6 +92,7 @@ export class TextView extends IView implements IViewController{
     }
 
     execute({
+        Order,
         SpeakerName,
         Phrase,
         // FontSize
@@ -119,7 +120,7 @@ export class TextView extends IView implements IViewController{
         }
 
         //phrase text
-        this._phrase.text = '';
+        this._phrase.text = Order > 1 ? `${this._phrase.text}\n` : '';
         this._typingTotalDuration = Phrase.length * 50 + 500;
 
         let phrase = Phrase.replace('/n', '\n');
@@ -130,7 +131,7 @@ export class TextView extends IView implements IViewController{
         }
         this._typingEffect = setInterval(()=>{
             if(phrase_index === phrase.length){
-                this._playNextIconAnim();
+                this._playNextIconAnim(); //order check?
                 clearInterval(this._typingEffect);
                 this._typingEffect = undefined;
             }
@@ -147,8 +148,10 @@ export class TextView extends IView implements IViewController{
         new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
     }
 
-    hideTextPanel(){
-        this._textPanelContainer.alpha = 0;
+    hideTextPanel(phrase : string = ''){
+        if(phrase.length === 0){
+            this._textPanelContainer.alpha = 0;
+        }
     }
     
     _playNextIconAnim(){

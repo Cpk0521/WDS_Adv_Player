@@ -39,8 +39,8 @@ export interface IEpisodeModel {
 export type IEpisodeDetail = {
     Id : number
     EpisodeMasterId : number
-    Order : number
-    GroupOrder : number
+    // Order : number
+    // GroupOrder : number
     Title : string | null
 } & IEpisodeEffect &
     IEpisodeText &
@@ -56,6 +56,8 @@ export interface IEpisodeEffect {
 }
 
 export interface IEpisodeText {
+    Order : number
+    GroupOrder : number
     SpeakerName? : string
     Phrase : string
     FontSize : FontSizes

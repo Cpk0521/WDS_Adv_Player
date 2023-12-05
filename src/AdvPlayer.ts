@@ -1,10 +1,10 @@
 // import { Container } from "@pixi/display";
 // import { FederatedPointerEvent } from '@pixi/events';
 // import { Assets } from "@pixi/assets";
-import { Container, FederatedPointerEvent, Assets , Ticker, Sprite, Texture} from 'pixi.js';
+import { Container, FederatedPointerEvent, Assets, Ticker } from 'pixi.js';
 import '@pixi-spine/loader-uni'
 import '@pixi/sound';
-import { Group, Tween } from 'tweedle.js';
+import { Group } from 'tweedle.js';
 //type
 import { IEpisodeModel, IEpisodeTranslate } from "./types/Episode";
 //views
@@ -14,9 +14,8 @@ import { EffectView } from './views/EffectView';
 import { MovieView } from './views/MovieView';
 import { TextView } from './views/TextView';
 import { HistoryView } from './views/HistoryView';
-//object
 import { UIView } from './views/UIView';
-import { CoverOpening } from './object/CoverOpening';
+import { CoverOpening } from './views/CoverOpening';
 //manager
 import { SoundManager } from "./controller/SoundManager";
 import { TranslationManager } from './controller/TranslationManager';
@@ -49,6 +48,7 @@ export class AdvPlayer extends Container {
 	//player Info
 	protected _episode! : IEpisodeModel | undefined;
 	protected _currentIndex : number = 0;
+	protected _currentGroupOrder : number = 0;
 	protected _isAuto : boolean = false;
 	protected _isVoice : boolean = true;
 	protected _isAdventureEnded : boolean = false;
@@ -72,7 +72,7 @@ export class AdvPlayer extends Container {
 		this.eventMode = 'static';
 		globalThis.addEventListener('blur', this._onBlur.bind(this));
 
-		//object
+		//views
 		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
 
@@ -92,7 +92,7 @@ export class AdvPlayer extends Container {
 		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
 		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
 		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
-		this._textView = TextView.new().addTo(this, Layer.TextLayer);
+		this._textView = new TextView().addTo(this, Layer.TextLayer);
 		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
 		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
 		
@@ -229,7 +229,8 @@ export class AdvPlayer extends Container {
 		this._loadPromise = undefined;
 		//cover
 		this._coverView.start();
-		this._coverView.once('click', this._play, this)
+		this._coverView.once('click', this._play, this);
+		this._coverView.once('touchstart', this._play, this);
 	}
 
 	protected _play(){
@@ -249,6 +250,7 @@ export class AdvPlayer extends Container {
 		})
 		//click
 		this.on('click', this._tap, this);
+		this.on('touchstart', this._tap, this);
 		this._renderFrame();
 	}
 
@@ -278,9 +280,9 @@ export class AdvPlayer extends Container {
 		}
 		
 		// 隱藏上輪的
-		this._characterView?.hideAllCharacter();
+		this._characterView?.hideCharacter();
 		this._soundManager.stopPrevSound();
-		this._textView?.hideTextPanel();
+		this._textView?.hideTextPanel(this.currentTrack.Phrase);
 		this._effectView?.hideEffect(this.currentTrack);
 
 		this._historyView?.execute(this.currentTrack);
@@ -321,7 +323,10 @@ export class AdvPlayer extends Container {
 		let duration = Math.max(voice_duration, text_duration);
 
 		//處理沒有文字 自動跳下一個
-		if(phrase.length === 0){
+		if(phrase.length === 0 || this.currentTrack.Order > 1){
+			if(this.currentTrack.Order > 1){
+				duration += 1200;
+			}
 
 			let timeout : any = setTimeout(()=>{
 				clearTimeout(timeout);

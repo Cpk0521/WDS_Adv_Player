@@ -27,7 +27,7 @@ export class CharacterView extends IView implements IViewController{
     protected readonly _standCharacters : Map<string, AdventureAnimationStandCharacter> = new Map(); //all
     protected _motionCharacters : motionCharacterRecord[] = []; //show on screen
     protected _prevCharacters : motionCharacterRecord[] = [];
-
+    
     constructor(){
         super()
 

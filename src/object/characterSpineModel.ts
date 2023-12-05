@@ -99,12 +99,13 @@ export class AdventureAnimationStandCharacter {
         }
 
         if(eyeMotionName){
-            const anim =  this._model.state.setAnimation(3, eyeMotionName, false);
+            const anim = this._model.state.setAnimation(3, eyeMotionName, false);
             anim.trackTime = 1;
         }
 
         if(eyeAnimationName){
-            const anim = this._model.state.setAnimation(3, eyeAnimationName, false);//true
+            let anim = this._model.state.setAnimation(3, eyeAnimationName, false);//true
+            // anim.timeScale = 0.7;
         }
 
         if(mouthAnimationName){
