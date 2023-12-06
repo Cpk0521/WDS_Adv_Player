@@ -40,100 +40,6 @@
 ],
 
 
-
-//Id
-//EpisodeMasterId
-//Order
-//GroupOrder
-//Effect
-//SpeakerName
-//FontSize
-//Phrase
-//Title
-//BackgroundImageFileName
-//BackgroundCharacterImageFileName
-//BackgroundImageFileFadeType (FadeTypes)
-//BgmFileName
-//SeFileName
-//StillPhotoFileName
-//MovieFileName
-//WindowEffect (WindowEffects)
-//SceneCameraMasterId
-//VoiceFileName
-[
-    //slotNumber
-    //FacialExpressionMasterId
-    //HeadMotionMasterId
-    //HeadDirectionMasterId
-    //BodyMotionMasterId
-    //LipSyncMasterId
-    //SpineId
-    //CharacterApperanceTypes
-    //CharacterPositionTypes
-    //CharacterLayerTypes
-]
-//SpeakerIconId
-//FadeValue1
-//FadeValue2
-//FadeValue3
-
-
-public enum FadeTypes
-{
-	BlackFadeOutFadeIn = 1,
-	WhiteFadeOutFadeIn,
-	TimeElapsed,
-	CrossFade
-}
-
-public enum WindowEffects
-{
-	Sepia = 1,
-	WhiteBlur
-}
-
-public enum FontSizes
-{
-	Small = 1,
-	Middle,
-	Large
-}
-
-enum CharacterAppearanceTypes
-{
-	FadeIn,
-	SlideInFromRight,
-	SlideInFromLeft,
-	SlideInFromBottom
-}
-
-enum CharacterPositions
-{
-	None,
-	OuterLeft,
-	InnerLeft,
-	Center,
-	InnerRight,
-	OuterRight
-}
-
-enum CharacterLayerTypes
-{
-	None,
-	Layer1,
-	Layer2,
-	Layer3
-}
-
-enum SpineSizes
-{
-	Small = 1,
-	Middle,
-	Large
-}
-
-
-
 // const serif_window_bg_texture = await PIXI.Assets.load('https://raw.githubusercontent.com/WDS-Sirius/WDS_Adv_Resources/main/ui/frm_story_scene_serif_window_bg.png');
 // const scene_serif_window_bg = new PIXI.NineSlicePlane(serif_window_bg_texture, 68, 120, 68, 120);
 // app.stage.addChild(scene_serif_window_bg)
@@ -429,3 +335,5 @@ let tl = [
     },
 ]
 
+//kkr 1982.502685546875 -> 1092
+//sh 1984.00146484375 => 1092

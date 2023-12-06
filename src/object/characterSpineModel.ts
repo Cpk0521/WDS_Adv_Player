@@ -26,10 +26,16 @@ export class AdventureAnimationStandCharacter {
     constructor(skeletonData : SkeletonData, spineId : number) {
         this._spineId = spineId;
         this._model = new Spine(skeletonData);
-        this._model.scale.set(.75);
-        // console.log('height', this._model.getBounds().height)
+        // i don't know
+        if(this._model.getBounds().height < 2400){
+            this._model.y = 980; //1080 / 2 - (-480 + 55)
+        }
+        else{
+            this._model.y = 1080 / 2 - (-550); //1090 
+        }
+        const scale = (800 / this._model.getBounds().width) //maybe?
+        this._model.scale.set(scale);
         this._model.state.setAnimation(0, "breath", true);
-        this._model.y = 1080 / 2 - (-550);
     }
 
     addTo<T extends Container>(parent : T, order: number = 0){

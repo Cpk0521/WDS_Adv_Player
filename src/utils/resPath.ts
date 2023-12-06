@@ -1,6 +1,8 @@
 import { baseAssetsUrl } from "../constant/advConstant"
 
 const resPath = {
+    bgmMaster : `${baseAssetsUrl}/BGMMasterlist.json`, 
+    seMaster : `${baseAssetsUrl}/SEMasterlist.json`, 
     advJson : (epId : number | string) => `${baseAssetsUrl}/episode/${epId}.json`,
     spine : (spineId : number) => `${baseAssetsUrl}/spine/${spineId}.skel`,
     background : (name : string) => `${baseAssetsUrl}/background/${name}.png`,

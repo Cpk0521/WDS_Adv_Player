@@ -31,15 +31,15 @@ import resPath from "./utils/resPath";
 export class AdvPlayer extends Container {
 
 	//init
-	protected _isinited : boolean = false;
+	// protected _isinited : boolean = false;
 	protected _loadPromise : Promise<any> | undefined;
 	//View
-	protected _backgroundView : BackgroundView | undefined;
-	protected _characterView : CharacterView | undefined;
-	protected _effectView : EffectView | undefined;
-	protected _textView : TextView | undefined;
-	protected _movieView : MovieView | undefined;
-	protected _historyView : HistoryView | undefined;
+	protected _backgroundView : BackgroundView;
+	protected _characterView : CharacterView;
+	protected _effectView : EffectView;
+	protected _textView : TextView;
+	protected _movieView : MovieView;
+	protected _historyView : HistoryView;
 	protected _uiView : UIView;
 	protected _coverView : CoverOpening;
 	//Manager
@@ -70,11 +70,17 @@ export class AdvPlayer extends Container {
 		this.addChild(createEmptySprite({color : 0x00DD00}));
 		this.sortableChildren = true;
 		this.eventMode = 'static';
-		globalThis.addEventListener('blur', this._onBlur.bind(this));
+		document.addEventListener('visibilitychange', this._onBlur.bind(this))
 
 		//views
-		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
+		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
+		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
+		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
+		this._textView = new TextView().addTo(this, Layer.TextLayer);
+		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
+		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
+		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
 
     }
 
@@ -87,20 +93,6 @@ export class AdvPlayer extends Container {
 		return this;
     }
 
-	protected async _init(){
-		
-		this._backgroundView = new BackgroundView().addTo(this, Layer.BackgroundLayer);
-		this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
-		this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
-		this._textView = new TextView().addTo(this, Layer.TextLayer);
-		this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
-		this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
-		
-		await Assets.load(baseAssets.font);
-
-		return this._isinited = true;
-	}
-	
 	public async clear(){
 		await Assets.unloadBundle(`${this._episode!.EpisodeId}_bundle`);
 		this._currentIndex = 0;
@@ -127,8 +119,8 @@ export class AdvPlayer extends Container {
 				throw new Error('Episode file format error');
 			}
 
-			if(!this._isinited){
-				await this._init();
+			if(!Assets.cache.has(baseAssets.font)){
+				await Assets.load(baseAssets.font);
 			}
 
 			if(this._episode){
@@ -149,6 +141,9 @@ export class AdvPlayer extends Container {
 
 	protected async _loadResourcesFromEpisode(episodeTrack : IEpisodeModel){
 		const resources = {} as Record<string, string>;
+
+		const bgmlist = await loadJson<string[]>(resPath.bgmMaster);
+		const selist = await loadJson<string[]>(resPath.seMaster);
 
 		episodeTrack.EpisodeDetail.forEach((unit)=>{
 			//Backgorund
@@ -181,14 +176,14 @@ export class AdvPlayer extends Container {
 
 			//bgm
 			if(unit.BgmFileName){
-				if(unit.BgmFileName != '999' && !resources[`bgm_${unit.BgmFileName}`]){
+				if(bgmlist.includes(unit.BgmFileName) && unit.BgmFileName != '999' && !resources[`bgm_${unit.BgmFileName}`]){
 					resources[`bgm_${unit.BgmFileName}`] = resPath.bgm(unit.BgmFileName);
 				}
 			}
 
 			//Se
 			if(unit.SeFileName){
-				if(!resources[`se_${unit.SeFileName}`]){
+				if(selist.includes(unit.SeFileName) && !resources[`se_${unit.SeFileName}`]){
 					resources[`se_${unit.SeFileName}`] = resPath.se(unit.SeFileName);
 				}
 			}
@@ -260,16 +255,16 @@ export class AdvPlayer extends Container {
 	}
 
 	protected async _renderFrame(){
-		// 儲存目前的index
-		let index = this._currentIndex;
 		// 
 		this._trackPromise = undefined;
+		// 儲存目前的index
+		let index = this._currentIndex;
 		// 如果完結了或找不到當前的Track
 		if(!this.currentTrack){
 			return
 		}
 		
-		console.log(this.currentTrack);
+		// console.log(this.currentTrack);
 
 		if(this._translationManager.isTranslate){
 			let tl = this._translationManager.getTranslate(this.currentTrack.Id)
@@ -380,7 +375,7 @@ export class AdvPlayer extends Container {
 	}
 
 	protected _onBlur(){
-		if(this._isAuto){
+		if(this._isAuto && document.hidden){
 			this._isAuto = false;
 			this._uiView!.AutoBtn.Pressed = false;
 		}
@@ -413,6 +408,4 @@ export class AdvPlayer extends Container {
 	get isVoice(){
 		return this._isVoice;
 	}
-
-	
 }
