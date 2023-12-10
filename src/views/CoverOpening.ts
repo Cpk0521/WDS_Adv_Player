@@ -1,9 +1,9 @@
-import { Assets, Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite } from "pixi.js";
-import { createEmptySprite } from "../utils/emptySprite";
-import { baseAssets } from "../constant/advConstant";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { StoryTypes } from "../types/Episode";
+import { createEmptySprite } from "../utils/emptySprite";
+import { baseAssets } from "../constant/advConstant";
 
 export class CoverOpening extends IView {
 

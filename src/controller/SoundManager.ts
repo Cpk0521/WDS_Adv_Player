@@ -48,7 +48,6 @@ export class SoundManager implements IViewController{
     } : IEpisodeSound){
 
         this._voiceDuration = 0;
-
         this.stopPrevSound();
 
         if (BgmFileName) {

@@ -25,6 +25,7 @@ export class BackgroundView extends IView implements IViewController{
     protected readonly _bgMap : Map<string, Sprite> = new Map();
     protected readonly _SceneCameraEffects = SceneCameraList;
     protected _currentBG : Sprite | undefined;
+    protected _currentCardLabel : string = '';
     protected _currentCameraEffects: CameraEffect | undefined;
     protected _cuttentZoom : Tween<any> | undefined;
 
@@ -109,6 +110,27 @@ export class BackgroundView extends IView implements IViewController{
             }
 
             newbg = newbg ?? this._bgMap.get(StillPhotoFileName);
+            newbg!.zIndex = 1;
+            newbg!.alpha = 0;
+            this.addChild(newbg!);
+        }
+
+        // 如果有 BackgroundCharacterImageFileName
+        if(BackgroundCharacterImageFileName && BackgroundCharacterImageFileName != this._currentCardLabel){
+            this._currentCardLabel = BackgroundCharacterImageFileName;
+            if(this._currentBG){
+                this._currentBG.zIndex = 0
+            }
+
+            if(!this._bgMap.has(BackgroundCharacterImageFileName)){
+                newbg = new Sprite(Assets.get(`card_${BackgroundCharacterImageFileName}`));
+                newbg.anchor.set(0.5);
+                newbg.scale.set(1.17);
+                newbg.position.set(1920/2, 1080/2);
+                this._bgMap.set(BackgroundCharacterImageFileName, newbg);
+            }
+
+            newbg = newbg ?? this._bgMap.get(BackgroundCharacterImageFileName);
             newbg!.zIndex = 1;
             newbg!.alpha = 0;
             this.addChild(newbg!);

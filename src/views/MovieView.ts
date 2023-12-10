@@ -1,8 +1,5 @@
-import { Container } from "@pixi/display";
+import { Texture, VideoResource, Sprite, Assets } from "pixi.js";
 import { IViewController, IView } from "../types/View";
-import { Sprite } from "@pixi/sprite";
-import { Assets } from "@pixi/assets";
-import { Texture, VideoResource } from "@pixi/core";
 import { IEpisodeMovie } from "../types/Episode";
 
 export class MovieView extends IView implements IViewController{

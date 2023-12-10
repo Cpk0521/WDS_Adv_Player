@@ -1,8 +1,8 @@
 import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture } from 'pixi.js';
+import { Tween } from 'tweedle.js';
 import { IViewController, IView } from "../types/View";
 import { FontSizes, IEpisodeText } from "../types/Episode";
 import { baseAssets, advConstant} from '../constant/advConstant';
-import { Tween } from 'tweedle.js';
 
 export class TextView extends IView implements IViewController{
 

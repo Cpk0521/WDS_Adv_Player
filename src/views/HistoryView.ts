@@ -1,6 +1,5 @@
-import { NineSlicePlane, Text , Texture, Assets} from 'pixi.js'
+// import { NineSlicePlane, Text , Texture, Assets} from 'pixi.js'
 import { IViewController, IView } from "../types/View";
-import { baseAssets } from '../constant/advConstant';
 import { IEpisodeText } from '../types/Episode';
 
 export class HistoryView extends IView implements IViewController{
@@ -13,9 +12,9 @@ export class HistoryView extends IView implements IViewController{
         this.visible = false;
     }
 
-    public execute({ SpeakerName, Phrase, FontSize, SpeakerIconId } : IEpisodeText) {
+    public execute(data : IEpisodeText) {
         // console.log(SpeakerIconId);
-        this._historyRecord.push({ SpeakerName, Phrase, FontSize, SpeakerIconId })
+        this._historyRecord.push(data);
     }
 
     clear(){

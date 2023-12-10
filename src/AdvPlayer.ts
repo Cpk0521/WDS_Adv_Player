@@ -1,10 +1,7 @@
-// import { Container } from "@pixi/display";
-// import { FederatedPointerEvent } from '@pixi/events';
-// import { Assets } from "@pixi/assets";
 import { Container, FederatedPointerEvent, Assets, Ticker } from 'pixi.js';
 import '@pixi-spine/loader-uni'
 import '@pixi/sound';
-import { Group } from 'tweedle.js';
+// import { Group } from 'tweedle.js';
 //type
 import { IEpisodeModel, IEpisodeTranslate } from "./types/Episode";
 //views
@@ -97,6 +94,8 @@ export class AdvPlayer extends Container {
 		await Assets.unloadBundle(`${this._episode!.EpisodeId}_bundle`);
 		this._currentIndex = 0;
 		this._episode = undefined;
+
+		//hide all view!
 	}
 
 	public async load(source : string | IEpisodeModel, translate? : IEpisodeTranslate[]) {
@@ -231,9 +230,9 @@ export class AdvPlayer extends Container {
 	protected _play(){
 		this._coverView.close();
 		//ui view
-		this._uiView!.alpha = 1;
-		this._uiView?.AutoBtn.addclickFun(()=>{
-			this._isAuto = this._uiView!.AutoBtn.Pressed;
+		this._uiView.alpha = 1;
+		this._uiView.AutoBtn.addclickFun(()=>{
+			this._isAuto = this._uiView.AutoBtn.Pressed;
 			if(this._isAuto && this._trackPromise){
 				this._trackPromise.then((bool) => {
 					//不要在等待過程中
@@ -259,7 +258,7 @@ export class AdvPlayer extends Container {
 		this._trackPromise = undefined;
 		// 儲存目前的index
 		let index = this._currentIndex;
-		// 如果完結了或找不到當前的Track
+		// 如果完結了 或 找不到當前的Track
 		if(!this.currentTrack){
 			return
 		}
@@ -275,16 +274,16 @@ export class AdvPlayer extends Container {
 		}
 		
 		// 隱藏上輪的
-		this._characterView?.hideCharacter(); //隱藏在場上的角色
+		this._characterView.hideCharacter(); //隱藏在場上的角色
 		this._soundManager.stopPrevSound();
-		this._textView?.hideTextPanel(this.currentTrack.Phrase);
-		this._effectView?.hideEffect(this.currentTrack);
+		this._textView.hideTextPanel(this.currentTrack.Phrase);
+		this._effectView.hideEffect(this.currentTrack);
 		
 		//對話列表
-		this._historyView?.execute(this.currentTrack);
+		this._historyView.execute(this.currentTrack);
 
 		//背景處理
-		let bg_process = this._backgroundView?.execute(this.currentTrack);
+		let bg_process = this._backgroundView.execute(this.currentTrack);
 		let phrase = this.currentTrack.Phrase
 		if(bg_process){
 			this._processing.push(bg_process);
@@ -292,25 +291,25 @@ export class AdvPlayer extends Container {
 		}
 
 		//影片處理
-		let movie_process = this._movieView?.execute(this.currentTrack)
+		let movie_process = this._movieView.execute(this.currentTrack)
 		if(movie_process){
 			this._processing.push(movie_process);
 			await movie_process;
 		}
 
 		//effect處理
-		this._effectView?.execute(this.currentTrack);
+		this._effectView.execute(this.currentTrack);
 		//spine處理
-		this._characterView?.execute(this.currentTrack);
+		this._characterView.execute(this.currentTrack);
 		//對話處理
 		let nextorder = this.nextTrack?.Order ?? 1
-		this._textView!.allowNextIconDisplay = nextorder;
-		this._textView?.execute(this.currentTrack);
+		this._textView.allowNextIconDisplay = nextorder;
+		this._textView.execute(this.currentTrack);
 
 		//聲音處理
 		this._soundManager.execute(this.currentTrack);
 		//當播完聲音後 停止spine的口部動作
-		this._soundManager.onVoiceEnd.push(() => this._characterView?.offAllLipSync());
+		this._soundManager.onVoiceEnd.push(() => this._characterView.offAllLipSync());
 		
 		//下一個unit
 		this._next();
@@ -324,7 +323,7 @@ export class AdvPlayer extends Container {
 
 		// 計算等候時間
 		let voice_duration = this._soundManager.voiceDuration;
-		let text_duration = this._textView?.typingTotalDuration ?? 0;
+		let text_duration = this._textView.typingTotalDuration ?? 0;
 		let duration = Math.max(voice_duration, text_duration);
 
 		// 處理沒有文字 自動跳下一個
@@ -347,7 +346,8 @@ export class AdvPlayer extends Container {
 
 		if(this._isAuto){
 			// 計算auto等候時間
-			duration += (advConstant.ProcessingWaitTime * 1000);
+			// duration += (advConstant.ProcessingWaitTime * 1000);
+			duration += 1500;
 	
 			return this._trackPromise = new Promise((res, _)=>{
 				let timeout : any = setTimeout(()=>{
@@ -377,7 +377,7 @@ export class AdvPlayer extends Container {
 	protected _onBlur(){
 		if(this._isAuto && document.hidden){
 			this._isAuto = false;
-			this._uiView!.AutoBtn.Pressed = false;
+			this._uiView.AutoBtn.Pressed = false;
 		}
 	}
 
@@ -387,7 +387,7 @@ export class AdvPlayer extends Container {
 			this._renderFrame();
 		}
 		if(this._isAuto){
-			this._uiView?.ShortShow();
+			this._uiView.ShortShow();
 		}
 	}
 

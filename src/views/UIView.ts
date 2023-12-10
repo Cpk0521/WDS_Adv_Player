@@ -1,7 +1,7 @@
 import { Texture } from "pixi.js";
+import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { baseAssets } from '../constant/advConstant'
-import { Tween } from "tweedle.js";
 import { UIButton } from "../object/uiButton";
 
 enum UIViewStatus {

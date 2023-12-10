@@ -39,8 +39,6 @@ export interface IEpisodeModel {
 export type IEpisodeDetail = {
     Id : number
     EpisodeMasterId : number
-    // Order : number
-    // GroupOrder : number
     Title : string | null
 } & IEpisodeEffect &
     IEpisodeText &

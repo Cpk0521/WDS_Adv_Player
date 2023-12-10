@@ -1,7 +1,7 @@
 import { Graphics, BLEND_MODES, BlurFilter } from "pixi.js";
+import { Tween } from "tweedle.js";
 import { IViewController, IView } from "../types/View";
 import { IEpisodeEffect, WindowEffects } from "../types/Episode";
-import { Tween } from "tweedle.js";
 
 export class EffectView extends IView implements IViewController{
 
