@@ -96,6 +96,13 @@ export class AdvPlayer extends Container {
 		this._episode = undefined;
 
 		//hide all view!
+		this._backgroundView.clear();
+		this._characterView.clear();
+		this._effectView.clear();
+		this._textView.clear();
+		this._movieView.clear();
+		this._historyView.clear();
+		this._uiView.clear();
 	}
 
 	public async load(source : string | IEpisodeModel, translate? : IEpisodeTranslate[]) {
@@ -311,7 +318,7 @@ export class AdvPlayer extends Container {
 		//當播完聲音後 停止spine的口部動作
 		this._soundManager.onVoiceEnd.push(() => this._characterView.offAllLipSync());
 		
-		//下一個unit
+		//準備下一個unit
 		this._next();
 
 		// Animations
@@ -329,7 +336,7 @@ export class AdvPlayer extends Container {
 		// 處理沒有文字 自動跳下一個
 		if(phrase.length === 0 || nextorder > 1){
 			if(nextorder > 1){
-				duration += 500;
+				duration += 800;
 			}
 
 			let timeout : any = setTimeout(()=>{

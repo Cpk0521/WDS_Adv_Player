@@ -42,6 +42,10 @@ export class UIView extends IView {
                 }
             })
     }
+
+    public clear(): void {
+        this.alpha = 0;
+    }
     
     // hidden -> show -> hidden
     // show -> nothing -> hidden

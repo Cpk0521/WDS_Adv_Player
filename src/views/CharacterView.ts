@@ -40,6 +40,13 @@ export class CharacterView extends IView implements IViewController{
         
         return this;
     }
+
+    public clear(): void {
+        this.destroySpine();
+        this.removeChildren();
+        this._motionCharacters = [];
+        this._prevCharacters = [];
+    }
     
     execute({ CharacterMotions }: IEpisodeCharacter) {
         if(CharacterMotions.length === 0){

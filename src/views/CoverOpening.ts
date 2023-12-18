@@ -140,6 +140,10 @@ export class CoverOpening extends IView {
         // this.addChild(masksprite)
     }
 
+    public clear(): void {
+        
+    }
+
     static new(){
         return new this();
     }

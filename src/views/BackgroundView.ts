@@ -47,6 +47,14 @@ export class BackgroundView extends IView implements IViewController{
     static new(){
         return new this();
     }
+
+    public clear(): void {
+        this._bgMap.clear();
+        this._whiteFadePanel.alpha = 0;
+        this._blackFadePanel.alpha = 0;
+        this._jugonFadePanel.alpha = 0;
+        this._currentBG && this.removeChild(this._currentBG);
+    }
     
     execute({
         BackgroundImageFileName,
@@ -157,11 +165,11 @@ export class BackgroundView extends IView implements IViewController{
             switch (BackgroundImageFileFadeType) {
                 case FadeTypes.BlackFadeOutFadeIn:
                     fadein = new Tween(this._blackFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadein.chain(new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000 + 800));
+                    fadein.chain(new Tween(this._blackFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(Math.abs(FadeValue2 ?? 0) * 1000 + 800));
                     break;
                 case FadeTypes.WhiteFadeOutFadeIn:
                     fadein = new Tween(this._whiteFadePanel).to({alpha: 1}, FadeValue1! * 1000);
-                    fadein.chain(new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(FadeValue2! * 1000 + 800));
+                    fadein.chain(new Tween(this._whiteFadePanel).to({alpha: 0}, FadeValue3! * 1000).delay(Math.abs(FadeValue2 ?? 0) * 1000 + 800));
                     break;
                 case FadeTypes.TimeElapsed:
                     fadein = this._jugonFadePanel.FadeIn;
@@ -183,7 +191,7 @@ export class BackgroundView extends IView implements IViewController{
             return new Promise<void>((res, _) => {
                 setTimeout(()=>{
                     res()
-                }, ((FadeValue1 ?? 0) + (FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000 + (zoomtime) + 800)
+                }, ((FadeValue1 ?? 0) + (Math.abs(FadeValue2 ?? 0)) + (FadeValue3 ?? 0)) * 1000 + (zoomtime) + 800)
             })
         }
         else{

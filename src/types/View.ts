@@ -23,5 +23,6 @@ export abstract class IView extends Container{
         this.visible = false;
     }
     
+    public abstract clear(): void
 }
 

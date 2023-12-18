@@ -38,6 +38,18 @@ export class EffectView extends IView implements IViewController{
         
         this._whiteBlurEffectAnimation = new Tween(this._blur_filter).to({blur : 80}, 2000).yoyo(true).repeat();
     }
+    
+    public clear(): void {
+        if(this._sepiaEffectObject.visible){
+            this._sepiaEffectObject.visible = false;
+        }
+
+        if(this._whiteBlurEffectObject.visible){
+            this._whiteBlurEffectObject.visible = false;
+            this._blur_filter.enabled = false;
+            this._whiteBlurEffectAnimation.stop();
+        }
+    }
 
     execute(effect : IEpisodeEffect): void {
         

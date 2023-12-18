@@ -88,6 +88,10 @@ export class TextView extends IView implements IViewController{
         
     }
 
+    public clear(): void {
+        this._textPanelContainer.alpha = 0;
+    }
+
     static new(){
         return new this();
     }

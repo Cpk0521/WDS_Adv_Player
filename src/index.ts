@@ -44,14 +44,6 @@ const { id } = getUrlParams('id');
 
 const app = createApp();
 
-// for Test
-// const check_texture = await PIXI.Assets.load('./spine2.png');
-// const check = new PIXI.Sprite(check_texture)
-// app.stage.addChild(check)
-// check.x = app.screen.width / 2
-// check.y = app.screen.height / 2
-// check.anchor.set(0.5)
-
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
