@@ -337,3 +337,28 @@ let tl = [
 
 //kkr 1982.502685546875 -> 1092
 //sh 1984.00146484375 => 1092
+
+
+const spinedata = await PIXI.Assets.load('https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/spine/20201.skel');
+const spine = new Spine(spinedata.spineData)
+spine.scale.set(.25);
+console.log(spine)
+spine.position.set(app.screen.width / 2 - 200, app.screen.height / 2);
+
+app.stage.addChild(spine);
+
+const spinedata2 = await PIXI.Assets.load('https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/spine/10401.skel');
+const spine2 = new Spine(spinedata2.spineData)
+spine2.scale.set(.25);
+console.log(spine2.getBounds())
+spine2.position.set(app.screen.width / 2, app.screen.height / 2);
+
+app.stage.addChild(spine2);
+
+const spinedata3 = await PIXI.Assets.load('https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/spine/10701.skel');
+const spine3 = new Spine(spinedata3.spineData)
+spine3.scale.set(.25);
+console.log(spine3.getBounds())
+spine3.position.set(app.screen.width / 2 + 200, app.screen.height / 2);
+
+app.stage.addChild(spine3);

@@ -26,15 +26,14 @@ export class AdventureAnimationStandCharacter {
     constructor(skeletonData : SkeletonData, spineId : number) {
         this._spineId = spineId;
         this._model = new Spine(skeletonData);
-        // i don't know
+        // i don't know hot to clac the y position
         if(this._model.getBounds().height < 2400){
             this._model.y = 980; //1080 / 2 - (-480 + 55)
         }
         else{
             this._model.y = 1080 / 2 - (-550); //1090 
         }
-        const scale = (800 / this._model.getBounds().width) //maybe?
-        this._model.scale.set(scale);
+        this._model.scale.set(0.75);
         this._model.state.setAnimation(0, "breath", true);
     }
 

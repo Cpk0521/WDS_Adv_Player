@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import { getUrlParams } from './utils/UrlParams'
 import { AdvPlayer } from "./AdvPlayer";
 import { Group } from "tweedle.js";
+import { Spine } from "pixi-spine";
 
 function createApp() {
     if (document.getElementById("WDS")) {
