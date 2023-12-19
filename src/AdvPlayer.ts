@@ -23,6 +23,7 @@ import { checkImplements, isURL } from "./utils/check";
 import createEmptySprite from "./utils/emptySprite";
 import loadJson from "./utils/loadJson";
 import resPath from "./utils/resPath";
+import { banner } from './utils/logger';
 
 
 export class AdvPlayer extends Container {
@@ -79,6 +80,7 @@ export class AdvPlayer extends Container {
 		this._uiView = new UIView().addTo(this, Layer.UILayer);
 		this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
 
+		banner();
     }
 
     public static create(){
