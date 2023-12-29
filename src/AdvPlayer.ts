@@ -232,8 +232,7 @@ export class AdvPlayer extends Container {
 		this._loadPromise = undefined;
 		//cover
 		this._coverView.start();
-		this._coverView.once('click', this._play, this);
-		this._coverView.once('touchstart', this._play, this);
+		this._coverView.once('pointertap', this._play, this);
 	}
 
 	protected _play(){
@@ -252,8 +251,7 @@ export class AdvPlayer extends Container {
 			}
 		})
 		//click
-		this.on('click', this._tap, this);
-		this.on('touchstart', this._tap, this);
+		this.on('pointertap', this._tap, this);
 		this._renderFrame();
 	}
 

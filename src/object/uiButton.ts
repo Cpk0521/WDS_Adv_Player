@@ -20,8 +20,7 @@ export class UIButton extends Sprite {
         this.addChild(this._content);
         this.eventMode = 'static';
         this.cursor = 'pointer';
-        this.on('click', this._onclick, this);
-        this.on('touchstart', this._onclick, this);
+        this.on('pointertap', this._onclick, this);
         this.anchor.set(0.5);
 
         this._content.anchor.set(0.5);
