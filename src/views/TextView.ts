@@ -153,10 +153,10 @@ export class TextView extends IView implements IViewController{
         new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
     }
 
-    hideTextPanel(phrase : string = ''){
-        if(phrase.length === 0){
-            this._textPanelContainer.alpha = 0;
-        }
+    hideTextPanel(){
+        // if(data.Phrase.length === 0 && data.SpeakerName.length === 0){
+        // }
+        this._textPanelContainer.alpha = 0;
     }
     
     _playNextIconAnim(){

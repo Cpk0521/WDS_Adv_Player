@@ -1,24 +1,20 @@
 // import { Assets } from '@pixi/assets'
-import { IEpisodeTranslate } from '../types/Episode';
+import { IEpisodeTranslate } from "../types/Episode";
 
 export class TranslationManager {
+  protected _translate: IEpisodeTranslate[] = [];
+  protected _isTranslate = false;
 
-    protected _translate : IEpisodeTranslate[] =[];
-    protected _isTranslate = false;
+  load(translate: any) {
+    this._translate = [...translate];
+    this._isTranslate = true;
+  }
 
-    load(translate : any){
-        this._translate = [...translate];
-        this._isTranslate = true;
-    }
+  get isTranslate() {
+    return this._isTranslate;
+  }
 
-    get isTranslate(){
-        return this._isTranslate;
-    }
-
-    getTranslate(id : number){
-        return this._translate.find((tl) => tl.Id === id);
-    }
-
+  getTranslate(id: number) {
+    return this._translate.find((tl) => tl.Id === id);
+  }
 }
-
-

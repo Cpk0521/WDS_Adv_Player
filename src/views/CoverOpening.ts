@@ -1,4 +1,4 @@
-import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite } from "pixi.js";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, BLEND_MODES } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { StoryTypes } from "../types/Episode";
@@ -122,22 +122,6 @@ export class CoverOpening extends IView {
         anim_arr.push(new Tween(this._bottom_text).to({alpha : 1}, 1000));
 
         this._animation = graphicsAnim.chain(...anim_arr);
-        
-        // const gr1 = new Graphics();
-        // gr1.beginFill(0x000000, 1);
-        // gr1.drawRect(0, 0, 1920, 1080);
-        // gr1.endFill();
-
-        // const gr  = new Graphics();
-        
-        // gr.beginFill(0xffffff, 0);
-        // gr.drawCircle(1920/2, 1080/2, 500);
-        // gr.endFill();
-        // // gr.position.set(1920/2, 1080/2)
-
-        // gr1.mask = gr;
-        // this.mask = gr1
-        // this.addChild(masksprite)
     }
 
     public clear(): void {
