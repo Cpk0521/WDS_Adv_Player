@@ -15,7 +15,7 @@ export class CoverOpening extends IView {
     protected _top_text : Text;
     protected _middle_text : Text;
     protected _bottom_text : Text;
-    // protected _anim_arr : Tween<any>[] = []
+    protected _percent_text : Text;
     
     constructor(){
         super();
@@ -79,6 +79,17 @@ export class CoverOpening extends IView {
         
         
         //text
+        this._percent_text = new Text('', {
+            fill: "#4a424b",
+            fontFamily : 'Ronowstd Gbs',
+            fontSize : 50,
+            leading: 4,
+            letterSpacing: -1,
+        });
+        this._percent_text.anchor.set(0.5);
+		this._percent_text.position.set(1920 - 120, 1080 - 80);
+        this.addChild(this._percent_text);
+
         this._top_text = new Text('', {
             fill: "#4a424b",
             fontFamily : 'Ronowstd Gbs',
@@ -121,7 +132,7 @@ export class CoverOpening extends IView {
         this.addChild(this._bottom_text);
         anim_arr.push(new Tween(this._bottom_text).to({alpha : 1}, 1000));
 
-        this._animation = graphicsAnim.chain(...anim_arr);
+        this._animation = graphicsAnim.chain(...anim_arr);            
     }
 
     public clear(): void {
@@ -141,14 +152,21 @@ export class CoverOpening extends IView {
         }
 
         if(type === StoryTypes.Side){
-            
+            //side 
         }
         
         this._animation.start();
     }
 
-    start(){
-        this._touch_Animation.start();
+    start(percent : number){
+        const text = `${percent} %`
+        if(percent === 100){
+            this._percent_text.alpha = 0;
+            this._touch_Animation.start();
+            return;
+        }
+        
+        this._percent_text.text = text;
     }
     
     close(){

@@ -243,7 +243,12 @@ export class AdvPlayer extends Container {
     }
 
     Assets.addBundle(`${this._episode!.EpisodeId}_bundle`, resources);
-    return Assets.loadBundle(`${this._episode!.EpisodeId}_bundle`);
+    return Assets.loadBundle(
+      `${this._episode!.EpisodeId}_bundle`,
+      (percentage) => {
+        this._coverView.start(Math.floor(percentage * 100));
+      }
+    );
   }
 
   public play() {
@@ -259,7 +264,7 @@ export class AdvPlayer extends Container {
     }
     this._loadPromise = undefined;
     //cover
-    this._coverView.start();
+    // this._coverView.start();
     this._coverView.once("pointertap", this._play, this);
   }
 
