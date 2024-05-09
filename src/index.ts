@@ -17,6 +17,11 @@ function createApp() {
 
   (globalThis as any).__PIXI_APP__ = pixiapp;
 
+  // (globalThis as any).__PIXI_DEVTOOLS__ = {
+  //   pixi: PIXI,
+  //   app: pixiapp,
+  // }; 
+
   pixiapp.view.setAttribute("id", "WDS");
   document.body.appendChild(pixiapp.view);
 

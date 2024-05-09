@@ -2,7 +2,7 @@ import { Container } from "@pixi/display"
 import { IEpisodeDetail } from "./Episode";
 
 export interface IViewController {
-    execute<T extends IEpisodeDetail>(arr : T): any
+    execute<T extends IEpisodeDetail>(detail : T): any
 }
 
 export abstract class IView extends Container{

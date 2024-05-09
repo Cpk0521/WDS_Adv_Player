@@ -69,10 +69,7 @@ export class AdvPlayer extends Container {
     document.addEventListener("visibilitychange", this._onBlur.bind(this));
 
     //views
-    this._backgroundView = new BackgroundView().addTo(
-      this,
-      Layer.BackgroundLayer
-    );
+    this._backgroundView = new BackgroundView().addTo(this,Layer.BackgroundLayer);
     this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
     this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);

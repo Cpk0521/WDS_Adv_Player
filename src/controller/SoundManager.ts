@@ -65,6 +65,7 @@ export class SoundManager implements IViewController {
     }
 
     if (Assets.cache.has(`bgm_${FileName}`)) {
+      this._currentBgm?.stop();
       this._currentBgm = Assets.get(`bgm_${FileName}`);
       this._currentBgm?.play({
         loop: true,
