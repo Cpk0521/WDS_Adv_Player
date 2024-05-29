@@ -1,4 +1,4 @@
-import { Container, FederatedPointerEvent, Assets, Ticker } from "pixi.js";
+import { Container, FederatedPointerEvent, Assets, Ticker} from "pixi.js";
 import "@pixi-spine/loader-uni";
 import "@pixi/sound";
 // import { Group } from 'tweedle.js';
@@ -23,7 +23,7 @@ import { checkImplements, isURL } from "./utils/check";
 import createEmptySprite from "./utils/emptySprite";
 import loadJson from "./utils/loadJson";
 import resPath from "./utils/resPath";
-import { banner } from "./utils/logger";
+import { banner, TrackLog } from "./utils/logger";
 
 export class AdvPlayer extends Container {
   //init
@@ -261,7 +261,6 @@ export class AdvPlayer extends Container {
     }
     this._loadPromise = undefined;
     //cover
-    // this._coverView.start();
     this._coverView.once("pointertap", this._play, this);
   }
 
@@ -300,7 +299,7 @@ export class AdvPlayer extends Container {
       return;
     }
 
-    // console.log(this.currentTrack);
+    TrackLog(index, this.Track!.length, this.currentTrack);
 
     if (this._translationManager.isTranslate) {
       let tl = this._translationManager.getTranslate(this.currentTrack.Id);
@@ -310,19 +309,19 @@ export class AdvPlayer extends Container {
       }
     }
 
-    // 隱藏上輪的
-    this._characterView.hideCharacter(); //隱藏在場上的角色
-    this._soundManager.stopPrevSound();
-    this._textView.hideTextPanel(); //
-    this._effectView.hideEffect(this.currentTrack);
-
     //對話列表
     this._historyView.execute(this.currentTrack);
+
+    // 隱藏上輪的
+    this._soundManager.stopPrevSound();
+    this._effectView.hideEffect(this.currentTrack);
 
     //背景處理
     let bg_process = this._backgroundView.execute(this.currentTrack);
     let phrase = this.currentTrack.Phrase;
     if (bg_process) {
+      this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._textView.hideTextPanel(); //
       this._processing.push(bg_process);
       await bg_process;
     }
@@ -330,6 +329,8 @@ export class AdvPlayer extends Container {
     //影片處理
     let movie_process = this._movieView.execute(this.currentTrack);
     if (movie_process) {
+      this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._textView.hideTextPanel(); //
       this._processing.push(movie_process);
       await movie_process;
     }
@@ -353,11 +354,12 @@ export class AdvPlayer extends Container {
     //準備下一個unit
     this._next();
 
-    // Animations
+    // Animations 確保不是正在動畫中被按下至下一個
     if (this._processing.length > 0) {
-      await Promise.all(this._processing).then(() => {
-        this._processing = [];
-      });
+      await Promise.all(this._processing)
+        .then(() => {
+          this._processing = [];
+        });
     }
 
     // 計算等候時間

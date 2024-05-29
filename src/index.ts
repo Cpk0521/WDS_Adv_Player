@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import { getUrlParams } from "./utils/UrlParams";
 import { AdvPlayer } from "./AdvPlayer";
 import { Group } from "tweedle.js";
-// import { Spine } from "pixi-spine";
 
 function createApp() {
   if (document.getElementById("WDS")) {
@@ -59,10 +58,7 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
-// advplayer.loadAndPlay('1000000');
 // advplayer.loadAndPlay('1010101');
-// advplayer.loadAndPlay('110042');
-// advplayer.loadAndPlay('2001506');
 
 if (id) {
   advplayer.loadAndPlay(id);

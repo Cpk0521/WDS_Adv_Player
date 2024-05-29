@@ -13,6 +13,21 @@ export function banner(){
     log(...logtext);
 }
 
+export function TrackLog(current: number, length: number, Track: object) {
+    log(
+        ...[
+            "%c%s%c%s%c%s",
+            "color:white;background:#23c4ed",
+            "【Track】",
+            "",
+            " ",
+            "color:#23c4ed",
+            `[${current}/${length}]`,
+            Track,
+        ]
+    );
+}
+
 // export const logger = {
 
 //     level : 'all',
