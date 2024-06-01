@@ -61,11 +61,11 @@ advplayer.addTo(app.stage);
 
 // for testing
 // advplayer.loadAndPlay('2000301');
-advplayer.loadAndPlay('110081');
+// advplayer.loadAndPlay('110081');
 
-// if (id) {
-//   advplayer.loadAndPlay(id);
-// } else {
-//   let _id = prompt("Please enter the story Id", "1000000");
-//   _id && advplayer.loadAndPlay(_id);
-// }
+if (id) {
+  advplayer.loadAndPlay(id);
+} else {
+  let _id = prompt("Please enter the story Id", "1000000");
+  _id && advplayer.loadAndPlay(_id);
+}
