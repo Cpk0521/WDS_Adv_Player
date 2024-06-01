@@ -209,6 +209,7 @@ export class BackgroundView extends IView implements IViewController {
           break;
         case FadeTypes.TimeElapsed:
           fadein = this._jugonFadePanel.FadeIn;
+          zoomtime = 6000;
           break;
         case FadeTypes.CrossFade:
           fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1! * 1000);
@@ -218,10 +219,10 @@ export class BackgroundView extends IView implements IViewController {
 
     // run
     if (fadein) {
-      fadein?.start().onStart(() => {
+      fadein.start().onStart(() => {
         setTimeout(async () => {
           this._insertBG(newbg, this._cuttentZoom);
-        }, (FadeValue1 ?? 0) * 1000 + 200);
+        }, zoomtime > 0 ? zoomtime/2 : (FadeValue1 ?? 0) * 1000 + 200);
       });
 
       return new Promise<void>((res, _) => {

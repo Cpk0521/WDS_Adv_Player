@@ -159,11 +159,11 @@ export enum CharacterLayerTypes
 export enum CharacterPositions
 {
 	None,
-	OuterLeft,//1920/2 -320*2?
+	OuterLeft,//1920/2 - 495 ???
 	InnerLeft,//1920/2 -320
 	Center,//1920/2
 	InnerRight,//1920/2 +320
-	OuterRight
+	OuterRight//1920/2 + 495 ???
 }
 
 // Episode Translation

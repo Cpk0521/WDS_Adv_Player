@@ -93,7 +93,7 @@ export class AdvPlayer extends Container {
   public async clear() {
     await Assets.unloadBundle(`${this._episode!.EpisodeId}_bundle`);
     this._currentIndex = 0;
-    this._episode = undefined;
+    this._episode = void 0;
 
     //hide all view!
     this._backgroundView.clear();
@@ -259,7 +259,7 @@ export class AdvPlayer extends Container {
       console.log("dont repeat play");
       return;
     }
-    this._loadPromise = undefined;
+    this._loadPromise = void 0;
     //cover
     this._coverView.once("pointertap", this._play, this);
   }
@@ -270,9 +270,9 @@ export class AdvPlayer extends Container {
     this._uiView.alpha = 1;
     this._uiView.AutoBtn.addclickFun(() => {
       this._isAuto = this._uiView.AutoBtn.Pressed;
-      if (this._isAuto && this._trackPromise) {
-        this._trackPromise.then((bool) => {
-          //不要在等待過程中
+      if (this._isAuto && this._trackPromise) {        
+        this._trackPromise.then((bool : boolean) => {
+          //確保開了auto後會自動播放下一個並且不會重複執行
           if (bool) {
             this._renderFrame();
           }
@@ -291,7 +291,7 @@ export class AdvPlayer extends Container {
 
   protected async _renderFrame() {
     //
-    this._trackPromise = undefined;
+    this._trackPromise = void 0;
     // 儲存目前的index
     let index = this._currentIndex;
     // 如果完結了 或 找不到當前的Track
@@ -344,17 +344,17 @@ export class AdvPlayer extends Container {
     this._textView.allowNextIconDisplay = nextorder;
     this._textView.execute(this.currentTrack);
 
-    //聲音處理
-    this._soundManager.execute(this.currentTrack);
     //當播完聲音後 停止spine的口部動作
     this._soundManager.onVoiceEnd.push(() =>
       this._characterView.offAllLipSync()
     );
+    //聲音處理
+    this._soundManager.execute(this.currentTrack);
 
     //準備下一個unit
     this._next();
 
-    // Animations 確保不是正在動畫中被按下至下一個
+    // Animations 確保不是正在動畫中被按下至下一個unit
     if (this._processing.length > 0) {
       await Promise.all(this._processing)
         .then(() => {
@@ -375,7 +375,7 @@ export class AdvPlayer extends Container {
 
       let timeout: any = setTimeout(() => {
         clearTimeout(timeout);
-        timeout = undefined;
+        timeout = void 0;
         //確保按下了一次後不會繼續
         if (index + 1 === this._currentIndex) {
           this._renderFrame();
@@ -396,13 +396,14 @@ export class AdvPlayer extends Container {
           timeout = null;
           // 確保等候完是auto狀態
           if (this._isAuto && index + 1 === this._currentIndex) {
-            this._trackPromise = undefined;
+            this._trackPromise = void 0;
             this._renderFrame();
             res(false);
           }
           res(true);
         }, duration);
       }));
+
     }
 
     // 如果不是auto 就return
@@ -413,6 +414,7 @@ export class AdvPlayer extends Container {
         res(true);
       }, duration + 1000);
     }));
+    
   }
 
   protected _onBlur() {
@@ -444,7 +446,7 @@ export class AdvPlayer extends Container {
 
   get nextTrack() {
     return this._currentIndex + 1 >= (this._episode?.EpisodeDetail.length ?? 0)
-      ? undefined
+      ? void 0
       : this._episode?.EpisodeDetail[this._currentIndex + 1];
   }
 

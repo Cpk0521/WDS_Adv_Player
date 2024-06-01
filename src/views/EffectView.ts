@@ -72,6 +72,7 @@ export class EffectView extends IView implements IViewController{
                         this._blur_filter.enabled = true;
                         // 問就是會lag
                         // this._whiteBlurEffectAnimation.start();
+                        // 要用shader 但我不會
                     }
                     break
             }

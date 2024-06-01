@@ -95,7 +95,7 @@ export class SoundManager implements IViewController {
       this._voiceDuration = Math.max(5000, this._voiceDuration);
       let timeout = setTimeout(() => {
         clearTimeout(timeout);
-        this._onVoiceEnd.forEach((func) => func());
+        [...this._onVoiceEnd].forEach((func) => func());
         this._onVoiceEnd = [];
       }, 5000);
       return;
@@ -110,7 +110,7 @@ export class SoundManager implements IViewController {
       );
 
       (instance as IMediaInstance).on("end", () => {
-        this._onVoiceEnd.forEach((func) => func());
+        [...this._onVoiceEnd].forEach((func) => func());
         this._onVoiceEnd = [];
         this._currentVoice = null;
       });

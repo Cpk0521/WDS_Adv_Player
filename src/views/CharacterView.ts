@@ -83,7 +83,7 @@ export class CharacterView extends IView implements IViewController{
             model = model ?? this._standCharacters.get(`${motiondata.SpineId}`);
             model?.changeSlotNumber(motiondata.slotNumber);
             model?.changePosition(motiondata.CharacterPosition);
-            model?.setCharacterLayer(motiondata.CharacterLayerType);
+            // model?.setCharacterLayer(motiondata.CharacterLayerType);
 
             let characterAnimation : Partial<characterAnimation> = {}
 

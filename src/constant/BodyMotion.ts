@@ -1,3 +1,4 @@
+//https://github.com/esterTion/yumesute_master_db_diff/blob/master/BodyMotionMaster.json
 export default [
   {
     Id: 1,

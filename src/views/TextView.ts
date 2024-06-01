@@ -50,6 +50,7 @@ export class TextView extends IView implements IViewController{
             fontFamily : 'Ronowstd Gbs',
             fontSize : 40,
             leading: 4,
+            lineHeight : 50,
             letterSpacing: -1,
         }));
         PhraseTextBox.addChild(this._phrase);
@@ -154,8 +155,6 @@ export class TextView extends IView implements IViewController{
     }
 
     hideTextPanel(){
-        // if(data.Phrase.length === 0 && data.SpeakerName.length === 0){
-        // }
         this._textPanelContainer.alpha = 0;
     }
     

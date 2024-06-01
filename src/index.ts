@@ -3,6 +3,8 @@ import { getUrlParams } from "./utils/UrlParams";
 import { AdvPlayer } from "./AdvPlayer";
 import { Group } from "tweedle.js";
 
+
+
 function createApp() {
   if (document.getElementById("WDS")) {
     document.getElementById("WDS")!.remove();
@@ -15,11 +17,6 @@ function createApp() {
   });
 
   (globalThis as any).__PIXI_APP__ = pixiapp;
-
-  // (globalThis as any).__PIXI_DEVTOOLS__ = {
-  //   pixi: PIXI,
-  //   app: pixiapp,
-  // }; 
 
   pixiapp.view.setAttribute("id", "WDS");
   document.body.appendChild(pixiapp.view);
@@ -58,11 +55,17 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
-// advplayer.loadAndPlay('1010101');
+// const spine_test = PIXI.Sprite.from('./110022_3.png');
+// spine_test.alpha = .4
+// app.stage.addChild(spine_test);
 
-if (id) {
-  advplayer.loadAndPlay(id);
-} else {
-  let _id = prompt("Please enter the story Id", "1000000");
-  _id && advplayer.loadAndPlay(_id);
-}
+// for testing
+// advplayer.loadAndPlay('2000301');
+advplayer.loadAndPlay('110081');
+
+// if (id) {
+//   advplayer.loadAndPlay(id);
+// } else {
+//   let _id = prompt("Please enter the story Id", "1000000");
+//   _id && advplayer.loadAndPlay(_id);
+// }

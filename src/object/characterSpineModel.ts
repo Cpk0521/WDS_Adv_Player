@@ -1,6 +1,7 @@
 import { Container } from "pixi.js";
 import { Spine, SkeletonData, TrackEntry } from '@pixi-spine/runtime-4.1';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
+import LoopMotion from "../constant/LoopMotion";
 
 export interface characterAnimation {
     bodyAnimationName : string,
@@ -17,24 +18,36 @@ export class AdventureAnimationStandCharacter {
 
     protected _model : Spine;
     protected _spineId : number | undefined;
+    protected _charId : string = '';
     protected _slotNumber : number = 0;
     protected _characterPosition : CharacterPositions = CharacterPositions.None;
     protected _appearanceType : CharacterAppearanceTypes = CharacterAppearanceTypes.FadeIn
+    protected _breathTrack : TrackEntry | undefined = undefined;
     protected _lipTrack : TrackEntry | undefined = undefined;
     protected _motions : Partial<characterAnimation> = {}
 
     constructor(skeletonData : SkeletonData, spineId : number) {
         this._spineId = spineId;
+        this._charId = `${this._spineId}`.slice(0, 3);
+        //create spine model
         this._model = new Spine(skeletonData);
-        // i don't know hot to clac the y position
-        if(this._model.getBounds().height < 2400){
-            this._model.y = 980; //1080 / 2 - (-480 + 55)
+        this._model.name = this._charId;
+        let loopMotion = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
+        // clac the y position
+        switch(loopMotion?.Size ?? 0){
+            case 1:
+                this._model.scale.set(0.77);
+                this._model.y = 1000;
+                break;
+            case 2:
+                this._model.scale.set(0.79);
+                this._model.y = (1080 + ((158 - loopMotion!.Height) * 9)) || 1080;
+                break;
+            default:
+                this._model.scale.set(0.79);
+                this._model.y = 1080;
+                break;
         }
-        else{
-            this._model.y = 1080 / 2 - (-550); //1090 
-        }
-        this._model.scale.set(0.75);
-        this._model.state.setAnimation(0, "breath", true);
     }
 
     addTo<T extends Container>(parent : T, order: number = 0){
@@ -50,18 +63,23 @@ export class AdventureAnimationStandCharacter {
         switch(position){
             case CharacterPositions.Center:
                 this._model.x = 1920/2;
+                this._model.zIndex = 0;
                 break;
             case CharacterPositions.InnerLeft:
                 this._model.x = 1920/2 - 320;
+                this._model.zIndex = 1
                 break;
             case CharacterPositions.InnerRight:
                 this._model.x = 1920/2 + 320;
+                this._model.zIndex = -1
                 break;
             case CharacterPositions.OuterLeft:
-                this._model.x = 1920/2 - 320*2;
+                this._model.x = 1920/2 - 495;
+                this._model.zIndex = 1
                 break;
             case CharacterPositions.OuterRight:
-                this._model.x = 1920/2 + 320*2;
+                this._model.x = 1920/2 + 495;
+                this._model.zIndex = -1
                 break;
             default:
                 this._model.x = 1920/2;
@@ -73,8 +91,8 @@ export class AdventureAnimationStandCharacter {
         this._model.scale.set(size);
     }
 
-    setCharacterLayer(order : number){
-        this._model.zIndex = order - 1;
+    setCharacterLayer(layer : number){
+        this._model.zIndex = layer;
     }
     
     SetAllAnimation(
@@ -91,6 +109,9 @@ export class AdventureAnimationStandCharacter {
             headAnimationName, 
             headMotionName 
         } = characterAnimation
+
+        //重新呼吸
+        this._breathTrack = this._model.state.setAnimation(0, "breath", true);
 
         if(bodyAnimationName){    
             this._model.state.setAnimation(1, bodyAnimationName, false);
@@ -109,8 +130,8 @@ export class AdventureAnimationStandCharacter {
         }
 
         if(eyeAnimationName){
+            //眨眼 -> 停一會 -> 眨眼  待解決!!!!!!!!!!!!
             let anim = this._model.state.setAnimation(3, eyeAnimationName, false);//true
-            // anim.timeScale = 0.7;
         }
 
         if(mouthAnimationName){
@@ -147,6 +168,12 @@ export class AdventureAnimationStandCharacter {
     }
 
     hideCharacter(){
+        //要停止呼吸
+        if(this._breathTrack){
+            this._breathTrack.loop = false;
+            this._breathTrack.timeScale = 0;
+            this._breathTrack.trackTime = 0;
+        }
         this._model.visible = false;
     }
 
