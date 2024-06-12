@@ -106,11 +106,14 @@ export class TextView extends IView implements IViewController{
 
         if(!SpeakerName && Phrase.length === 0){
             this._typingTotalDuration = 0;
-            return this._hideTextPanelAnimation();
+            // return this._hideTextPanelAnimation();
+            this.hideTextPanel();
+            return;
         }
 
         if(this._textPanelContainer.alpha === 0){
-            this._showTextPanelAnimation();
+            // this._showTextPanelAnimation();
+            this.showTextPanel();
         }
         
         //next icon
@@ -146,16 +149,20 @@ export class TextView extends IView implements IViewController{
         }, 50)
     }
 
-    _hideTextPanelAnimation(){        
-        new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
-    }
+    // _hideTextPanelAnimation(){        
+    //     new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+    // }
 
-    _showTextPanelAnimation(){
-        new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
-    }
+    // _showTextPanelAnimation(){
+    //     new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
+    // }
 
     hideTextPanel(){
         this._textPanelContainer.alpha = 0;
+    }
+
+    showTextPanel(){
+        this._textPanelContainer.alpha = 1;
     }
     
     _playNextIconAnim(){

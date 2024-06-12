@@ -363,14 +363,15 @@ export class AdvPlayer extends Container {
     }
 
     // 計算等候時間
-    let voice_duration = this._soundManager.voiceDuration;
-    let text_duration = this._textView.typingTotalDuration ?? 0;
-    let duration = Math.max(voice_duration, text_duration);
+    let duration = Math.max(
+      this._soundManager.voiceDuration, 
+      this._textView.typingTotalDuration ?? 0
+    );
 
     // 處理沒有文字 自動跳下一個
     if (phrase.length === 0 || nextorder > 1) {
       if (nextorder > 1) {
-        duration += 800;
+        duration += 1200;
       }
 
       let timeout: any = setTimeout(() => {

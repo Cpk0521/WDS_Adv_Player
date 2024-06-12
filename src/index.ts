@@ -3,8 +3,6 @@ import { getUrlParams } from "./utils/UrlParams";
 import { AdvPlayer } from "./AdvPlayer";
 import { Group } from "tweedle.js";
 
-
-
 function createApp() {
   if (document.getElementById("WDS")) {
     document.getElementById("WDS")!.remove();
@@ -55,13 +53,14 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
+// for testing
 // const spine_test = PIXI.Sprite.from('./110022_3.png');
 // spine_test.alpha = .4
 // app.stage.addChild(spine_test);
 
-// for testing
 // advplayer.loadAndPlay('2000301');
 // advplayer.loadAndPlay('110081');
+// advplayer.loadAndPlay('110111');
 
 if (id) {
   advplayer.loadAndPlay(id);

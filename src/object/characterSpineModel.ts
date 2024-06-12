@@ -14,6 +14,14 @@ export interface characterAnimation {
     eyeMotionName : string,
 }
 
+export interface ILoopMotion {
+    Id: number;
+    TargetCharacterBaseId: string;
+    LoopSpeed: number;
+    Height: number;
+    Size: number; // 1 | 2
+}
+
 export class AdventureAnimationStandCharacter {
 
     protected _model : Spine;
@@ -25,6 +33,7 @@ export class AdventureAnimationStandCharacter {
     protected _breathTrack : TrackEntry | undefined = undefined;
     protected _lipTrack : TrackEntry | undefined = undefined;
     protected _motions : Partial<characterAnimation> = {}
+    protected _loopMotionData: ILoopMotion | undefined
 
     constructor(skeletonData : SkeletonData, spineId : number) {
         this._spineId = spineId;
@@ -32,16 +41,17 @@ export class AdventureAnimationStandCharacter {
         //create spine model
         this._model = new Spine(skeletonData);
         this._model.name = this._charId;
-        let loopMotion = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
+        this._loopMotionData = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
+        this._model.state.timeScale = this._loopMotionData?.LoopSpeed || 1;
         // clac the y position
-        switch(loopMotion?.Size ?? 0){
+        switch(this._loopMotionData?.Size || 2){
             case 1:
                 this._model.scale.set(0.77);
                 this._model.y = 1000;
                 break;
             case 2:
                 this._model.scale.set(0.79);
-                this._model.y = (1080 + ((158 - loopMotion!.Height) * 9)) || 1080;
+                this._model.y = (1080 + ((158 - this._loopMotionData!.Height) * 9)) || 1080;
                 break;
             default:
                 this._model.scale.set(0.79);
@@ -97,7 +107,7 @@ export class AdventureAnimationStandCharacter {
     
     SetAllAnimation(
         characterAnimation : Partial<characterAnimation>,
-        loopMotionSpeed : number = 1,
+        loopMotionSpeed : number = this._loopMotionData?.LoopSpeed || 1,
     ){
         const { 
             bodyAnimationName, 
@@ -131,7 +141,7 @@ export class AdventureAnimationStandCharacter {
 
         if(eyeAnimationName){
             //眨眼 -> 停一會 -> 眨眼  待解決!!!!!!!!!!!!
-            let anim = this._model.state.setAnimation(3, eyeAnimationName, false);//true
+            const eyeblink  = this._model.state.addAnimation(3, eyeAnimationName, false);
         }
 
         if(mouthAnimationName){
@@ -171,8 +181,9 @@ export class AdventureAnimationStandCharacter {
         //要停止呼吸
         if(this._breathTrack){
             this._breathTrack.loop = false;
-            this._breathTrack.timeScale = 0;
+            // this._breathTrack.timeScale = 0;
             this._breathTrack.trackTime = 0;
+            // this._model.state.clearTrack(0);
         }
         this._model.visible = false;
     }
