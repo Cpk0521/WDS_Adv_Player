@@ -15,6 +15,13 @@ export default defineConfig(({ command, mode }) => {
         },
         server: {
             open: './index.html',
-        }
+        },
+        optimizeDeps: {
+            esbuildOptions: {
+                loader: {
+                    ".frag": "text",
+                },
+            },
+        },
     };
 });

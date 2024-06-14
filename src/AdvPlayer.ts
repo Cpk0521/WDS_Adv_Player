@@ -283,7 +283,7 @@ export class AdvPlayer extends Container {
     this.on("pointertap", this._tap, this);
     this._renderFrame();
   }
-
+  
   protected _next() {
     this._currentIndex++;
     return this.currentTrack;

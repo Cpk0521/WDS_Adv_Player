@@ -1,9 +1,10 @@
-import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, BLEND_MODES } from "pixi.js";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Filter } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { StoryTypes } from "../types/Episode";
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
+import fragmentShader from '../shader/circleShader.frag?raw';
 
 export class CoverOpening extends IView {
 
@@ -170,11 +171,21 @@ export class CoverOpening extends IView {
     }
     
     close(){
-        this.visible = false;
-        Ticker.shared.remove(this._BGupdate, this);
-        this._anim_jugon.stop();
-        this._touch_Animation.start();
-        this.destroy(true);
+        // this.visible = false;
+        const shaderFilter = new Filter(undefined, fragmentShader, {
+            uTime: 0,
+            u_resolution: [1920, 1080],
+        })
+        this.filters = [shaderFilter];
+
+        return new Tween(shaderFilter.uniforms).to({ uTime: 1 }, 800).onComplete(()=>{
+            this.filters = [];
+            this.visible = false;
+            Ticker.shared.remove(this._BGupdate, this);
+            this._anim_jugon.stop();
+            this._touch_Animation.stop();
+            this.destroy(true);
+        }).start();
     }
 
     _BGupdate(){
