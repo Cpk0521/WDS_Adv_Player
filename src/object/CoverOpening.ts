@@ -1,12 +1,11 @@
-import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Filter } from "pixi.js";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Filter, Container } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IView } from "../types/View";
 import { StoryTypes } from "../types/Episode";
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
 import fragmentShader from '../shader/circleShader.frag?raw';
 
-export class CoverOpening extends IView {
+export class CoverOpening extends Container{
 
     protected ptn_bg : TilingSprite;
     protected _anim_jugon : AnimatedSprite;
@@ -136,8 +135,12 @@ export class CoverOpening extends IView {
         this._animation = graphicsAnim.chain(...anim_arr);            
     }
 
-    public clear(): void {
-        
+    public addTo<T extends Container>(parent : T, order? : number): this {
+        parent.addChild(this);
+        if(order && parent.sortableChildren){
+            this.zIndex = order;
+        }
+        return this;
     }
 
     static new(){
@@ -154,6 +157,7 @@ export class CoverOpening extends IView {
 
         if(type === StoryTypes.Side){
             //side 
+            this._middle_text.text = `${title}　${order == 1 ? '(前編)' : '(後編)'}`
         }
         
         this._animation.start();
@@ -170,22 +174,28 @@ export class CoverOpening extends IView {
         this._percent_text.text = text;
     }
     
-    close(){
-        // this.visible = false;
+    close(callback? : Function){
         const shaderFilter = new Filter(undefined, fragmentShader, {
             uTime: 0,
             u_resolution: [1920, 1080],
         })
         this.filters = [shaderFilter];
 
-        return new Tween(shaderFilter.uniforms).to({ uTime: 1 }, 800).onComplete(()=>{
-            this.filters = [];
-            this.visible = false;
-            Ticker.shared.remove(this._BGupdate, this);
-            this._anim_jugon.stop();
-            this._touch_Animation.stop();
-            this.destroy(true);
-        }).start();
+        return new Tween(shaderFilter.uniforms)
+            .to({ uTime: 1 }, 600)
+            .onComplete(()=>{
+                shaderFilter.enabled = false; //turn off shader
+                shaderFilter.destroy(); //destroy shader
+                this.visible = false; 
+                Ticker.shared.remove(this._BGupdate, this);
+                this._anim_jugon.stop();
+                this._touch_Animation.stop();
+                this.destroy(true);
+                setTimeout(() => {
+                    callback?.();
+                }, 300);
+            })
+            .start();
     }
 
     _BGupdate(){

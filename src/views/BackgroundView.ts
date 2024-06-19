@@ -64,10 +64,12 @@ export class BackgroundView extends IView implements IViewController {
     BackgroundImageFileFadeType,
     StillPhotoFileName,
     SceneCameraMasterId,
-    FadeValue1,
-    FadeValue2,
-    FadeValue3,
+    FadeValue1 = 0,
+    FadeValue2 = 0,
+    FadeValue3 = 0,
   }: IEpisodeBackground & IEpisodeFade) {
+
+    // 清除上次操作
     if (this._currentCameraEffects && this._cuttentZoom) {
       this._cuttentZoom.stop();
       this._cuttentZoom = undefined;
@@ -78,6 +80,7 @@ export class BackgroundView extends IView implements IViewController {
       this._currentCameraEffects = undefined;
     }
 
+    // 如果沒有就什麼都不做
     if (
       !BackgroundImageFileName &&
       !BackgroundCharacterImageFileName &&
@@ -87,9 +90,10 @@ export class BackgroundView extends IView implements IViewController {
     }
 
     let fadein: Tween<any> | undefined;
-    let newbg: Sprite | undefined = undefined;
+    let newbg: Sprite | undefined;
     // let zoom : Tween<any> | undefined;
-    let zoomtime: number = 0;
+    // let zoomtime: number = 0;
+    let totalDuration : number = 0;
 
     // 如果有 BackgroundImageFileName
     if (BackgroundImageFileName) {
@@ -105,10 +109,10 @@ export class BackgroundView extends IView implements IViewController {
         this._bgMap.set(BackgroundImageFileName, newbg);
       }
 
-      newbg = newbg ?? this._bgMap.get(BackgroundImageFileName);
-      newbg!.zIndex = 1;
-      newbg!.alpha = 0;
-      this.addChild(newbg!);
+      newbg = newbg || this._bgMap.get(BackgroundImageFileName)!;
+      newbg.zIndex = 1;
+      newbg.alpha = 0;
+      this.addChild(newbg);
     }
 
     // 如果有 StillPhotoFileName
@@ -125,10 +129,10 @@ export class BackgroundView extends IView implements IViewController {
         this._bgMap.set(StillPhotoFileName, newbg);
       }
 
-      newbg = newbg ?? this._bgMap.get(StillPhotoFileName);
-      newbg!.zIndex = 1;
-      newbg!.alpha = 0;
-      this.addChild(newbg!);
+      newbg = newbg || this._bgMap.get(StillPhotoFileName)!;
+      newbg.zIndex = 1;
+      newbg.alpha = 0;
+      this.addChild(newbg);
     }
 
     // 如果有 BackgroundCharacterImageFileName
@@ -151,10 +155,10 @@ export class BackgroundView extends IView implements IViewController {
         this._bgMap.set(BackgroundCharacterImageFileName, newbg);
       }
 
-      newbg = newbg ?? this._bgMap.get(BackgroundCharacterImageFileName);
-      newbg!.zIndex = 1;
-      newbg!.alpha = 0;
-      this.addChild(newbg!);
+      newbg = newbg || this._bgMap.get(BackgroundCharacterImageFileName)!;
+      newbg.zIndex = 1;
+      newbg.alpha = 0;
+      this.addChild(newbg);
     }
 
     //Zoom Animataion
@@ -178,41 +182,38 @@ export class BackgroundView extends IView implements IViewController {
         },
         this._currentCameraEffects?.CameraMoveTurnaroundTimeSeconds
       );
-      zoomtime =
-        this._currentCameraEffects?.CameraMoveTurnaroundTimeSeconds ?? 0;
+      totalDuration = this._currentCameraEffects?.CameraMoveTurnaroundTimeSeconds ?? 0;
     }
 
     // Fade Animation
     if (BackgroundImageFileFadeType) {
       switch (BackgroundImageFileFadeType) {
         case FadeTypes.BlackFadeOutFadeIn:
-          fadein = new Tween(this._blackFadePanel).to(
-            { alpha: 1 },
-            FadeValue1! * 1000
-          );
+          fadein = new Tween(this._blackFadePanel)
+            .to( { alpha: 1 }, FadeValue1 * 1000 )
           fadein.chain(
             new Tween(this._blackFadePanel)
-              .to({ alpha: 0 }, FadeValue3! * 1000)
-              .delay(Math.abs(FadeValue2 ?? 0) * 1000 + 800)
+              .delay(FadeValue2 * 1000 + 1200)
+              .to({ alpha: 0 }, FadeValue3 * 1000)
           );
+          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 1200;
           break;
         case FadeTypes.WhiteFadeOutFadeIn:
-          fadein = new Tween(this._whiteFadePanel).to(
-            { alpha: 1 },
-            FadeValue1! * 1000
-          );
+          fadein = new Tween(this._whiteFadePanel)
+            .to({ alpha: 1 }, FadeValue1 * 1000 )
           fadein.chain(
             new Tween(this._whiteFadePanel)
-              .to({ alpha: 0 }, FadeValue3! * 1000)
-              .delay(Math.abs(FadeValue2 ?? 0) * 1000 + 800)
+            .delay(FadeValue2 * 1000 + 1200)
+              .to({ alpha: 0 }, FadeValue3 * 1000)
           );
+          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 1200;
           break;
         case FadeTypes.TimeElapsed:
           fadein = this._jugonFadePanel.FadeIn;
-          zoomtime = 6000;
+          totalDuration = 6000;
           break;
         case FadeTypes.CrossFade:
-          fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1! * 1000);
+          fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000);
           break;
       }
     }
@@ -222,15 +223,16 @@ export class BackgroundView extends IView implements IViewController {
       fadein.start().onStart(() => {
         setTimeout(async () => {
           this._insertBG(newbg, this._cuttentZoom);
-        }, zoomtime > 0 ? zoomtime/2 : (FadeValue1 ?? 0) * 1000 + 200);
+        }, totalDuration > 0 ? totalDuration/2 : (FadeValue1 * 1000));
       });
 
       return new Promise<void>((res, _) => {
         setTimeout(() => {
           res();
-        }, ((FadeValue1 ?? 0) + Math.abs(FadeValue2 ?? 0) + (FadeValue3 ?? 0)) * 1000 + zoomtime + 800);
+        }, totalDuration + 800);
       });
-    } else {
+    } 
+    else {
       this._insertBG(newbg, this._cuttentZoom);
     }
   }
@@ -249,4 +251,5 @@ export class BackgroundView extends IView implements IViewController {
       });
     }
   }
+
 }

@@ -112,8 +112,8 @@ export class TextView extends IView implements IViewController{
         }
 
         if(this._textPanelContainer.alpha === 0){
-            // this._showTextPanelAnimation();
-            this.showTextPanel();
+            this._showTextPanelAnimation();
+            // this.showTextPanel();
         }
         
         //next icon
@@ -149,13 +149,13 @@ export class TextView extends IView implements IViewController{
         }, 50)
     }
 
-    // _hideTextPanelAnimation(){        
-    //     new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
-    // }
+    _hideTextPanelAnimation(){        
+        new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+    }
 
-    // _showTextPanelAnimation(){
-    //     new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
-    // }
+    _showTextPanelAnimation(){
+        new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
+    }
 
     hideTextPanel(){
         this._textPanelContainer.alpha = 0;

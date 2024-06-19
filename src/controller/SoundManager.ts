@@ -70,7 +70,7 @@ export class SoundManager implements IViewController {
       this._currentBgm?.play({
         loop: true,
         singleInstance: true,
-        volume: 0.6,
+        volume: 0.8,
       });
     }
   }

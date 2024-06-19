@@ -172,3 +172,14 @@ export interface IEpisodeTranslate {
     SpeakerName? : string
     Phrase : string
 }
+
+// Episode Title data
+export interface IEpisodeTitle {
+    EpisodeId : number
+    Title : string
+    StoryTitle? : string
+    StoryType : StoryTypes
+    Order : number
+    Prev : number | undefined | null
+    Next : number | undefined | null
+}

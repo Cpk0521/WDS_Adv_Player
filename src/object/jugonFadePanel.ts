@@ -33,7 +33,6 @@ export class JugonFadePanel extends Graphics{
         return new this();
     }
 
-
     get FadeIn(){
         return new Tween(this).to({alpha : 1}, 800).onComplete(()=>{
             this._jugon!.visible = true;

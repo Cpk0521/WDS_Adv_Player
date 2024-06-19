@@ -8,14 +8,14 @@ export class EffectView extends IView implements IViewController{
     protected _sepiaEffectObject : Graphics;
     protected _whiteBlurEffectObject : Graphics;
     protected _blur_filter : BlurFilter;
-    protected _whiteBlurEffectAnimation : Tween<BlurFilter>
+    protected _whiteBlurEffectAnimation : Tween<Record<string, any>>
 
     constructor(){
         super()
 
         //sepia setting 顏色不確定!!!
         this._sepiaEffectObject = new Graphics();
-        this._sepiaEffectObject.beginFill(0xECD543);
+        this._sepiaEffectObject.beginFill(0xECD543); // new Color(0.5568628, 0.380392164, 0.380392164, 1 )
         this._sepiaEffectObject.drawRect(0, 0, 1920, 1080);
         this._sepiaEffectObject.blendMode = BLEND_MODES.MULTIPLY;
         this.addChild(this._sepiaEffectObject);
@@ -27,16 +27,16 @@ export class EffectView extends IView implements IViewController{
         this._whiteBlurEffectObject.lineStyle(90, 0xffffff);
         this._whiteBlurEffectObject.drawRect(0, 0, 1920, 1080);
         this._whiteBlurEffectObject.visible = false;
-        this._blur_filter = new BlurFilter();
-        this._blur_filter.enabled = false;
-        this._whiteBlurEffectObject.filters = [this._blur_filter];
         this.addChild(this._whiteBlurEffectObject)
         
         //blur filter setting
+        this._blur_filter = new BlurFilter();
+        this._whiteBlurEffectObject.filters = [this._blur_filter];
+        this._blur_filter.enabled = false;
         this._blur_filter.blur = 60;
         this._blur_filter.quality = 20;
         
-        this._whiteBlurEffectAnimation = new Tween(this._blur_filter).to({blur : 80}, 2000).yoyo(true).repeat();
+        this._whiteBlurEffectAnimation = new Tween(this._blur_filter.uniforms).to({blur : 80}, 2000).yoyo(true).repeat();
     }
     
     public clear(): void {
@@ -73,6 +73,7 @@ export class EffectView extends IView implements IViewController{
                         // 問就是會lag
                         // this._whiteBlurEffectAnimation.start();
                         // 要用shader 但我不會
+                        // 啊 shader不就是filter...
                     }
                     break
             }

@@ -12,7 +12,7 @@ import { MovieView } from "./views/MovieView";
 import { TextView } from "./views/TextView";
 import { HistoryView } from "./views/HistoryView";
 import { UIView } from "./views/UIView";
-import { CoverOpening } from "./views/CoverOpening";
+import { CoverOpening } from "./object/CoverOpening";
 //manager
 import { SoundManager } from "./controller/SoundManager";
 import { TranslationManager } from "./controller/TranslationManager";
@@ -37,12 +37,12 @@ export class AdvPlayer extends Container {
   protected _movieView: MovieView;
   protected _historyView: HistoryView;
   protected _uiView: UIView;
-  protected _coverView: CoverOpening;
+  protected _coverOpening: CoverOpening;
   //Manager
   protected _soundManager: SoundManager = new SoundManager();
   protected _translationManager: TranslationManager = new TranslationManager();
   //player Info
-  protected _episode!: IEpisodeModel | undefined;
+  protected _episode: IEpisodeModel | undefined;
   protected _currentIndex: number = 0;
   protected _currentGroupOrder: number = 0;
   protected _isAuto: boolean = false;
@@ -76,7 +76,8 @@ export class AdvPlayer extends Container {
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
     this._uiView = new UIView().addTo(this, Layer.UILayer);
-    this._coverView = CoverOpening.new().addTo(this, Layer.CoverLayer);
+    //Cover
+    this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
 
     banner();
   }
@@ -103,6 +104,9 @@ export class AdvPlayer extends Container {
     this._movieView.clear();
     this._historyView.clear();
     this._uiView.clear();
+
+    //re-create the cover
+    this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
   }
 
   public async load(
@@ -136,7 +140,7 @@ export class AdvPlayer extends Container {
       }
 
       this._episode = source as IEpisodeModel;
-      this._coverView.init(
+      this._coverOpening.init(
         this._episode.StoryType,
         this._episode.Title,
         this._episode.Order
@@ -243,7 +247,7 @@ export class AdvPlayer extends Container {
     return Assets.loadBundle(
       `${this._episode!.EpisodeId}_bundle`,
       (percentage) => {
-        this._coverView.start(Math.floor(percentage * 100));
+        this._coverOpening.start(Math.floor(percentage * 100));
       }
     );
   }
@@ -261,11 +265,16 @@ export class AdvPlayer extends Container {
     }
     this._loadPromise = void 0;
     //cover
-    this._coverView.once("pointertap", this._play, this);
+    this._coverOpening.once("pointertap", this._play, this);
   }
 
   protected _play() {
-    this._coverView.close();
+    this._coverOpening.close(()=>{
+      //set click event
+      this.on("pointertap", this._tap, this);
+      this._renderFrame();
+    });
+
     //ui view
     this._uiView.alpha = 1;
     this._uiView.AutoBtn.addclickFun(() => {
@@ -279,14 +288,18 @@ export class AdvPlayer extends Container {
         });
       }
     });
-    //click
-    this.on("pointertap", this._tap, this);
-    this._renderFrame();
+
+    this._preRenderFrame();
   }
   
   protected _next() {
     this._currentIndex++;
     return this.currentTrack;
+  }
+
+  protected async _preRenderFrame(){
+    if(this._currentIndex != 0 || !this.currentTrack) return;
+    this._backgroundView.execute(this.currentTrack);
   }
 
   protected async _renderFrame() {
@@ -317,14 +330,15 @@ export class AdvPlayer extends Container {
     this._effectView.hideEffect(this.currentTrack);
 
     //背景處理
-    let bg_process = this._backgroundView.execute(this.currentTrack);
-    let phrase = this.currentTrack.Phrase;
-    if (bg_process) {
-      this._characterView.hideCharacter(); //隱藏在場上的角色
-      this._textView.hideTextPanel(); //
-      this._processing.push(bg_process);
-      await bg_process;
-    }
+    if(index > 0){
+      let bg_process = this._backgroundView.execute(this.currentTrack);
+      if (bg_process) {
+        this._characterView.hideCharacter(); //隱藏在場上的角色
+        this._textView.hideTextPanel(); //
+        this._processing.push(bg_process);
+        await bg_process;
+      }
+    };
 
     //影片處理
     let movie_process = this._movieView.execute(this.currentTrack);
@@ -340,6 +354,7 @@ export class AdvPlayer extends Container {
     //spine處理
     this._characterView.execute(this.currentTrack);
     //對話處理
+    let phrase = this.currentTrack.Phrase;
     let nextorder = this.nextTrack?.Order ?? 1;
     this._textView.allowNextIconDisplay = nextorder;
     this._textView.execute(this.currentTrack);
