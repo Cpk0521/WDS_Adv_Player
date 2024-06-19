@@ -17,7 +17,7 @@ export class SoundManager implements IViewController {
 
   constructor() {
     sound.disableAutoPause = true;
-    sound.volumeAll = 0.1;
+    sound.volumeAll = 0.5;
   }
 
   public reset() {
@@ -70,7 +70,7 @@ export class SoundManager implements IViewController {
       this._currentBgm?.play({
         loop: true,
         singleInstance: true,
-        volume: 0.8,
+        volume: 0.4,
       });
     }
   }

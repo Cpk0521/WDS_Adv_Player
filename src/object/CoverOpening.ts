@@ -156,8 +156,9 @@ export class CoverOpening extends Container{
         }
 
         if(type === StoryTypes.Side){
-            //side 
-            this._middle_text.text = `${title}　${order == 1 ? '(前編)' : '(後編)'}`
+            //side`
+            this._top_text.text = `サイドストーリー${order == 1 ? '(前編)' : '(後編)'}`;
+            this._middle_text.text = `${title}`
         }
         
         this._animation.start();
@@ -191,9 +192,7 @@ export class CoverOpening extends Container{
                 this._anim_jugon.stop();
                 this._touch_Animation.stop();
                 this.destroy(true);
-                setTimeout(() => {
-                    callback?.();
-                }, 300);
+                callback?.();
             })
             .start();
     }

@@ -1,25 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="https://world-dai-star.com/MeNeEcJP/wp-content/themes/wds/assets/images/favicon/icon-192x192.png">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <title>WDS Adv Player | World dai star</title>
-    <style>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png"
+    href="https://world-dai-star.com/MeNeEcJP/wp-content/themes/wds/assets/images/favicon/icon-192x192.png">
+  <meta name="viewport"
+    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <title>WDS Adv Player | World dai star</title>
+  <style>
     * {
-        margin: 0!important;
-        padding: 0!important;
+      margin: 0 !important;
+      padding: 0 !important;
     }
 
-    canvas {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
+    #WDS {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
     }
-    </style>
-  </head>
-  <body>
-    <script type="module" src="/src/index.ts"></script>
-  </body>
+  </style>
+</head>
+
+<body>
+  <!-- <script> javascript: (function () {
+      var script = document.createElement('script'); 
+      script.onload = function () {
+        var stats = new Stats(); 
+        document.body.appendChild(stats.dom); 
+        requestAnimationFrame(function loop() { 
+          stats.update(); 
+          requestAnimationFrame(loop);
+        });
+      }; 
+      script.src = 'https://mrdoob.github.io/stats.js/build/stats.min.js'; 
+      document.head.appendChild(script);
+    })()
+  </script> -->
+  <script type="module" src="/src/index.ts"></script>
+</body>
+
 </html>

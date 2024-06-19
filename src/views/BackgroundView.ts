@@ -91,8 +91,6 @@ export class BackgroundView extends IView implements IViewController {
 
     let fadein: Tween<any> | undefined;
     let newbg: Sprite | undefined;
-    // let zoom : Tween<any> | undefined;
-    // let zoomtime: number = 0;
     let totalDuration : number = 0;
 
     // 如果有 BackgroundImageFileName

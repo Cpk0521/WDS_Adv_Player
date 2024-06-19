@@ -271,8 +271,10 @@ export class AdvPlayer extends Container {
   protected _play() {
     this._coverOpening.close(()=>{
       //set click event
-      this.on("pointertap", this._tap, this);
-      this._renderFrame();
+      setTimeout(() => {
+        this.on("pointertap", this._tap, this);
+        this._renderFrame();
+      }, 300)
     });
 
     //ui view
