@@ -10,24 +10,25 @@ import { CharacterView } from "./views/CharacterView";
 import { EffectView } from "./views/EffectView";
 import { MovieView } from "./views/MovieView";
 import { TextView } from "./views/TextView";
+import { FadeView } from "./views/FadeView";
 import { HistoryView } from "./views/HistoryView";
 import { UIView } from "./views/UIView";
+//
 import { CoverOpening } from "./object/CoverOpening";
 //manager
-import { SoundManager } from "./controller/SoundManager";
-import { TranslationManager } from "./controller/TranslationManager";
+import { SoundController } from "./controller/soundController";
+import { TranslationController } from "./controller/translationController";
 //constant
 import { advConstant, baseAssets, Layer } from "./constant/advConstant";
 //utils
 import { checkImplements, isURL } from "./utils/check";
-import createEmptySprite from "./utils/emptySprite";
-import loadJson from "./utils/loadJson";
-import resPath from "./utils/resPath";
+import { createEmptySprite } from "./utils/emptySprite";
+import { resPath } from "./utils/resPath";
+import { loadJson, loadResourcesFromEpisode } from './utils/loadResources'
 import { banner, TrackLog } from "./utils/logger";
 
 export class AdvPlayer extends Container {
   //init
-  // protected _isinited : boolean = false;
   protected _loadPromise: Promise<any> | undefined;
   //View
   protected _backgroundView: BackgroundView;
@@ -35,13 +36,14 @@ export class AdvPlayer extends Container {
   protected _effectView: EffectView;
   protected _textView: TextView;
   protected _movieView: MovieView;
+  // protected _fadeview : FadeView;
   protected _historyView: HistoryView;
   protected _uiView: UIView;
   protected _coverOpening: CoverOpening;
-  //Manager
-  protected _soundManager: SoundManager = new SoundManager();
-  protected _translationManager: TranslationManager = new TranslationManager();
-  //player Info
+  // Controller
+  protected _soundController: SoundController = new SoundController();
+  protected _translationController: TranslationController = new TranslationController();
+  //episode Info
   protected _episode: IEpisodeModel | undefined;
   protected _currentIndex: number = 0;
   protected _currentGroupOrder: number = 0;
@@ -62,23 +64,32 @@ export class AdvPlayer extends Container {
     //register the tweedle timer to pixi ticker
     // Ticker.shared.add(() => Group.shared.update());
 
-    //player setting
+    //advPlayer setting
     this.addChild(createEmptySprite({ color: 0x00dd00 }));
     this.sortableChildren = true;
     this.eventMode = "static";
     document.addEventListener("visibilitychange", this._onBlur.bind(this));
 
+    //CanvasGroup
+    let effectCanvasGroup = new Container();
+    this.addChild(effectCanvasGroup);
+
     //views
-    this._backgroundView = new BackgroundView().addTo(this,Layer.BackgroundLayer);
-    this._characterView = new CharacterView().addTo(this, Layer.CharacterLayer);
-    this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
-    this._textView = new TextView().addTo(this, Layer.TextLayer);
-    this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
-    this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
     this._uiView = new UIView().addTo(this, Layer.UILayer);
+    this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
+    // this._fadeview = new FadeView().addTo(this, Layer.FadeLayer);
+    this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
+    this._textView = new TextView().addTo(this, Layer.TextLayer);
+    this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
+    this._characterView = new CharacterView().addTo(effectCanvasGroup, Layer.CharacterLayer);
+    this._backgroundView = new BackgroundView().addTo(effectCanvasGroup, Layer.BackgroundLayer);
+
     //Cover
     this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
 
+    //Controller
+    
+    //log
     banner();
   }
 
@@ -102,6 +113,7 @@ export class AdvPlayer extends Container {
     this._effectView.clear();
     this._textView.clear();
     this._movieView.clear();
+    // this._fadeView.clear();
     this._historyView.clear();
     this._uiView.clear();
 
@@ -124,7 +136,7 @@ export class AdvPlayer extends Container {
       }
 
       if (translate) {
-        this._translationManager.load(translate);
+        this._translationController.load(translate);
       }
 
       if (!checkImplements<IEpisodeModel>(source)) {
@@ -145,10 +157,13 @@ export class AdvPlayer extends Container {
         this._episode.Title,
         this._episode.Order
       );
-      await this._loadResourcesFromEpisode(source);
+      await loadResourcesFromEpisode(source, this._isVoice, (percentage) => {
+        this._coverOpening.start(Math.floor(percentage * 100));
+      })
 
       res(this._episode);
-    }));
+      
+    }).catch(e => this._coverOpening.throwError(e)));
   }
 
   public loadAndPlay(
@@ -156,100 +171,6 @@ export class AdvPlayer extends Container {
     translate?: IEpisodeTranslate[]
   ) {
     this.load(source, translate).then(() => this._onready());
-  }
-
-  protected async _loadResourcesFromEpisode(episodeTrack: IEpisodeModel) {
-    const resources = {} as Record<string, string>;
-
-    const bgmlist = await loadJson<string[]>(resPath.bgmMaster);
-    const selist = await loadJson<string[]>(resPath.seMaster);
-
-    episodeTrack.EpisodeDetail.forEach((unit) => {
-      //Backgorund
-      if (unit.BackgroundImageFileName) {
-        if (!resources[`bg_${unit.BackgroundImageFileName}`]) {
-          resources[`bg_${unit.BackgroundImageFileName}`] = resPath.background(
-            unit.BackgroundImageFileName
-          );
-        }
-      }
-
-      //CharacterImages
-      if (unit.BackgroundCharacterImageFileName) {
-        if (!resources[`card_${unit.BackgroundCharacterImageFileName}`]) {
-          resources[`card_${unit.BackgroundCharacterImageFileName}`] =
-            resPath.cards(unit.BackgroundCharacterImageFileName);
-        }
-      }
-
-      //still
-      if (unit.StillPhotoFileName) {
-        if (!resources[`still_${unit.StillPhotoFileName}`]) {
-          resources[`still_${unit.StillPhotoFileName}`] = resPath.still(
-            unit.StillPhotoFileName
-          );
-        }
-      }
-
-      //movie
-      if (unit.MovieFileName) {
-        if (!resources[`movie_${unit.MovieFileName}`]) {
-          resources[`movie_${unit.MovieFileName}`] = resPath.movie(
-            unit.MovieFileName
-          );
-        }
-      }
-
-      //bgm
-      if (unit.BgmFileName) {
-        if (
-          bgmlist.includes(unit.BgmFileName) &&
-          unit.BgmFileName != "999" &&
-          !resources[`bgm_${unit.BgmFileName}`]
-        ) {
-          resources[`bgm_${unit.BgmFileName}`] = resPath.bgm(unit.BgmFileName);
-        }
-      }
-
-      //Se
-      if (unit.SeFileName) {
-        if (
-          selist.includes(unit.SeFileName) &&
-          !resources[`se_${unit.SeFileName}`]
-        ) {
-          resources[`se_${unit.SeFileName}`] = resPath.se(unit.SeFileName);
-        }
-      }
-
-      //spine
-      unit.CharacterMotions.forEach((motion) => {
-        if (motion.SpineId != 0 && !resources[`spine_${motion.SpineId}`]) {
-          resources[`spine_${motion.SpineId}`] = resPath.spine(motion.SpineId);
-        }
-      });
-    });
-
-    //voice
-    this._soundManager.isVoice = this._isVoice;
-    if (this._isVoice) {
-      let voicemanifest = await loadJson<string[]>(
-        resPath.manifest(episodeTrack.EpisodeId)
-      );
-      voicemanifest.forEach((VoiceFileName) => {
-        resources[`voice_${VoiceFileName}`] = resPath.voice(
-          episodeTrack.EpisodeId,
-          VoiceFileName
-        );
-      });
-    }
-
-    Assets.addBundle(`${this._episode!.EpisodeId}_bundle`, resources);
-    return Assets.loadBundle(
-      `${this._episode!.EpisodeId}_bundle`,
-      (percentage) => {
-        this._coverOpening.start(Math.floor(percentage * 100));
-      }
-    );
   }
 
   public play() {
@@ -316,8 +237,8 @@ export class AdvPlayer extends Container {
 
     TrackLog(index, this.Track!.length, this.currentTrack);
 
-    if (this._translationManager.isTranslate) {
-      let tl = this._translationManager.getTranslate(this.currentTrack.Id);
+    if (this._translationController.isTranslate) {
+      let tl = this._translationController.getTranslate(this.currentTrack.Id);
       if (tl) {
         this.currentTrack.Phrase = tl.Phrase;
         this.currentTrack.SpeakerName = tl.SpeakerName;
@@ -328,7 +249,7 @@ export class AdvPlayer extends Container {
     this._historyView.execute(this.currentTrack);
 
     // 隱藏上輪的
-    this._soundManager.stopPrevSound();
+    this._soundController.stopPrevSound();
     this._effectView.hideEffect(this.currentTrack);
 
     //背景處理
@@ -362,11 +283,11 @@ export class AdvPlayer extends Container {
     this._textView.execute(this.currentTrack);
 
     //當播完聲音後 停止spine的口部動作
-    this._soundManager.onVoiceEnd.push(() =>
-      this._characterView.offAllLipSync()
-    );
+    this._soundController.onVoiceEnd = () => {
+      this._characterView.offAllLipSync();
+    }
     //聲音處理
-    this._soundManager.execute(this.currentTrack);
+    this._soundController.execute(this.currentTrack);
 
     //準備下一個unit
     this._next();
@@ -381,7 +302,7 @@ export class AdvPlayer extends Container {
 
     // 計算等候時間
     let duration = Math.max(
-      this._soundManager.voiceDuration, 
+      this._soundController.voiceDuration, 
       this._textView.typingTotalDuration ?? 0
     );
 
@@ -470,5 +391,10 @@ export class AdvPlayer extends Container {
 
   get isVoice() {
     return this._isVoice;
+  }
+
+  set isVoice(bool : boolean){
+    this._isVoice = bool;
+    this._soundController.isVoice = this._isVoice;
   }
 }

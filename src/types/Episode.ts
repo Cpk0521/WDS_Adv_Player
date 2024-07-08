@@ -54,7 +54,7 @@ export interface IEpisodeEffect {
 }
 
 export interface IEpisodeText {
-    Order : number
+    Order : NextOrderType
     GroupOrder : number
     SpeakerName? : string
     Phrase : string
@@ -110,6 +110,11 @@ export enum StoryTypes
 	Event,
 	Side,
 	Character
+}
+
+export enum NextOrderType{
+    Order = 1,
+    GroupOrder
 }
 
 export enum FadeTypes

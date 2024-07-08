@@ -1,6 +1,6 @@
 import { baseAssetsUrl } from "../constant/advConstant"
 
-const resPath = {
+export const resPath = {
     bgmMaster : `${baseAssetsUrl}/BGMMasterlist.json`, 
     seMaster : `${baseAssetsUrl}/SEMasterlist.json`, 
     advJson : (epId : number | string) => `${baseAssetsUrl}/episode/${epId}.json`,

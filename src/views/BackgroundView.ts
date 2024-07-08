@@ -1,10 +1,10 @@
 import { Sprite, Assets } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IViewController, IView } from "../types/View";
+import { IView } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
 import createEmptySprite from "../utils/emptySprite";
-import { JugonFadePanel } from "../object/jugonFadePanel";
+import { AdvTimeElapsedAnimation } from "../object/advTimeElapsedAnimation";
 
 type CameraEffect = {
   Id: number;
@@ -17,13 +17,13 @@ type CameraEffect = {
   CameraMoveTurnaroundTimeSeconds: number;
 };
 
-export class BackgroundView extends IView implements IViewController {
+export class BackgroundView extends IView {
   protected readonly _whiteFadePanel: Sprite = createEmptySprite({ alpha: 0 });
   protected readonly _blackFadePanel: Sprite = createEmptySprite({
     color: 0x000000,
     alpha: 0,
   });
-  protected readonly _jugonFadePanel: JugonFadePanel = JugonFadePanel.create();
+  protected readonly _advTimeElapsedAnimation: AdvTimeElapsedAnimation = AdvTimeElapsedAnimation.create();
   protected readonly _bgMap: Map<string, Sprite> = new Map();
   protected readonly _SceneCameraEffects = SceneCameraList;
   protected _currentBG: Sprite | undefined;
@@ -42,8 +42,8 @@ export class BackgroundView extends IView implements IViewController {
     this._blackFadePanel.zIndex = 5;
     this.addChild(this._blackFadePanel);
 
-    this._jugonFadePanel.zIndex = 5;
-    this.addChild(this._jugonFadePanel);
+    this._advTimeElapsedAnimation.zIndex = 5;
+    this.addChild(this._advTimeElapsedAnimation);
   }
 
   static new() {
@@ -54,7 +54,7 @@ export class BackgroundView extends IView implements IViewController {
     this._bgMap.clear();
     this._whiteFadePanel.alpha = 0;
     this._blackFadePanel.alpha = 0;
-    this._jugonFadePanel.alpha = 0;
+    this._advTimeElapsedAnimation.alpha = 0;
     this._currentBG && this.removeChild(this._currentBG);
   }
 
@@ -84,7 +84,8 @@ export class BackgroundView extends IView implements IViewController {
     if (
       !BackgroundImageFileName &&
       !BackgroundCharacterImageFileName &&
-      !StillPhotoFileName
+      !StillPhotoFileName &&
+      !BackgroundImageFileFadeType
     ) {
       return;
     }
@@ -150,11 +151,11 @@ export class BackgroundView extends IView implements IViewController {
         newbg.anchor.set(0.5);
         newbg.scale.set(1.17);
         newbg.position.set(1920 / 2, 1080 / 2);
+        newbg.zIndex = 1;
         this._bgMap.set(BackgroundCharacterImageFileName, newbg);
       }
 
       newbg = newbg || this._bgMap.get(BackgroundCharacterImageFileName)!;
-      newbg.zIndex = 1;
       newbg.alpha = 0;
       this.addChild(newbg);
     }
@@ -189,26 +190,26 @@ export class BackgroundView extends IView implements IViewController {
         case FadeTypes.BlackFadeOutFadeIn:
           fadein = new Tween(this._blackFadePanel)
             .to( { alpha: 1 }, FadeValue1 * 1000 )
-          fadein.chain(
-            new Tween(this._blackFadePanel)
-              .delay(FadeValue2 * 1000 + 1200)
-              .to({ alpha: 0 }, FadeValue3 * 1000)
-          );
-          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 1200;
+            .chain(
+              new Tween(this._blackFadePanel)
+                .delay(FadeValue2 * 1000 + 1200)
+                .to({ alpha: 0 }, FadeValue3 * 1000)
+            )
+          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
           break;
         case FadeTypes.WhiteFadeOutFadeIn:
           fadein = new Tween(this._whiteFadePanel)
             .to({ alpha: 1 }, FadeValue1 * 1000 )
-          fadein.chain(
-            new Tween(this._whiteFadePanel)
-            .delay(FadeValue2 * 1000 + 1200)
-              .to({ alpha: 0 }, FadeValue3 * 1000)
-          );
-          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 1200;
+            .chain(
+              new Tween(this._whiteFadePanel)
+                .delay(FadeValue2 * 1000 + 1200)
+                .to({ alpha: 0 }, FadeValue3 * 1000)
+            );
+          totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
           break;
         case FadeTypes.TimeElapsed:
-          fadein = this._jugonFadePanel.FadeIn;
-          totalDuration = 6000;
+          fadein = this._advTimeElapsedAnimation.FadeIn;
+          totalDuration = this._advTimeElapsedAnimation.totalDuration + 200;
           break;
         case FadeTypes.CrossFade:
           fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000);
@@ -221,32 +222,33 @@ export class BackgroundView extends IView implements IViewController {
       fadein.start().onStart(() => {
         setTimeout(async () => {
           this._insertBG(newbg, this._cuttentZoom);
-        }, totalDuration > 0 ? totalDuration/2 : (FadeValue1 * 1000));
+        }, totalDuration > 0 ? totalDuration/2.5 : (FadeValue1 * 1000));
       });
 
       return new Promise<void>((res, _) => {
         setTimeout(() => {
           res();
-        }, totalDuration + 800);
+        }, totalDuration);
       });
     } 
     else {
       this._insertBG(newbg, this._cuttentZoom);
+      return ;
     }
   }
 
   _insertBG(newbg?: Sprite, zoom?: Tween<any>) {
+    if (zoom) {
+      zoom.start().onComplete(() => {
+        this._cuttentZoom = undefined;
+        this._currentCameraEffects = undefined;
+      });
+    }
+
     if (newbg) {
       newbg.alpha = 1;
       this._currentBG && this.removeChild(this._currentBG);
       this._currentBG = newbg;
-    }
-
-    if (zoom) {
-      this._cuttentZoom?.start().onComplete(() => {
-        this._cuttentZoom = undefined;
-        this._currentCameraEffects = undefined;
-      });
     }
   }
 

@@ -11,6 +11,7 @@ export class CoverOpening extends Container{
     protected _anim_jugon : AnimatedSprite;
     protected _animation : Tween<any>;
     protected _touch_Animation : Tween<any>;
+    protected _locked : boolean = false;
     //text
     protected _top_text : Text;
     protected _middle_text : Text;
@@ -165,6 +166,7 @@ export class CoverOpening extends Container{
     }
 
     start(percent : number){
+        if(this._locked) return;
         const text = `${percent} %`
         if(percent === 100){
             this._percent_text.alpha = 0;
@@ -173,6 +175,12 @@ export class CoverOpening extends Container{
         }
         
         this._percent_text.text = text;
+    }
+
+    throwError(error? : any){
+        this._locked = true;
+        this._percent_text.tint = 0xFF0000;
+        this._percent_text.text =  `ERROR`;
     }
     
     close(callback? : Function){

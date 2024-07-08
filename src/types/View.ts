@@ -1,9 +1,4 @@
 import { Container } from "@pixi/display"
-import { IEpisodeDetail } from "./Episode";
-
-export interface IViewController {
-    execute<T extends IEpisodeDetail>(detail : T): any
-}
 
 export abstract class IView extends Container{
     
@@ -23,6 +18,6 @@ export abstract class IView extends Container{
         this.visible = false;
     }
     
-    public abstract clear(): void
+    public clear(): void {}
 }
 

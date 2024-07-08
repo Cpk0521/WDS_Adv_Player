@@ -1,15 +1,15 @@
 import { Assets } from "@pixi/assets";
 import { IMediaInstance, sound, Sound } from "@pixi/sound";
+import { Tween } from "tweedle.js";
 import { IEpisodeSound } from "../types/Episode";
-import { IViewController } from "../types/View";
 
-export class SoundManager implements IViewController {
+export class SoundController {
   protected _isVoice: boolean = true;
   protected _voiceDuration: number = 0;
   protected _currentBgm: Sound | undefined | null = null;
   protected _currentVoice: Sound | undefined | null = null;
   protected _currentSe: Sound | undefined | null = null;
-  protected _onVoiceEnd: Function[] = [];
+  protected _onVoiceEnd: Function | undefined;
 
   static new() {
     return new this();
@@ -36,7 +36,7 @@ export class SoundManager implements IViewController {
       this._currentSe = null;
     }
 
-    this._onVoiceEnd = [];
+    this._onVoiceEnd = undefined;
     this._voiceDuration = 0;
   }
 
@@ -95,8 +95,8 @@ export class SoundManager implements IViewController {
       this._voiceDuration = Math.max(5000, this._voiceDuration);
       let timeout = setTimeout(() => {
         clearTimeout(timeout);
-        [...this._onVoiceEnd].forEach((func) => func());
-        this._onVoiceEnd = [];
+        this._onVoiceEnd?.();
+        this._onVoiceEnd = void 0;
       }, 5000);
       return;
     }
@@ -110,8 +110,8 @@ export class SoundManager implements IViewController {
       );
 
       (instance as IMediaInstance).on("end", () => {
-        [...this._onVoiceEnd].forEach((func) => func());
-        this._onVoiceEnd = [];
+        this._onVoiceEnd?.();
+        this._onVoiceEnd = void 0;
         this._currentVoice = null;
       });
     }
@@ -126,8 +126,12 @@ export class SoundManager implements IViewController {
     return this._voiceDuration;
   }
 
-  get onVoiceEnd() {
+  get onVoiceEnd() : Function | undefined {
     return this._onVoiceEnd;
+  }
+
+  set onVoiceEnd(callback : Function){
+    this._onVoiceEnd = callback;
   }
 
   set isVoice(bool: boolean) {

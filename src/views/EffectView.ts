@@ -1,17 +1,21 @@
-import { Graphics, BLEND_MODES, BlurFilter } from "pixi.js";
+import { Container, Graphics, BLEND_MODES, BlurFilter } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IViewController, IView } from "../types/View";
+import { IView } from "../types/View";
 import { IEpisodeEffect, WindowEffects } from "../types/Episode";
 
-export class EffectView extends IView implements IViewController{
+export class EffectView extends IView {
 
+    protected _canvasGroup : Container | undefined
     protected _sepiaEffectObject : Graphics;
     protected _whiteBlurEffectObject : Graphics;
     protected _blur_filter : BlurFilter;
     protected _whiteBlurEffectAnimation : Tween<Record<string, any>>
 
-    constructor(){
+    constructor(canvasGroup? : Container){
         super()
+
+        // effect用在的地方
+        this._canvasGroup = canvasGroup;
 
         //sepia setting 顏色不確定!!!
         this._sepiaEffectObject = new Graphics();

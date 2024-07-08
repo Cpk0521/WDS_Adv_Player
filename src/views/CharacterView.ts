@@ -1,5 +1,5 @@
 import { Container, Assets } from "pixi.js";
-import { IViewController, IView } from "../types/View";
+import { IView } from "../types/View";
 import { IEpisodeCharacter, IEpisodeDetailCharacterMotion } from "../types/Episode";
 import { characterAnimation, AdventureAnimationStandCharacter } from '../object/characterSpineModel'
 // constant
@@ -15,7 +15,7 @@ interface motionCharacterRecord {
     character : AdventureAnimationStandCharacter | undefined;
 }
 
-export class CharacterView extends IView implements IViewController{
+export class CharacterView extends IView {
     
     //constant
     protected readonly _lipMotionParameters = LipSynParameters;

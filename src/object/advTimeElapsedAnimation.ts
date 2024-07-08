@@ -4,11 +4,12 @@ import '@pixi-spine/loader-uni';
 import { Spine } from '@pixi-spine/runtime-4.1';
 import { baseAssets } from "../constant/advConstant";
 
-export class JugonFadePanel extends Graphics{
+export class AdvTimeElapsedAnimation extends Graphics{
 
     protected _jugon : Spine | undefined;
     protected aplha_filter = new AlphaFilter();
-
+    protected _spineDuratinon = 3400;
+    
     constructor(){
         super();
         this.beginFill(0xffffff);
@@ -17,9 +18,10 @@ export class JugonFadePanel extends Graphics{
 
         Assets.load(baseAssets.jugon_progress).then((asset)=>{
             this._jugon = new Spine(asset.spineData);
-            this.addChild(this._jugon);
-            this._jugon.visible = false;
             this._jugon.scale.set(.25);
+            this._jugon.visible = false;
+            this.addChild(this._jugon);
+
             let jugon_height = this._jugon.getBounds().height;
             this._jugon.position.set(1920 / 2, 1080 / 2 + (jugon_height/2));
             this._jugon.filters = [this.aplha_filter];
@@ -34,21 +36,29 @@ export class JugonFadePanel extends Graphics{
     }
 
     get FadeIn(){
-        return new Tween(this).to({alpha : 1}, 800).onComplete(()=>{
-            this._jugon!.visible = true;
-            this._jugon!.state.setAnimation(0, "animation", false); 
-        })
+        return new Tween(this)
+            .to({alpha : 1}, 400)
+            .onComplete(()=>{
+                this._jugon!.visible = true;
+                this._jugon!.state.setAnimation(0, "animation", false);
+            })
     }
 
     _hide(){
-        let jugonhide =  new Tween(this.aplha_filter).to({alpha : 0}, 800).start();
-        jugonhide.chain(
-            new Tween(this)
-                .to({alpha : 0}, 800)
-                .delay(1200)
+        new Tween(this.aplha_filter)
+            .to({alpha : 0}, 300)
+            .chain(new Tween(this)
+                .to({alpha : 0}, 300)
+                .delay(800)
                 .onComplete(()=>{
                     this._jugon!.visible = false;
                 })
-                .start())
+                .start()
+            )
+            .start();
+    }
+
+    get totalDuration(){
+        return 400 + this._spineDuratinon + 1200;
     }
 }

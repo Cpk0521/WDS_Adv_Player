@@ -1,8 +1,8 @@
 import { Texture, VideoResource, Sprite, Assets } from "pixi.js";
-import { IViewController, IView } from "../types/View";
+import { IView } from "../types/View";
 import { IEpisodeMovie } from "../types/Episode";
 
-export class MovieView extends IView implements IViewController{
+export class MovieView extends IView {
 
     protected _currentMovie : Sprite | undefined
 

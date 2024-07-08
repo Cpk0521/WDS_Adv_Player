@@ -1,10 +1,10 @@
 import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture } from 'pixi.js';
 import { Tween } from 'tweedle.js';
-import { IViewController, IView } from "../types/View";
+import { IView } from "../types/View";
 import { FontSizes, IEpisodeText } from "../types/Episode";
 import { baseAssets, advConstant} from '../constant/advConstant';
 
-export class TextView extends IView implements IViewController{
+export class TextView extends IView {
 
     protected _textPanelContainer = new Container();
     protected _sprakerText : Text;
