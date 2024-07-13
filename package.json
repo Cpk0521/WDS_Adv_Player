@@ -1,6 +1,6 @@
 {
   "name": "wds-adventure-player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A self made event viewer to render events in game",
   "author": "CPK",
   "license": "MIT",
@@ -17,7 +17,7 @@
     "build:vite": "rimraf dist && tsc && vite build",
     "build": "rimraf dist && vite build",
     "preview": "vite preview",
-    "predeploy" : "npm run build && node scripts/patch-gh-dist.js",
+    "predeploy": "npm run build && node scripts/patch-gh-dist.js",
     "deploy": "gh-pages -d dist"
   },
   "devDependencies": {
