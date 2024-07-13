@@ -6,10 +6,11 @@ export interface EmptySpriteoptions {
     alpha : number,
     width : number,
     height : number,
+    empty : boolean,
 }
 
 export function createEmptySprite(options? : Partial<EmptySpriteoptions>){
-    let sprite = new Sprite(Texture.WHITE);
+    let sprite = options?.empty ? new Sprite(Texture.EMPTY) : new Sprite(Texture.WHITE);
     sprite.width = options?.width || 1920;
     sprite.height = options?.height || 1080;
     sprite.anchor.set(0.5);

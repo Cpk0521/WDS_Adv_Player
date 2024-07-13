@@ -1,8 +1,8 @@
 // import { Assets } from '@pixi/assets'
-import { IEpisodeTranslate } from "../types/Episode";
+import { IEpisodeTranslateModel } from "../types/Episode";
 
 export class TranslationController {
-  protected _translate: IEpisodeTranslate[] = [];
+  protected _translate: IEpisodeTranslateModel[] = [];
   protected _isTranslate = false;
 
   load(translate: any) {

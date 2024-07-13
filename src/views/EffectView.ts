@@ -5,20 +5,20 @@ import { IEpisodeEffect, WindowEffects } from "../types/Episode";
 
 export class EffectView extends IView {
 
-    protected _canvasGroup : Container | undefined
+    // protected _canvasGroup : Container | undefined
     protected _sepiaEffectObject : Graphics;
     protected _whiteBlurEffectObject : Graphics;
     protected _blur_filter : BlurFilter;
     protected _whiteBlurEffectAnimation : Tween<Record<string, any>>
 
-    constructor(canvasGroup? : Container){
+    constructor(){
         super()
 
-        // effect用在的地方
-        this._canvasGroup = canvasGroup;
+        this.sortableChildren = true;
 
         //sepia setting 顏色不確定!!!
         this._sepiaEffectObject = new Graphics();
+        this._sepiaEffectObject.zIndex = 20;
         this._sepiaEffectObject.beginFill(0xECD543); // new Color(0.5568628, 0.380392164, 0.380392164, 1 )
         this._sepiaEffectObject.drawRect(0, 0, 1920, 1080);
         this._sepiaEffectObject.blendMode = BLEND_MODES.MULTIPLY;
@@ -28,6 +28,7 @@ export class EffectView extends IView {
 
         //white blur edge effect setting
         this._whiteBlurEffectObject = new Graphics();
+        this._whiteBlurEffectObject.zIndex = 20;
         this._whiteBlurEffectObject.lineStyle(90, 0xffffff);
         this._whiteBlurEffectObject.drawRect(0, 0, 1920, 1080);
         this._whiteBlurEffectObject.visible = false;

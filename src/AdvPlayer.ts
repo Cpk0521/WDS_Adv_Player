@@ -65,14 +65,14 @@ export class AdvPlayer extends Container {
     // Ticker.shared.add(() => Group.shared.update());
 
     //advPlayer setting
-    this.addChild(createEmptySprite({ color: 0x00dd00 }));
+    this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
     this.sortableChildren = true;
     this.eventMode = "static";
     document.addEventListener("visibilitychange", this._onBlur.bind(this));
 
     //CanvasGroup
-    let effectCanvasGroup = new Container();
-    this.addChild(effectCanvasGroup);
+    // let effectCanvasGroup = new Container();
+    // this.addChild(effectCanvasGroup);
 
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
@@ -81,8 +81,8 @@ export class AdvPlayer extends Container {
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
     this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
-    this._characterView = new CharacterView().addTo(effectCanvasGroup, Layer.CharacterLayer);
-    this._backgroundView = new BackgroundView().addTo(effectCanvasGroup, Layer.BackgroundLayer);
+    this._characterView = new CharacterView().addTo(this._effectView, Layer.CharacterLayer);
+    this._backgroundView = new BackgroundView().addTo(this._effectView, Layer.BackgroundLayer);
 
     //Cover
     this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
@@ -131,6 +131,7 @@ export class AdvPlayer extends Container {
           source = resPath.advJson(source);
         }
         source = await loadJson<IEpisodeModel>(source).catch(() => {
+          this._coverOpening.throwError("The episode ID is wrong, please reconfirm.");
           throw new Error("The episode ID is wrong, please reconfirm.");
         });
       }
@@ -140,7 +141,8 @@ export class AdvPlayer extends Container {
       }
 
       if (!checkImplements<IEpisodeModel>(source)) {
-        throw new Error("Episode file format error");
+        this._coverOpening.throwError("Episode file format error.");
+        throw new Error("Episode file format error.");
       }
 
       if (!Assets.cache.has(baseAssets.font)) {
@@ -154,16 +156,17 @@ export class AdvPlayer extends Container {
       this._episode = source as IEpisodeModel;
       this._coverOpening.init(
         this._episode.StoryType,
+        this._episode.Chapter,
         this._episode.Title,
         this._episode.Order
       );
       await loadResourcesFromEpisode(source, this._isVoice, (percentage) => {
         this._coverOpening.start(Math.floor(percentage * 100));
-      })
+      }).catch(() => this._coverOpening.throwError())
 
       res(this._episode);
       
-    }).catch(e => this._coverOpening.throwError(e)));
+    }));
   }
 
   public loadAndPlay(
@@ -230,12 +233,12 @@ export class AdvPlayer extends Container {
     this._trackPromise = void 0;
     // 儲存目前的index
     let index = this._currentIndex;
-    // 如果完結了 或 找不到當前的Track
+    // 完結了 或 找不到當前的Track
     if (!this.currentTrack) {
       return;
     }
 
-    TrackLog(index, this.Track!.length, this.currentTrack);
+    TrackLog(index+1, this.Track!.length, this.currentTrack);
 
     if (this._translationController.isTranslate) {
       let tl = this._translationController.getTranslate(this.currentTrack.Id);
@@ -272,6 +275,14 @@ export class AdvPlayer extends Container {
       await movie_process;
     }
 
+    // Animations 確保不是正在動畫中被按下至下一個unit
+    if (this._processing.length > 0) {
+      await Promise.all(this._processing)
+        .then(() => {
+          this._processing = [];
+        });
+    }
+
     //effect處理
     this._effectView.execute(this.currentTrack);
     //spine處理
@@ -291,14 +302,6 @@ export class AdvPlayer extends Container {
 
     //準備下一個unit
     this._next();
-
-    // Animations 確保不是正在動畫中被按下至下一個unit
-    if (this._processing.length > 0) {
-      await Promise.all(this._processing)
-        .then(() => {
-          this._processing = [];
-        });
-    }
 
     // 計算等候時間
     let duration = Math.max(

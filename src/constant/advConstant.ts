@@ -60,4 +60,5 @@ export const baseAssets = {
 	jugon_progress : './jugon_progress/jugon_progress.skel',
 }
 
-export const baseAssetsUrl = 'https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/'
+// export const baseAssetsUrl = 'https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/'
+export const baseAssetsUrl = 'https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/';

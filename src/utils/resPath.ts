@@ -1,12 +1,12 @@
 import { baseAssetsUrl } from "../constant/advConstant"
 
 export const resPath = {
-    bgmMaster : `${baseAssetsUrl}/BGMMasterlist.json`, 
-    seMaster : `${baseAssetsUrl}/SEMasterlist.json`, 
+    bgmMaster : `${baseAssetsUrl}/manifest/BGM.json`, 
+    seMaster : `${baseAssetsUrl}/manifest/SE.json`, 
     advJson : (epId : number | string) => `${baseAssetsUrl}/episode/${epId}.json`,
     spine : (spineId : number) => `${baseAssetsUrl}/spine/${spineId}.skel`,
     background : (name : string) => `${baseAssetsUrl}/background/${name}.png`,
-    cards : (charId : string) => `${baseAssetsUrl}/cards/${charId}.png`,
+    cards : (charId : string) => `${baseAssetsUrl}/card/${charId}.png`,
     still : (label : string) => `${baseAssetsUrl}/still/${label}.png`,
     movie : (name : string) => `${baseAssetsUrl}/movie/${name}.mp4`,
     manifest : (EpisodeMasterId: number) => `${baseAssetsUrl}/voice/${EpisodeMasterId}/manifest.json`,

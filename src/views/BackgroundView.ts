@@ -84,14 +84,14 @@ export class BackgroundView extends IView {
     if (
       !BackgroundImageFileName &&
       !BackgroundCharacterImageFileName &&
-      !StillPhotoFileName &&
-      !BackgroundImageFileFadeType
+      !StillPhotoFileName 
+      // && !BackgroundImageFileFadeType //2001402問題
     ) {
       return;
     }
 
     let fadein: Tween<any> | undefined;
-    let newbg: Sprite | undefined;
+    let newbg: Sprite | undefined ;
     let totalDuration : number = 0;
 
     // 如果有 BackgroundImageFileName

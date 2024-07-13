@@ -87,7 +87,7 @@ export class CoverOpening extends Container{
             leading: 4,
             letterSpacing: -1,
         });
-        this._percent_text.anchor.set(0.5);
+        this._percent_text.anchor.set(1, 0.5);
 		this._percent_text.position.set(1920 - 120, 1080 - 80);
         this.addChild(this._percent_text);
 
@@ -148,10 +148,10 @@ export class CoverOpening extends Container{
         return new this();
     }
 
-    init(type : StoryTypes, title : string, order : number){
+    init(type : StoryTypes, chapter: string, title : string, order : number){
         //text
         if(type === StoryTypes.Main || type === StoryTypes.Event){
-            this._top_text.text = '';
+            this._top_text.text = chapter;
             this._middle_text.text = `第　${order}　話`;
             this._bottom_text.text = title;
         }
@@ -180,7 +180,7 @@ export class CoverOpening extends Container{
     throwError(error? : any){
         this._locked = true;
         this._percent_text.tint = 0xFF0000;
-        this._percent_text.text =  `ERROR`;
+        this._percent_text.text = error ? `ERROR : ${error}` : 'ERROR';
     }
     
     close(callback? : Function){

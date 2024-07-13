@@ -32,6 +32,7 @@ export interface IEpisodeModel {
     Order : number
     Prev : number | undefined | null
     Next : number | undefined | null
+    Chapter : string
     Title : string
     EpisodeDetail : IEpisodeDetail[]
 }
@@ -46,7 +47,8 @@ export type IEpisodeDetail = {
     IEpisodeFade &
     IEpisodeSound &
     IEpisodeMovie &
-    IEpisodeCharacter
+    IEpisodeCharacter 
+    // & IEpisodeTranslate
 
 export interface IEpisodeEffect {
     Effect? : string
@@ -172,19 +174,24 @@ export enum CharacterPositions
 }
 
 // Episode Translation
-export interface IEpisodeTranslate {
+export interface IEpisodeTranslateModel {
     Id : number
     SpeakerName? : string
     Phrase : string
 }
 
-// Episode Title data
-export interface IEpisodeTitle {
-    EpisodeId : number
-    Title : string
-    StoryTitle? : string
-    StoryType : StoryTypes
-    Order : number
-    Prev : number | undefined | null
-    Next : number | undefined | null
+export interface IEpisodeTranslate {
+    TLSpeakerName? : string
+    TLPhrase? : string
 }
+
+// Episode Title data
+// export interface IEpisodeTitle {
+//     EpisodeId : number
+//     Title : string
+//     Chapter? : string
+//     StoryType : StoryTypes
+//     Order : number
+//     Prev : number | undefined | null
+//     Next : number | undefined | null
+// }

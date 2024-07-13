@@ -58,10 +58,10 @@ advplayer.addTo(app.stage);
 // spine_test.alpha = .4
 // app.stage.addChild(spine_test);
 
-// advplayer.loadAndPlay('2000301');
+advplayer.loadAndPlay('2001402');
 // advplayer.loadAndPlay('110081');
 // advplayer.loadAndPlay('1010101');
-advplayer.loadAndPlay('2003503');
+// advplayer.loadAndPlay('2003503');
 // advplayer.loadAndPlay('1000000');
 // 1010119
 
