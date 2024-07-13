@@ -71,9 +71,9 @@ export class FadeView extends IView {
               fadein = this._advTimeElapsed.FadeIn;
               this._totalDuration = this._advTimeElapsed.totalDuration + 200;
               break;
-            case FadeTypes.CrossFade:
+            // case FadeTypes.CrossFade:
               // fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000);
-              break;
+              // break;
           }
         }
 

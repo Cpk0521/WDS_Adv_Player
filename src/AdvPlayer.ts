@@ -36,7 +36,7 @@ export class AdvPlayer extends Container {
   protected _effectView: EffectView;
   protected _textView: TextView;
   protected _movieView: MovieView;
-  // protected _fadeview : FadeView;
+  protected _fadeview : FadeView;
   protected _historyView: HistoryView;
   protected _uiView: UIView;
   protected _coverOpening: CoverOpening;
@@ -77,7 +77,7 @@ export class AdvPlayer extends Container {
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
     this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
-    // this._fadeview = new FadeView().addTo(this, Layer.FadeLayer);
+    this._fadeview = new FadeView().addTo(this, Layer.FadeLayer);
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
     this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
@@ -198,7 +198,7 @@ export class AdvPlayer extends Container {
       setTimeout(() => {
         this.on("pointertap", this._tap, this);
         this._renderFrame();
-      }, 300)
+      }, 400)
     });
 
     //ui view
@@ -252,30 +252,33 @@ export class AdvPlayer extends Container {
     this._historyView.execute(this.currentTrack);
 
     // 隱藏上輪的
-    this._soundController.stopPrevSound();
+    this._soundController.sound(this.currentTrack);
     this._effectView.hideEffect(this.currentTrack);
+
+    //effect處理
+    this._effectView.execute(this.currentTrack);
 
     //背景處理
     if(index > 0){
       let bg_process = this._backgroundView.execute(this.currentTrack);
       if (bg_process) {
+        this._processing.push(bg_process);
         this._characterView.hideCharacter(); //隱藏在場上的角色
         this._textView.hideTextPanel(); //
-        this._processing.push(bg_process);
-        await bg_process;
+        // await bg_process;
       }
     };
 
     //影片處理
     let movie_process = this._movieView.execute(this.currentTrack);
     if (movie_process) {
+      this._processing.push(movie_process);
       this._characterView.hideCharacter(); //隱藏在場上的角色
       this._textView.hideTextPanel(); //
-      this._processing.push(movie_process);
-      await movie_process;
+      // await movie_process;
     }
 
-    // Animations 確保不是正在動畫中被按下至下一個unit
+    // Animations 確保動畫跑完
     if (this._processing.length > 0) {
       await Promise.all(this._processing)
         .then(() => {
@@ -283,8 +286,6 @@ export class AdvPlayer extends Container {
         });
     }
 
-    //effect處理
-    this._effectView.execute(this.currentTrack);
     //spine處理
     this._characterView.execute(this.currentTrack);
     //對話處理
@@ -294,11 +295,10 @@ export class AdvPlayer extends Container {
     this._textView.execute(this.currentTrack);
 
     //當播完聲音後 停止spine的口部動作
-    this._soundController.onVoiceEnd = () => {
-      this._characterView.offAllLipSync();
-    }
+    this._soundController.onVoiceEnd = () => this._characterView.offAllLipSync();
+  
     //聲音處理
-    this._soundController.execute(this.currentTrack);
+    this._soundController.voice(this.currentTrack);
 
     //準備下一個unit
     this._next();
@@ -315,9 +315,7 @@ export class AdvPlayer extends Container {
         duration += 1200;
       }
 
-      let timeout: any = setTimeout(() => {
-        clearTimeout(timeout);
-        timeout = void 0;
+      setTimeout(() => {
         //確保按下了一次後不會繼續
         if (index + 1 === this._currentIndex) {
           this._renderFrame();

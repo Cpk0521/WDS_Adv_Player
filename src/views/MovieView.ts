@@ -6,8 +6,8 @@ export class MovieView extends IView {
 
     protected _currentMovie : Sprite | undefined
 
-    public execute({ MovieFileName }: IEpisodeMovie) {
-        if(!MovieFileName) return
+    public execute({ MovieFileName }: IEpisodeMovie) {        
+        if(!MovieFileName) return;
 
         let texture = Assets.get(`movie_${MovieFileName}`);
         this._currentMovie = new Sprite(texture);
@@ -17,7 +17,7 @@ export class MovieView extends IView {
         const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
         return controller.play().then(()=>{
             this.removeChild(this._currentMovie!);
-            this.hide()
+            this.hide();
         });
     }
     

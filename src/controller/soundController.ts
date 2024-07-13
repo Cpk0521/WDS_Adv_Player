@@ -40,8 +40,7 @@ export class SoundController {
     this._voiceDuration = 0;
   }
 
-  execute({ BgmFileName, SeFileName, VoiceFileName }: IEpisodeSound) {
-    this._voiceDuration = 0;
+  sound({ BgmFileName, SeFileName }: IEpisodeSound) {
     this.stopPrevSound();
 
     if (BgmFileName) {
@@ -50,7 +49,14 @@ export class SoundController {
 
     if (SeFileName) {
       this._playSe(SeFileName);
+      console.log(SeFileName);
     }
+
+  }
+
+  voice({ VoiceFileName }: IEpisodeSound){
+    this._voiceDuration = 0;
+    this._currentVoice?.stop();
 
     if (VoiceFileName) {
       this._playVoice(VoiceFileName);
@@ -63,6 +69,10 @@ export class SoundController {
       this._currentBgm = null;
       return;
     }
+
+    // if(this._currentBgm){
+    //   //BGM漸出
+    // }
 
     if (Assets.cache.has(`bgm_${FileName}`)) {
       this._currentBgm?.stop();
@@ -91,24 +101,25 @@ export class SoundController {
   }
 
   _playVoice(FileName: string) {
+    //不開聲音
     if (!this._isVoice) {
-      this._voiceDuration = Math.max(5000, this._voiceDuration);
-      let timeout = setTimeout(() => {
-        clearTimeout(timeout);
+      this._voiceDuration = Math.max(3000, this._voiceDuration);
+      setTimeout(() => {
         this._onVoiceEnd?.();
         this._onVoiceEnd = void 0;
       }, 5000);
+
       return;
     }
 
     if (Assets.cache.has(`voice_${FileName}`)) {
       this._currentVoice = Assets.get(`voice_${FileName}`);
-      let instance = this._currentVoice?.play();
       this._voiceDuration = Math.max(
         (this._currentVoice?.duration ?? 0) * 1000,
         this._voiceDuration
       );
 
+      let instance = this._currentVoice?.play();
       (instance as IMediaInstance).on("end", () => {
         this._onVoiceEnd?.();
         this._onVoiceEnd = void 0;
