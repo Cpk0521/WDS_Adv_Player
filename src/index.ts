@@ -60,9 +60,9 @@ advplayer.addTo(app.stage);
 
 // advplayer.loadAndPlay('2001402');
 // advplayer.loadAndPlay('110081');
-// advplayer.loadAndPlay('1010101');
+advplayer.loadAndPlay('1010101');
 // advplayer.loadAndPlay('2003503');
-advplayer.loadAndPlay('2000101');
+// advplayer.loadAndPlay('2000101');
 // 1010119
 
 // if (id) {

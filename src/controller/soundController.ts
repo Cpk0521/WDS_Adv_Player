@@ -49,7 +49,6 @@ export class SoundController {
 
     if (SeFileName) {
       this._playSe(SeFileName);
-      console.log(SeFileName);
     }
 
   }

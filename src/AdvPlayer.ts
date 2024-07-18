@@ -36,7 +36,7 @@ export class AdvPlayer extends Container {
   protected _effectView: EffectView;
   protected _textView: TextView;
   protected _movieView: MovieView;
-  protected _fadeview : FadeView;
+  protected _fadeView : FadeView;
   protected _historyView: HistoryView;
   protected _uiView: UIView;
   protected _coverOpening: CoverOpening;
@@ -70,14 +70,10 @@ export class AdvPlayer extends Container {
     this.eventMode = "static";
     document.addEventListener("visibilitychange", this._onBlur.bind(this));
 
-    //CanvasGroup
-    // let effectCanvasGroup = new Container();
-    // this.addChild(effectCanvasGroup);
-
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
     this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
-    this._fadeview = new FadeView().addTo(this, Layer.FadeLayer);
+    this._fadeView = new FadeView().addTo(this, Layer.FadeLayer);
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
     this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
@@ -86,8 +82,6 @@ export class AdvPlayer extends Container {
 
     //Cover
     this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
-
-    //Controller
     
     //log
     banner();
@@ -113,7 +107,7 @@ export class AdvPlayer extends Container {
     this._effectView.clear();
     this._textView.clear();
     this._movieView.clear();
-    // this._fadeView.clear();
+    this._fadeView.clear();
     this._historyView.clear();
     this._uiView.clear();
 
@@ -255,9 +249,6 @@ export class AdvPlayer extends Container {
     this._soundController.sound(this.currentTrack);
     this._effectView.hideEffect(this.currentTrack);
 
-    //effect處理
-    this._effectView.execute(this.currentTrack);
-
     //背景處理
     if(index > 0){
       let bg_process = this._backgroundView.execute(this.currentTrack);
@@ -277,6 +268,9 @@ export class AdvPlayer extends Container {
       this._textView.hideTextPanel(); //
       // await movie_process;
     }
+
+    //effect處理
+    this._effectView.execute(this.currentTrack);
 
     // Animations 確保動畫跑完
     if (this._processing.length > 0) {

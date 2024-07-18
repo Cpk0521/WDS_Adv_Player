@@ -5,13 +5,13 @@ import LoopMotion from "../constant/LoopMotion";
 
 export interface characterAnimation {
     bodyAnimationName : string,
-    eyebrowAnimationName : string,
-    eyeAnimationName : string,
+    eyebrowAnimationName : string, //EyeBrow
+    eyeMotionName : string, //Eye
+    eyeAnimationName : string, //EyeBlink
     mouthAnimationName : string,
     headAnimationName : string,
     cheekAnimationName : string,
     headMotionName : string,
-    eyeMotionName : string,
 }
 
 export interface ILoopMotion {
@@ -30,8 +30,6 @@ export class AdventureAnimationStandCharacter {
     protected _slotNumber : number = 0;
     protected _characterPosition : CharacterPositions = CharacterPositions.None;
     protected _appearanceType : CharacterAppearanceTypes = CharacterAppearanceTypes.FadeIn
-    protected _breathTrack : TrackEntry | undefined = undefined;
-    protected _lipTrack : TrackEntry | undefined = undefined;
     protected _motions : Partial<characterAnimation> = {}
     protected _loopMotionData: ILoopMotion | undefined
 
@@ -42,7 +40,8 @@ export class AdventureAnimationStandCharacter {
         this._model = new Spine(skeletonData);
         this._model.name = this._charId;
         this._loopMotionData = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
-        this._model.state.timeScale = this._loopMotionData?.LoopSpeed || 1;
+        this._model.state.setAnimation(0, "breath", true);
+        this._model.state.tracks[0].timeScale = this._loopMotionData?.LoopSpeed || 1;
         // clac the y position
         switch(this._loopMotionData?.Size || 2){
             case 1:
@@ -120,32 +119,35 @@ export class AdventureAnimationStandCharacter {
             headMotionName 
         } = characterAnimation
 
-        //重新呼吸
-        this._breathTrack = this._model.state.setAnimation(0, "breath", true);
+        //重新update
+        this._model.autoUpdate = true;
 
         if(bodyAnimationName){    
-            this._model.state.setAnimation(1, bodyAnimationName, false);
+            let entry = this._model.state.setAnimation(1, bodyAnimationName, false);
+            entry.mixDuration = 0.2;
         }
 
-        if(eyebrowAnimationName){
-            if(eyebrowAnimationName !== this._motions.eyebrowAnimationName){
-                const anim = this._model.state.setAnimation(2, eyebrowAnimationName, false);
-                anim.timeScale = 0;
-            }
+        if(eyebrowAnimationName && eyebrowAnimationName !== this._motions.eyebrowAnimationName){
+            const anim = this._model.state.setAnimation(2, eyebrowAnimationName, false);
+            anim.timeScale = 0;
         }
 
         if(eyeMotionName){
             const anim = this._model.state.setAnimation(3, eyeMotionName, false);
             anim.trackTime = 1;
         }
-
+        
         if(eyeAnimationName){
             //眨眼 -> 停一會 -> 眨眼  待解決!!!!!!!!!!!!
-            const eyeblink  = this._model.state.addAnimation(3, eyeAnimationName, false);
+            this._model.state.setAnimation(3, eyeAnimationName, false);
         }
 
+        if(eyeMotionName && !eyeAnimationName){
+            this._model.state.setEmptyAnimation(4);
+        }
+        
         if(mouthAnimationName){
-            this._lipTrack = this._model.state.setAnimation(5, mouthAnimationName, true);
+            this._model.state.setAnimation(5, mouthAnimationName, true);
         }
 
         if(cheekAnimationName){
@@ -164,28 +166,26 @@ export class AdventureAnimationStandCharacter {
     }
 
     onLipSync() : void{
-        if(this._lipTrack){
-            this._lipTrack.loop = true;
+        if(this._model.state.tracks[5]){
+            this._model.state.tracks[5].loop = true
         }
     }
 
     offLipSync() : void{
-        if(this._lipTrack){
-            this._lipTrack.loop = false;
-            this._lipTrack.timeScale = 0;
-            this._lipTrack.trackTime = 0;
-        }
+        this._model.state.setEmptyAnimation(5, 0.3);
     }
 
     hideCharacter(){
-        //要停止呼吸
-        if(this._breathTrack){
-            this._breathTrack.loop = false;
-            // this._breathTrack.timeScale = 0;
-            this._breathTrack.trackTime = 0;
-            // this._model.state.clearTrack(0);
+        //還原bodyAnimation + 要停止update
+        const clearTrack =  this._model.state.setEmptyAnimation(1);
+        clearTrack.listener = {
+            complete: () => {
+                if(this._model.visible){
+                    this._model.visible = false;
+                    this._model.autoUpdate = false;
+                }
+            }
         }
-        this._model.visible = false;
     }
 
     showCharacter(){
