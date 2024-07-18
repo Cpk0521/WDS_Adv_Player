@@ -273,12 +273,12 @@ export class AdvPlayer extends Container {
     this._effectView.execute(this.currentTrack);
 
     // Animations 確保動畫跑完
-    if (this._processing.length > 0) {
-      await Promise.all(this._processing)
-        .then(() => {
-          this._processing = [];
-        });
-    }
+    await Promise.all(this._processing)
+      .then(() => {
+        this._processing = [];
+      });
+    // if (this._processing.length > 0) {
+    // }
 
     //spine處理
     this._characterView.execute(this.currentTrack);

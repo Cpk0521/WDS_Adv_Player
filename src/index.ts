@@ -53,9 +53,21 @@ const app = createApp();
 const advplayer = AdvPlayer.create();
 advplayer.addTo(app.stage);
 
-if (id) {
-  advplayer.loadAndPlay(id);
-} else {
-  let _id = prompt("Please enter the story Id", "1000000");
-  _id && advplayer.loadAndPlay(_id);
-}
+// for testing
+// const spine_test = PIXI.Sprite.from('./110022_3.png');
+// spine_test.alpha = .4
+// app.stage.addChild(spine_test);
+
+// advplayer.loadAndPlay('2001402');
+// advplayer.loadAndPlay('110081');
+// advplayer.loadAndPlay('1010101');
+// advplayer.loadAndPlay('2003503');
+advplayer.loadAndPlay('2000101');
+// 1010119
+
+// if (id) {
+//   advplayer.loadAndPlay(id);
+// } else {
+//   let _id = prompt("Please enter the story Id", "1000000");
+//   _id && advplayer.loadAndPlay(_id);
+// }

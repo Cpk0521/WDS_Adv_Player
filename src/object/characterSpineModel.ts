@@ -2,6 +2,7 @@ import { Container } from "pixi.js";
 import { Spine, SkeletonData, TrackEntry } from '@pixi-spine/runtime-4.1';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
 import LoopMotion from "../constant/LoopMotion";
+import ChangeBodyMotion from "../constant/ChangeBodyMotion";
 
 export interface characterAnimation {
     bodyAnimationName : string,
@@ -32,6 +33,7 @@ export class AdventureAnimationStandCharacter {
     protected _appearanceType : CharacterAppearanceTypes = CharacterAppearanceTypes.FadeIn
     protected _motions : Partial<characterAnimation> = {}
     protected _loopMotionData: ILoopMotion | undefined
+    protected _eyeBlinkTimeout : number | NodeJS.Timeout | undefined;
 
     constructor(skeletonData : SkeletonData, spineId : number) {
         this._spineId = spineId;
@@ -123,8 +125,9 @@ export class AdventureAnimationStandCharacter {
         this._model.autoUpdate = true;
 
         if(bodyAnimationName){    
+            let motion = ChangeBodyMotion.find(({BeforeMotionName, AfterMotionName}) => BeforeMotionName == this._motions.bodyAnimationName && AfterMotionName == bodyAnimationName);
             let entry = this._model.state.setAnimation(1, bodyAnimationName, false);
-            entry.mixDuration = 0.2;
+            entry.mixDuration = motion ? motion.Second : 0;
         }
 
         if(eyebrowAnimationName && eyebrowAnimationName !== this._motions.eyebrowAnimationName){
@@ -138,8 +141,7 @@ export class AdventureAnimationStandCharacter {
         }
         
         if(eyeAnimationName){
-            //眨眼 -> 停一會 -> 眨眼  待解決!!!!!!!!!!!!
-            this._model.state.setAnimation(3, eyeAnimationName, false);
+            this._eyeBlinkAnimation(3, eyeAnimationName, 5);
         }
 
         if(eyeMotionName && !eyeAnimationName){
@@ -162,12 +164,24 @@ export class AdventureAnimationStandCharacter {
             this._model.state.setAnimation(8, headMotionName, false);
         }
 
-        this._motions = characterAnimation
+        this._motions = characterAnimation;
+    }
+
+    _eyeBlinkAnimation(trackIndex: number, animationName: string, time : number = 1){
+        this._model.state.setAnimation(trackIndex, animationName, false);
+
+        this._model.state.tracks[trackIndex].listener = {
+            complete : () => {
+                this._eyeBlinkTimeout = setTimeout(()=>{
+                    this._eyeBlinkAnimation(trackIndex, animationName, time);
+                }, time * 1000)
+            }
+        }
     }
 
     onLipSync() : void{
         if(this._model.state.tracks[5]){
-            this._model.state.tracks[5].loop = true
+            this._model.state.tracks[5].loop = true;
         }
     }
 
@@ -177,6 +191,7 @@ export class AdventureAnimationStandCharacter {
 
     hideCharacter(){
         //還原bodyAnimation + 要停止update
+        clearTimeout(this._eyeBlinkTimeout);
         const clearTrack =  this._model.state.setEmptyAnimation(1);
         clearTrack.listener = {
             complete: () => {
