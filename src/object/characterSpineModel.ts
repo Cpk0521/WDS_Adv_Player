@@ -121,9 +121,6 @@ export class AdventureAnimationStandCharacter {
             headMotionName 
         } = characterAnimation
 
-        //重新update
-        this._model.autoUpdate = true;
-
         if(bodyAnimationName){    
             let motion = ChangeBodyMotion.find(({BeforeMotionName, AfterMotionName}) => BeforeMotionName == this._motions.bodyAnimationName && AfterMotionName == bodyAnimationName);
             let entry = this._model.state.setAnimation(1, bodyAnimationName, false);
@@ -141,7 +138,7 @@ export class AdventureAnimationStandCharacter {
         }
         
         if(eyeAnimationName){
-            this._eyeBlinkAnimation(3, eyeAnimationName, 5);
+            this._eyeBlinkAnimation(4, eyeAnimationName, 3.2);
         }
 
         if(eyeMotionName && !eyeAnimationName){
@@ -169,9 +166,9 @@ export class AdventureAnimationStandCharacter {
 
     _eyeBlinkAnimation(trackIndex: number, animationName: string, time : number = 1){
         this._model.state.setAnimation(trackIndex, animationName, false);
-
         this._model.state.tracks[trackIndex].listener = {
             complete : () => {
+                clearTimeout(this._eyeBlinkTimeout);
                 this._eyeBlinkTimeout = setTimeout(()=>{
                     this._eyeBlinkAnimation(trackIndex, animationName, time);
                 }, time * 1000)
@@ -196,14 +193,15 @@ export class AdventureAnimationStandCharacter {
         clearTrack.listener = {
             complete: () => {
                 if(this._model.visible){
-                    this._model.visible = false;
                     this._model.autoUpdate = false;
+                    this._model.visible = false;
                 }
             }
         }
     }
 
     showCharacter(){
+        this._model.autoUpdate = true;
         this._model.visible = true;
     }
 

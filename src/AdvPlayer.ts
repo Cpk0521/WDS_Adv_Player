@@ -277,8 +277,7 @@ export class AdvPlayer extends Container {
       .then(() => {
         this._processing = [];
       });
-    // if (this._processing.length > 0) {
-    // }
+    
 
     //spine處理
     this._characterView.execute(this.currentTrack);

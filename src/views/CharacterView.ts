@@ -116,8 +116,8 @@ export class CharacterView extends IView {
                 characterAnimation.mouthAnimationName = lipSync?.MotionName;
             }
 
+            model?.showCharacter();
             model?.SetAllAnimation(characterAnimation);
-            model?.showCharacter();            
 
             this._motionCharacters.push({
                 slotNumber : motiondata.slotNumber,

@@ -213,6 +213,7 @@ export class BackgroundView extends IView {
           break;
         case FadeTypes.CrossFade:
           fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000);
+          // totalDuration = FadeValue1 * 1000 + 1000;
           break;
       }
     }
