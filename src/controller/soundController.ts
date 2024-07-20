@@ -41,6 +41,7 @@ export class SoundController {
   }
 
   sound({ BgmFileName, SeFileName }: IEpisodeSound) {
+    this._voiceDuration = 0;
     this.stopPrevSound();
 
     if (BgmFileName) {
@@ -54,7 +55,6 @@ export class SoundController {
   }
 
   voice({ VoiceFileName }: IEpisodeSound){
-    this._voiceDuration = 0;
     this._currentVoice?.stop();
 
     if (VoiceFileName) {

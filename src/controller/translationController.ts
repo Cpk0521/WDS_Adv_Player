@@ -1,8 +1,8 @@
 // import { Assets } from '@pixi/assets'
-import { IEpisodeTranslateModel } from "../types/Episode";
+import { IEpisodeTranslateDetail } from "../types/translation";
 
 export class TranslationController {
-  protected _translate: IEpisodeTranslateModel[] = [];
+  protected _translate: IEpisodeTranslateDetail[] = [];
   protected _isTranslate = false;
 
   load(translate: any) {
@@ -18,3 +18,5 @@ export class TranslationController {
     return this._translate.find((tl) => tl.Id === id);
   }
 }
+
+

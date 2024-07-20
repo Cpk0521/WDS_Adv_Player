@@ -13,7 +13,7 @@ export class FadeView extends IView {
         alpha: 0,
     });
     protected readonly _advTimeElapsed: AdvTimeElapsedAnimation = AdvTimeElapsedAnimation.create();
-    protected _delayTime = 0;
+    // protected _delayTime = 0;
     protected _totalDuration = 0;
 
     constructor(){
@@ -43,40 +43,51 @@ export class FadeView extends IView {
         FadeValue2 = 0,
         FadeValue3 = 0,
     }: IEpisodeFade) {
-        let fadein: Tween<any> | undefined;
+      let fadein: Tween<any> | undefined;
+      
+      if (BackgroundImageFileFadeType) {
+        switch (BackgroundImageFileFadeType) {
 
-        if (BackgroundImageFileFadeType) {
-          switch (BackgroundImageFileFadeType) {
-            case FadeTypes.BlackFadeOutFadeIn:
-              fadein = new Tween(this._blackFadePanel)
-                .to( { alpha: 1 }, FadeValue1 * 1000 )
-                .chain(
-                  new Tween(this._blackFadePanel)
-                    .delay(FadeValue2 * 1000 + 1200)
-                    .to({ alpha: 0 }, FadeValue3 * 1000)
-                )
+          case FadeTypes.BlackFadeOutFadeIn:
+            fadein = new Tween(this._blackFadePanel)
+              .to( { alpha: 1 }, FadeValue1 * 1000 )
+              .chain(
+                new Tween(this._blackFadePanel)
+                  .delay(FadeValue2 * 1000 + 1200)
+                  .to({ alpha: 0 }, FadeValue3 * 1000)
+              )
+            this._totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
+            break;
+
+          case FadeTypes.WhiteFadeOutFadeIn:
+            fadein = new Tween(this._whiteFadePanel)
+              .to({ alpha: 1 }, FadeValue1 * 1000 )
+              .chain(
+                new Tween(this._whiteFadePanel)
+                  .delay(FadeValue2 * 1000 + 1200)
+                  .to({ alpha: 0 }, FadeValue3 * 1000)
+              );
               this._totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
-              break;
-            case FadeTypes.WhiteFadeOutFadeIn:
-              fadein = new Tween(this._whiteFadePanel)
-                .to({ alpha: 1 }, FadeValue1 * 1000 )
-                .chain(
-                  new Tween(this._whiteFadePanel)
-                    .delay(FadeValue2 * 1000 + 1200)
-                    .to({ alpha: 0 }, FadeValue3 * 1000)
-                );
-                this._totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
-              break;
-            case FadeTypes.TimeElapsed:
-              fadein = this._advTimeElapsed.FadeIn;
-              this._totalDuration = this._advTimeElapsed.totalDuration + 200;
-              break;
-            // case FadeTypes.CrossFade:
-              // fadein = new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000);
-              // break;
-          }
-        }
+            break;
 
+          case FadeTypes.TimeElapsed:
+            fadein = this._advTimeElapsed.FadeIn;
+            this._totalDuration = this._advTimeElapsed.totalDuration + 200;
+            break;
+        }
+      }
+
+      if(fadein){
+        fadein.start();
+        return new Promise<void>((res, _)=>{
+          setTimeout(()=>{
+            res();
+          }, this._totalDuration)
+        })
+      }
+      else{
+        return;
+      }
     }
 
 

@@ -173,17 +173,6 @@ export enum CharacterPositions
 	OuterRight//1920/2 + 495 ???
 }
 
-// Episode Translation
-export interface IEpisodeTranslateModel {
-    Id : number
-    SpeakerName? : string
-    Phrase : string
-}
-
-export interface IEpisodeTranslate {
-    TLSpeakerName? : string
-    TLPhrase? : string
-}
 
 // Episode Title data
 // export interface IEpisodeTitle {

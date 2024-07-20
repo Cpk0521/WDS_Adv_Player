@@ -137,6 +137,7 @@ export class AdventureAnimationStandCharacter {
             anim.trackTime = 1;
         }
         
+        clearTimeout(this._eyeBlinkTimeout);
         if(eyeAnimationName){
             this._eyeBlinkAnimation(4, eyeAnimationName, 3.2);
         }
@@ -168,7 +169,6 @@ export class AdventureAnimationStandCharacter {
         this._model.state.setAnimation(trackIndex, animationName, false);
         this._model.state.tracks[trackIndex].listener = {
             complete : () => {
-                clearTimeout(this._eyeBlinkTimeout);
                 this._eyeBlinkTimeout = setTimeout(()=>{
                     this._eyeBlinkAnimation(trackIndex, animationName, time);
                 }, time * 1000)

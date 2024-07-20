@@ -9,9 +9,9 @@ export class TextView extends IView {
     protected _textPanelContainer = new Container();
     protected _sprakerText : Text;
     protected _phrase : Text;
-    protected _nextIcon : Sprite;
-    protected _nextIconAnimtor : Tween<any>;
-    protected _allowNextIconDisplay : boolean = true;
+    protected _nextIcon : Sprite; //小三角形圖標
+    protected _nextIconAnimtor : Tween<any>; //小三角形圖標上下浮動動畫
+    protected _allowNextIconDisplay : boolean = true; 
     protected _typingEffect : number | NodeJS.Timeout | undefined;
     protected _typingTotalDuration : number = 0;
     protected readonly _fontSize = [
@@ -175,8 +175,8 @@ export class TextView extends IView {
         return this._typingTotalDuration;
     }
 
-    set allowNextIconDisplay(order : number){
-        this._allowNextIconDisplay = !(order > 1);
+    set allowNextIconDisplay(bool : boolean){
+        this._allowNextIconDisplay = bool;
     }
 
 }

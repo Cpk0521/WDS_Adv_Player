@@ -3,7 +3,8 @@ import "@pixi-spine/loader-uni";
 import "@pixi/sound";
 // import { Group } from 'tweedle.js';
 //type
-import { IEpisodeModel, IEpisodeTranslate } from "./types/Episode";
+import { IEpisodeModel } from "./types/Episode";
+import { IEpisodeTranslateDetail } from './types/translation'
 //views
 import { BackgroundView } from "./views/BackgroundView";
 import { CharacterView } from "./views/CharacterView";
@@ -117,7 +118,7 @@ export class AdvPlayer extends Container {
 
   public async load(
     source: string | IEpisodeModel,
-    translate?: IEpisodeTranslate[]
+    translate?: IEpisodeTranslateDetail[]
   ) {
     return (this._loadPromise = new Promise<IEpisodeModel>(async (res, _) => {
       if (typeof source === "string") {
@@ -165,7 +166,7 @@ export class AdvPlayer extends Container {
 
   public loadAndPlay(
     source: string | IEpisodeModel,
-    translate?: IEpisodeTranslate[]
+    translate?: IEpisodeTranslateDetail[]
   ) {
     this.load(source, translate).then(() => this._onready());
   }
@@ -249,6 +250,12 @@ export class AdvPlayer extends Container {
     this._soundController.sound(this.currentTrack);
     this._effectView.hideEffect(this.currentTrack);
 
+    let fade_process = this._fadeView.execute(this.currentTrack);
+    if (fade_process) {
+      this._processing.push(fade_process);
+      // await fade_process;
+    }
+
     //背景處理
     if(index > 0){
       let bg_process = this._backgroundView.execute(this.currentTrack);
@@ -260,15 +267,6 @@ export class AdvPlayer extends Container {
       }
     };
 
-    //影片處理
-    let movie_process = this._movieView.execute(this.currentTrack);
-    if (movie_process) {
-      this._processing.push(movie_process);
-      this._characterView.hideCharacter(); //隱藏在場上的角色
-      this._textView.hideTextPanel(); //
-      // await movie_process;
-    }
-
     //effect處理
     this._effectView.execute(this.currentTrack);
 
@@ -277,14 +275,22 @@ export class AdvPlayer extends Container {
       .then(() => {
         this._processing = [];
       });
-    
 
+    //影片處理
+    let movie_process = this._movieView.execute(this.currentTrack);
+    if (movie_process) {
+      // this._processing.push(movie_process);
+      this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._textView.hideTextPanel(); //
+      await movie_process;
+    }
+    
     //spine處理
     this._characterView.execute(this.currentTrack);
     //對話處理
     let phrase = this.currentTrack.Phrase;
-    let nextorder = this.nextTrack?.Order ?? 1;
-    this._textView.allowNextIconDisplay = nextorder;
+    let isSameGroup = this.currentTrack.GroupOrder == this.nextTrack?.GroupOrder;
+    this._textView.allowNextIconDisplay = !isSameGroup; //如果是同組就不顯示小三角形圖標
     this._textView.execute(this.currentTrack);
 
     //當播完聲音後 停止spine的口部動作
@@ -302,9 +308,9 @@ export class AdvPlayer extends Container {
       this._textView.typingTotalDuration ?? 0
     );
 
-    // 處理沒有文字 自動跳下一個
-    if (phrase.length === 0 || nextorder > 1) {
-      if (nextorder > 1) {
+    // 沒有文字或者同組就自動跳下一個
+    if (phrase.length === 0 || isSameGroup) {
+      if (isSameGroup) {
         duration += 1200;
       }
 
@@ -391,4 +397,9 @@ export class AdvPlayer extends Container {
     this._isVoice = bool;
     this._soundController.isVoice = this._isVoice;
   }
+
+  get TranslationController(){
+    return this._translationController;
+  }
+
 }
