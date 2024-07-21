@@ -176,25 +176,33 @@ export class BackgroundView extends IView {
       }
     }
 
-    //執行更換背景    
-    let totalDuration = Math.max(ZoomDuration, FadeDuration*2);
-    if (totalDuration > 0){
-      //什麼時候轉背景
+    //執行更換背景
+    //如果有Fade效果 會等一段時間才更換背景 並等待動畫完成
+    if(FadeDuration > 0){
       setTimeout(()=>{
         this._insertBG(newbg, this._cuttentZoom);
-      }, totalDuration/2);  
-
-      //
+      }, FadeDuration);  
+      
       return new Promise<void>((res, _) => {
         setTimeout(()=>{
           res();
-        }, totalDuration + 400);
+        }, FadeDuration + 250);
       })
     }
-    else{
+    
+    //如果沒有Fade效果 但有zoomEffect 就直接更換背景 並等待動畫完成
+    if(this._cuttentZoom){
       this._insertBG(newbg, this._cuttentZoom);
-      return;
+      return new Promise<void>((res, _) => {
+        setTimeout(()=>{
+          res();
+        }, ZoomDuration);
+      })
     }
+
+    //什麼都沒有 就直接換
+    this._insertBG(newbg, this._cuttentZoom);
+    return;
   }
 
   _insertBG(newbg?: Sprite, zoom?: Tween<any>) {

@@ -183,7 +183,12 @@ export class AdventureAnimationStandCharacter {
     }
 
     offLipSync() : void{
-        this._model.state.setEmptyAnimation(5, 0.3);
+        let lipTrack = this._model.state.tracks[5]
+        if(lipTrack){
+            lipTrack.loop = false;
+            lipTrack.timeScale = 0;
+            lipTrack.trackTime = 0;
+        }
     }
 
     hideCharacter(){

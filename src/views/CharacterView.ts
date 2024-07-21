@@ -58,10 +58,6 @@ export class CharacterView extends IView {
         this.offAllLipSync();
         this._prevCharacters = [...this._motionCharacters];
         this._motionCharacters = [];
-        //find not need model
-        const notneed = this._prevCharacters.filter(prev => !CharacterMotions.find(data => data.slotNumber === prev.slotNumber));
-        notneed.forEach(char => char.character?.hideCharacter());
-        
 
         CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
 
@@ -69,7 +65,11 @@ export class CharacterView extends IView {
 
             //如果SpineId = 0 就直接用上個stage的同樣slotNumber
             if(motiondata.SpineId === 0){
-                model = this._prevCharacters.find((record) => record.slotNumber === motiondata.slotNumber)?.character;
+                let findprev = this._prevCharacters.find((record) => record.slotNumber === motiondata.slotNumber);
+                if(findprev){
+                    model = findprev.character;
+                    motiondata.SpineId = findprev.spineId;
+                }
             }
             else{
                 if(!this._standCharacters.has(`${motiondata.SpineId}`)){
@@ -77,7 +77,6 @@ export class CharacterView extends IView {
                     model.addTo(this);
                     this._standCharacters.set(`${motiondata.SpineId}`, model)
                 }
-                this._prevCharacters.find((record) => record.slotNumber === motiondata.slotNumber)?.character?.hideCharacter();
             }
 
             model = model ?? this._standCharacters.get(`${motiondata.SpineId}`);
@@ -123,16 +122,21 @@ export class CharacterView extends IView {
                 slotNumber : motiondata.slotNumber,
                 spineId : motiondata.SpineId,
                 character : model
-            });
-
+            });    
         })
+
+        //隱藏不需要在場上的
+        let uselessCharacters = this._prevCharacters.filter(prev => !this._motionCharacters.some(data => data.spineId == prev.spineId))
+        uselessCharacters.forEach(record => record.character?.hideCharacter());
 
     }
 
+    //隱藏在場上的
     hideCharacter() : void {
         this._motionCharacters.forEach(record => record.character?.hideCharacter());
     }
 
+    //隱藏所有的
     hideAllCharacter() : void{
         Array.from(this._standCharacters).forEach(([_, char]) => char.hideCharacter())
     }

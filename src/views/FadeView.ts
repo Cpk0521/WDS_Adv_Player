@@ -89,8 +89,6 @@ export class FadeView extends IView {
         return;
       }
     }
-
-
 }
 
 // ------------|--------------------|------------
