@@ -3,8 +3,6 @@ import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
-import createEmptySprite from "../utils/emptySprite";
-import { AdvTimeElapsedAnimation } from "../object/advTimeElapsedAnimation";
 
 type CameraEffect = {
   Id: number;
@@ -93,10 +91,9 @@ export class BackgroundView extends IView {
 
       this._currentCard = card || this._bgMap.get(BackgroundCharacterImageFileName)!;
       this._currentCardLabel = BackgroundCharacterImageFileName;
-      this.addChild(this._currentCard);
+      this.addChild(this._currentCard!);
     }
 
-    let fadein: Tween<any> | undefined;
     let FadeDuration : number = 0;
     let ZoomDuration : number = 0;
     let newbg: Sprite | undefined ;
@@ -168,10 +165,10 @@ export class BackgroundView extends IView {
       switch (BackgroundImageFileFadeType){
         case FadeTypes.CrossFade:
           new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000).start();
-          FadeDuration = FadeValue1 * 1000
+          FadeDuration = FadeValue1 * 1000;
           break;
         default:
-          FadeDuration = 1200;
+          FadeDuration = FadeValue1 * 1000;
           break;
       }
     }

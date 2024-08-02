@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@pixi/sound": "^5.2.1",
+    "csv-to-js-parser": "^2.3.7",
     "pixi-spine": "^4.0.4",
     "pixi.js": "^7.3.2",
     "tweedle.js": "^2.1.0"

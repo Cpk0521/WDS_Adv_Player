@@ -20,7 +20,7 @@ import { CoverOpening } from "./object/CoverOpening";
 import { SoundController } from "./controller/soundController";
 import { TranslationController } from "./controller/translationController";
 //constant
-import { advConstant, baseAssets, Layer } from "./constant/advConstant";
+import { baseAssets, Layer, TLFonts } from "./constant/advConstant";
 //utils
 import { checkImplements, isURL } from "./utils/check";
 import { createEmptySprite } from "./utils/emptySprite";
@@ -50,6 +50,7 @@ export class AdvPlayer extends Container {
   protected _currentGroupOrder: number = 0;
   protected _isAuto: boolean = false;
   protected _isVoice: boolean = true;
+  protected _isTranslate: boolean = true;
   protected _isAdventureEnded: boolean = false;
   protected _processing: Promise<any>[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
@@ -118,7 +119,7 @@ export class AdvPlayer extends Container {
 
   public async load(
     source: string | IEpisodeModel,
-    translate?: IEpisodeTranslateDetail[]
+    translate?: string
   ) {
     return (this._loadPromise = new Promise<IEpisodeModel>(async (res, _) => {
       if (typeof source === "string") {
@@ -126,13 +127,22 @@ export class AdvPlayer extends Container {
           source = resPath.advJson(source);
         }
         source = await loadJson<IEpisodeModel>(source).catch(() => {
-          this._coverOpening.throwError("The episode ID is wrong, please reconfirm.");
-          throw new Error("The episode ID is wrong, please reconfirm.");
+          this._coverOpening.throwError("The episode ID or URL is not correct, please re-confirm.");
+          throw new Error("The episode ID or URL is not correct, please re-confirm.");
         });
       }
 
       if (translate) {
-        this._translationController.load(translate);
+        await this._translationController.load({
+          EpId : source.EpisodeId,
+          loadParser : translate
+        });
+        // load TL font
+        const TLfont = TLFonts.find(font => font.language === translate);
+        if(TLfont){
+          this._textView.changeFontFamily(TLfont.family);
+          await Assets.load(TLfont.url);
+        }
       }
 
       if (!checkImplements<IEpisodeModel>(source)) {
@@ -166,7 +176,7 @@ export class AdvPlayer extends Container {
 
   public loadAndPlay(
     source: string | IEpisodeModel,
-    translate?: IEpisodeTranslateDetail[]
+    translate?: string
   ) {
     this.load(source, translate).then(() => this._onready());
   }
@@ -189,8 +199,8 @@ export class AdvPlayer extends Container {
 
   protected _play() {
     this._coverOpening.close(()=>{
-      //set click event
       setTimeout(() => {
+        //set click event
         this.on("pointertap", this._tap, this);
         this._renderFrame();
       }, 400)
@@ -235,8 +245,8 @@ export class AdvPlayer extends Container {
 
     TrackLog(index+1, this.Track!.length, this.currentTrack);
 
-    if (this._translationController.isTranslate) {
-      let tl = this._translationController.getTranslate(this.currentTrack.Id);
+    if (this._translationController.hasTranslate) {
+      let tl = this._translationController.findTranslate(this.currentTrack.Id);
       if (tl) {
         this.currentTrack.Phrase = tl.Phrase;
         this.currentTrack.SpeakerName = tl.SpeakerName;
@@ -253,6 +263,8 @@ export class AdvPlayer extends Container {
     let fade_process = this._fadeView.execute(this.currentTrack);
     if (fade_process) {
       this._processing.push(fade_process);
+      this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._textView.hideTextPanel(); //
       // await fade_process;
     }
 

@@ -21,15 +21,12 @@ export class UIView extends IView {
         this.alpha = 0;
 
         //auto Button
-        let autoIconTexture = Texture.from(baseAssets.icon_auto);
-        let auto_bg = Texture.from(baseAssets.icon_bg_common);
-        let auto_clicked_bg = Texture.from(baseAssets.icon_bg_red);
         this._autoBtn = UIButton
-            .create(autoIconTexture, auto_bg, auto_clicked_bg)
+            .create(Texture.from(baseAssets.icon_auto), Texture.from(baseAssets.icon_bg_common), Texture.from(baseAssets.icon_bg_red))
             .addTo(this)
             .pos(1846.5, 75)
             .addclickFun(()=>{
-                let isauto = this._autoBtn.Pressed
+                let isauto = this._autoBtn.Pressed;
                 this._Animation?.stop();
                 this._Animation?.stopChainedTweens();
                 if(!isauto){

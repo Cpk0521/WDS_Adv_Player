@@ -20,7 +20,7 @@ export class HistoryView extends IView {
     clear(){
         this._historyRecord = [];
     }
-
+    
     
 
 }

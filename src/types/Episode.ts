@@ -62,6 +62,8 @@ export interface IEpisodeText {
     Phrase : string
     FontSize : FontSizes
     SpeakerIconId? : string
+    TLSpeakerName? : string
+    TLPhrase? : string
 }
 
 export interface IEpisodeBackground {

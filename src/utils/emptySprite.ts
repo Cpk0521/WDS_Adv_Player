@@ -1,7 +1,7 @@
 import { Texture } from "@pixi/core"
 import { Sprite } from "@pixi/sprite"
 
-export interface EmptySpriteoptions {
+export interface EmptySpriteOptions {
     color : number,
     alpha : number,
     width : number,
@@ -9,7 +9,7 @@ export interface EmptySpriteoptions {
     empty : boolean,
 }
 
-export function createEmptySprite(options? : Partial<EmptySpriteoptions>){
+export function createEmptySprite(options? : Partial<EmptySpriteOptions>){
     let sprite = options?.empty ? new Sprite(Texture.EMPTY) : new Sprite(Texture.WHITE);
     sprite.width = options?.width || 1920;
     sprite.height = options?.height || 1080;

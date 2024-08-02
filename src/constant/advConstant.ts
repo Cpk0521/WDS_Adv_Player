@@ -7,10 +7,10 @@ export const advConstant = {
 	CameraMoveDivisionValue : 1000,
 	RoundDigits : 2,
 	SpineIdDivisionValue : 100,
-	ZeroAlphaDuration : 0,
 	ProcessingWaitTime : 2,
-	AlphaDuration : 0.2,
 	DefaultValue : 1,
+	AlphaDuration : 0.2,
+	ZeroAlphaDuration : 0,
 	BackgroundAlphaDuration : 0.001,
 	SidePositionValue : 3.2,
 	CenterPositionValue : 0,
@@ -60,5 +60,12 @@ export const baseAssets = {
 	jugon_progress : './jugon_progress/jugon_progress.skel',
 }
 
-// export const baseAssetsUrl = 'https://raw.githubusercontent.com/nan0521/WDS-Adv-Resource/main/'
+export const TLFonts = [
+	{
+		language : 'zhcn',
+		family : 'Hiraginosansgb',
+		url : './HiraginoSansGB.otf'
+	}
+]
+
 export const baseAssetsUrl = 'https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/';

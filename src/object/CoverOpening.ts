@@ -42,7 +42,7 @@ export class CoverOpening extends Container{
         this.addChild(graphics);
         const graphicsAnim = new Tween(graphics).to({height : 410 }, 500);
 
-        const anim_arr = [];
+        const anim_arr :　Tween<any>[] = [];
         
         const jugonArr = [
             Texture.from(baseAssets.illust_jugon_1),

@@ -3,10 +3,27 @@ import { Tween } from 'tweedle.js';
 import { IView } from "../types/View";
 import { FontSizes, IEpisodeText } from "../types/Episode";
 import { baseAssets, advConstant} from '../constant/advConstant';
+import { IEpisodeTranslateDetail } from '../types/translation';
+
+const fontSize = [
+    {
+        fontsize : FontSizes.Small,
+        size : advConstant.SmallFontSize,
+    },
+    {
+        fontsize : FontSizes.Middle,
+        size : advConstant.MiddleFontSize,
+    },
+    {
+        fontsize : FontSizes.Large,
+        size : advConstant.LargeFontSize
+    }
+]
 
 export class TextView extends IView {
 
     protected _textPanelContainer = new Container();
+    // protected _fontFamilies : string[] = ['Ronowstd Gbs'];
     protected _sprakerText : Text;
     protected _phrase : Text;
     protected _nextIcon : Sprite; //小三角形圖標
@@ -14,20 +31,6 @@ export class TextView extends IView {
     protected _allowNextIconDisplay : boolean = true; 
     protected _typingEffect : number | NodeJS.Timeout | undefined;
     protected _typingTotalDuration : number = 0;
-    protected readonly _fontSize = [
-        {
-            fontsize : FontSizes.Small,
-            size : advConstant.SmallFontSize,
-        },
-        {
-            fontsize : FontSizes.Middle,
-            size : advConstant.MiddleFontSize,
-        },
-        {
-            fontsize : FontSizes.Large,
-            size : advConstant.LargeFontSize
-        }
-    ]
     
     constructor(){
         super();
@@ -91,6 +94,7 @@ export class TextView extends IView {
 
     public clear(): void {
         this._textPanelContainer.alpha = 0;
+        // this._fontFamilies = ['Ronowstd Gbs'];
     }
 
     static new(){
@@ -101,8 +105,9 @@ export class TextView extends IView {
         Order,
         SpeakerName,
         Phrase,
-        // FontSize
-    } : IEpisodeText){
+        TLPhrase,
+        TLSpeakerName
+    } : IEpisodeText & Partial<IEpisodeTranslateDetail>){
 
         if(!SpeakerName && Phrase.length === 0){
             this._typingTotalDuration = 0;
@@ -148,6 +153,18 @@ export class TextView extends IView {
             phrase_index ++;
         }, 50)
     }
+
+    // toggleTLContent(){
+    // }
+    
+    changeFontFamily(family : string){
+        this._sprakerText.style.fontFamily = family;
+        this._phrase.style.fontFamily = family;
+    }
+
+    // addFontFamily(family : string){
+    //     this._fontFamilies.push(family);
+    // }
 
     _hideTextPanelAnimation(){        
         new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();

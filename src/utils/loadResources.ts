@@ -1,6 +1,7 @@
 import { Assets, ProgressCallback } from "pixi.js";
 import resPath from "./resPath";
 import { IEpisodeModel } from "../types/Episode";
+import { csvToObj } from 'csv-to-js-parser';
 
 export async function loadJson<T extends Object>(source : string) : Promise<T>{
     return fetch(source)
@@ -10,6 +11,17 @@ export async function loadJson<T extends Object>(source : string) : Promise<T>{
             }
 
             return response.json() as Promise<T>;
+        })
+}
+
+export async function loadCsv<T>(source : string) : Promise<T[]>{
+    return fetch(source)
+        .then(response => {
+            return response.text();
+        })
+        .then(async (csvtext)=>{
+            const records : T[] = csvToObj(csvtext, ",");
+            return records as T[];
         })
 }
 

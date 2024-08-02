@@ -468,6 +468,11 @@ cross-spawn@^7.0.0:
     shebang-command "^2.0.0"
     which "^2.0.1"
 
+csv-to-js-parser@^2.3.7:
+  version "2.3.7"
+  resolved "https://registry.yarnpkg.com/csv-to-js-parser/-/csv-to-js-parser-2.3.7.tgz#cdcc98470d80866458b08abf807ebc47e95cc040"
+  integrity sha512-A2+6ikkN3x4dw1w994MjNTSde8+UAbzQHG/kF5e7t16BAK89ZmIGyYJpf9NWbPUa1LIKAi73++Q2zGmf69K02Q==
+
 define-data-property@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/define-data-property/-/define-data-property-1.1.1.tgz#c35f7cd0ab09883480d12ac5cb213715587800b3"

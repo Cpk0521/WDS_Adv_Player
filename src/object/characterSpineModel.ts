@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Spine, SkeletonData, TrackEntry } from '@pixi-spine/runtime-4.1';
+import { Spine, SkeletonData } from '@pixi-spine/runtime-4.1';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
 import LoopMotion from "../constant/LoopMotion";
 import ChangeBodyMotion from "../constant/ChangeBodyMotion";
@@ -183,7 +183,7 @@ export class AdventureAnimationStandCharacter {
     }
 
     offLipSync() : void{
-        let lipTrack = this._model.state.tracks[5]
+        let lipTrack = this._model.state.tracks[5];
         if(lipTrack){
             lipTrack.loop = false;
             lipTrack.timeScale = 0;

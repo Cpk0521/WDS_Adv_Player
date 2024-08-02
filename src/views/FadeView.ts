@@ -1,4 +1,4 @@
-import { Sprite, Assets } from "pixi.js";
+import { Sprite } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { FadeTypes, IEpisodeFade } from "../types/Episode";
@@ -13,7 +13,6 @@ export class FadeView extends IView {
         alpha: 0,
     });
     protected readonly _advTimeElapsed: AdvTimeElapsedAnimation = AdvTimeElapsedAnimation.create();
-    // protected _delayTime = 0;
     protected _totalDuration = 0;
 
     constructor(){
@@ -53,10 +52,10 @@ export class FadeView extends IView {
               .to( { alpha: 1 }, FadeValue1 * 1000 )
               .chain(
                 new Tween(this._blackFadePanel)
-                  .delay(FadeValue2 * 1000 + 1200)
+                  .delay(2000 + FadeValue2 * 10000)
                   .to({ alpha: 0 }, FadeValue3 * 1000)
               )
-            this._totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
+            this._totalDuration = (FadeValue1 * 1000) + (2000 + (FadeValue2 * 1000)) + (FadeValue3 * 1000);
             break;
 
           case FadeTypes.WhiteFadeOutFadeIn:
@@ -64,10 +63,10 @@ export class FadeView extends IView {
               .to({ alpha: 1 }, FadeValue1 * 1000 )
               .chain(
                 new Tween(this._whiteFadePanel)
-                  .delay(FadeValue2 * 1000 + 1200)
+                  .delay(2000 + FadeValue2 * 10000)
                   .to({ alpha: 0 }, FadeValue3 * 1000)
               );
-              this._totalDuration = (FadeValue1 + FadeValue2 + FadeValue3) * 1000 + 2000;
+              this._totalDuration = (FadeValue1 * 1000) + (2000 + (FadeValue2 * 10000)) + (FadeValue3 * 1000);
             break;
 
           case FadeTypes.TimeElapsed:
@@ -82,7 +81,7 @@ export class FadeView extends IView {
         return new Promise<void>((res, _)=>{
           setTimeout(()=>{
             res();
-          }, this._totalDuration)
+          }, this._totalDuration + 200)
         })
       }
       else{

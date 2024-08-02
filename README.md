@@ -21,3 +21,4 @@ A adventure Player to render the stories for game [ワールドダイスター �
 | Parameters  | description | optional |
 | :-------------: | :-------------: | :-------------:|
 |id  | Story Id | |
+|tl  | Translate language | zhcn |

@@ -11,11 +11,20 @@ export interface IEpisodeTranslateDetail {
     Phrase: string;
 }
 
-export const languageVals = ["en", "zh-cn", "zh-tw"] as const;
+
+//Controller
+export const languageVals = ["en", "zhcn", "zhtw"] as const;
 
 export interface TranslateReader {
     name?: string;
-    language: (typeof languageVals)[number];
+    language: typeof languageVals[number];
+    font? : string;
     url: string;
-    read: (epId: string) => Promise<IEpisodeTranslateModel | undefined>;
+    read: (epId: number) => Promise<IEpisodeTranslateModel | undefined>;
+}
+
+export type TLProps = {
+    EpId : number;
+    loadParser? : string;
+    content? : IEpisodeTranslateModel;
 }
