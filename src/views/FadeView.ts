@@ -52,7 +52,7 @@ export class FadeView extends IView {
               .to( { alpha: 1 }, FadeValue1 * 1000 )
               .chain(
                 new Tween(this._blackFadePanel)
-                  .delay(2000 + FadeValue2 * 10000)
+                  .delay(2000 + FadeValue2 * 1000)
                   .to({ alpha: 0 }, FadeValue3 * 1000)
               )
             this._totalDuration = (FadeValue1 * 1000) + (2000 + (FadeValue2 * 1000)) + (FadeValue3 * 1000);
@@ -63,10 +63,10 @@ export class FadeView extends IView {
               .to({ alpha: 1 }, FadeValue1 * 1000 )
               .chain(
                 new Tween(this._whiteFadePanel)
-                  .delay(2000 + FadeValue2 * 10000)
+                  .delay(2000 + FadeValue2 * 1000)
                   .to({ alpha: 0 }, FadeValue3 * 1000)
               );
-              this._totalDuration = (FadeValue1 * 1000) + (2000 + (FadeValue2 * 10000)) + (FadeValue3 * 1000);
+              this._totalDuration = (FadeValue1 * 1000) + (2000 + (FadeValue2 * 1000)) + (FadeValue3 * 1000);
             break;
 
           case FadeTypes.TimeElapsed:

@@ -48,7 +48,7 @@ export class TranslationController {
     if(options.content){
       this._translateModel = options.content;
       this._hasTranslate = true;
-      return;
+      return this._hasTranslate;
     }
     
     let reader : TranslateReader | undefined;
@@ -63,6 +63,8 @@ export class TranslationController {
     if(this._translateModel){
       this._hasTranslate = true;
     }
+
+    return this._hasTranslate;
   }
 
   addReader(reader : TranslateReader){
@@ -88,7 +90,6 @@ export class TranslationController {
   }
 
   findTranslate(id: number) {
-    console.log(this._translateModel)
     return this._translateModel?.translateDetail.find((tl) => Number(tl.Id) === id);
   }
 }

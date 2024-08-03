@@ -50,7 +50,7 @@ export class AdvPlayer extends Container {
   protected _currentGroupOrder: number = 0;
   protected _isAuto: boolean = false;
   protected _isVoice: boolean = true;
-  protected _isTranslate: boolean = true;
+  protected _isTranslate: boolean = false;
   protected _isAdventureEnded: boolean = false;
   protected _processing: Promise<any>[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
@@ -132,19 +132,6 @@ export class AdvPlayer extends Container {
         });
       }
 
-      if (translate) {
-        await this._translationController.load({
-          EpId : source.EpisodeId,
-          loadParser : translate
-        });
-        // load TL font
-        const TLfont = TLFonts.find(font => font.language === translate);
-        if(TLfont){
-          this._textView.changeFontFamily(TLfont.family);
-          await Assets.load(TLfont.url);
-        }
-      }
-
       if (!checkImplements<IEpisodeModel>(source)) {
         this._coverOpening.throwError("Episode file format error.");
         throw new Error("Episode file format error.");
@@ -165,6 +152,20 @@ export class AdvPlayer extends Container {
         this._episode.Title,
         this._episode.Order
       );
+
+      if (translate) {
+        this._isTranslate = await this._translationController.load({
+          EpId : source.EpisodeId,
+          loadParser : translate
+        });
+        // load TL font
+        const TLfont = TLFonts.find(font => font.language === translate);
+        if(TLfont && this._isTranslate){
+          this._textView.changeFontFamily(TLfont.family);
+          await Assets.load(TLfont.url);
+        }
+      }
+
       await loadResourcesFromEpisode(source, this._isVoice, (percentage) => {
         this._coverOpening.start(Math.floor(percentage * 100));
       }).catch(() => this._coverOpening.throwError())
