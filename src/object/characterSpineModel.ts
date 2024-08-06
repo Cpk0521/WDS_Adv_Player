@@ -124,7 +124,7 @@ export class AdventureAnimationStandCharacter {
         if(bodyAnimationName){    
             let motion = ChangeBodyMotion.find(({BeforeMotionName, AfterMotionName}) => BeforeMotionName == this._motions.bodyAnimationName && AfterMotionName == bodyAnimationName);
             let entry = this._model.state.setAnimation(1, bodyAnimationName, false);
-            entry.mixDuration = motion ? motion.Second : 0;
+            entry.mixDuration = motion ? motion.Second : 0.2;
         }
 
         if(eyebrowAnimationName && eyebrowAnimationName !== this._motions.eyebrowAnimationName){

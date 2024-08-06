@@ -64,7 +64,7 @@ export const TLFonts = [
 	{
 		language : 'zhcn',
 		family : 'Hiraginosansgb',
-		url : './HiraginoSansGB.otf'
+		url : './HiraginoSansGB.ttf'
 	}
 ]
 
