@@ -1,6 +1,6 @@
 {
   "name": "wds-adventure-player",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A self made event viewer to render events in game",
   "author": "CPK",
   "license": "MIT",
