@@ -4,7 +4,6 @@ import "@pixi/sound";
 // import { Group } from 'tweedle.js';
 //type
 import { IEpisodeModel } from "./types/Episode";
-import { IEpisodeTranslateDetail } from './types/translation'
 //views
 import { BackgroundView } from "./views/BackgroundView";
 import { CharacterView } from "./views/CharacterView";
@@ -50,7 +49,6 @@ export class AdvPlayer extends Container {
   protected _currentGroupOrder: number = 0;
   protected _isAuto: boolean = false;
   protected _isVoice: boolean = true;
-  protected _isTranslate: boolean = false;
   protected _isAdventureEnded: boolean = false;
   protected _processing: Promise<any>[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
@@ -154,14 +152,20 @@ export class AdvPlayer extends Container {
       );
 
       if (translate) {
-        this._isTranslate = await this._translationController.load({
+        await this._translationController.load({
           EpId : source.EpisodeId,
           loadParser : translate
         });
-        // load TL font
         const TLfont = TLFonts.find(font => font.language === translate);
-        if(TLfont && this._isTranslate){
-          this._textView.changeFontFamily(TLfont.family);
+        if(TLfont && this._translationController.hasTranslate){
+          this._uiView.enableTLBtn();
+          this._textView.isTranslate = this._translationController.hasTranslate;
+          this._uiView.TranslateBtn.addclickFun(()=>{
+            this._textView.isTranslate = this._uiView.TranslateBtn.Pressed;
+            this._textView.toggleTextContent();
+          })
+          // load TL font
+          this._textView.addFontFamily(TLfont.family);
           await Assets.load(TLfont.url);
         }
       }
@@ -249,8 +253,8 @@ export class AdvPlayer extends Container {
     if (this._translationController.hasTranslate) {
       let tl = this._translationController.findTranslate(this.currentTrack.Id);
       if (tl) {
-        this.currentTrack.Phrase = tl.Phrase;
-        this.currentTrack.SpeakerName = tl.SpeakerName;
+        this.currentTrack.TLSpeakerName = tl.SpeakerName;
+        this.currentTrack.TLPhrase = tl.Phrase;
       }
     }
 

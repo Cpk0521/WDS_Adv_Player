@@ -13,6 +13,7 @@ export class UIView extends IView {
 
     protected _currentStatus : UIViewStatus = UIViewStatus.Show;
     protected _autoBtn : UIButton;
+    protected _translateBtn : UIButton;
     protected _Animation : Tween<this> | undefined
 
     constructor(){
@@ -20,9 +21,11 @@ export class UIView extends IView {
 
         this.alpha = 0;
 
+        let base_bg = Texture.from(baseAssets.icon_bg_common);
+        let pressed_bg = Texture.from(baseAssets.icon_bg_red);
         //auto Button
         this._autoBtn = UIButton
-            .create(Texture.from(baseAssets.icon_auto), Texture.from(baseAssets.icon_bg_common), Texture.from(baseAssets.icon_bg_red))
+            .create(Texture.from(baseAssets.icon_auto), base_bg, pressed_bg)
             .addTo(this)
             .pos(1846.5, 75)
             .addclickFun(()=>{
@@ -38,10 +41,21 @@ export class UIView extends IView {
                     this._currentStatus = UIViewStatus.Hide;
                 }
             })
+        
+        this._translateBtn = UIButton
+            .create(Texture.from(baseAssets.icon_translate), base_bg, pressed_bg)
+            .addTo(this)
+            .pos(1846.5, 205);
+        this._translateBtn.visible = false;
     }
 
     public clear(): void {
         this.alpha = 0;
+    }
+
+    enableTLBtn(){
+        this._translateBtn.Pressed = true;
+        this._translateBtn.visible = true;
     }
     
     // hidden -> show -> hidden
@@ -66,6 +80,10 @@ export class UIView extends IView {
 
     get AutoBtn() {
         return this._autoBtn;
+    }
+
+    get TranslateBtn(){
+        return this._translateBtn;
     }
 
 }

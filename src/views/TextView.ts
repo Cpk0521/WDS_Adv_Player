@@ -3,7 +3,6 @@ import { Tween } from 'tweedle.js';
 import { IView } from "../types/View";
 import { FontSizes, IEpisodeText } from "../types/Episode";
 import { baseAssets, advConstant} from '../constant/advConstant';
-import { IEpisodeTranslateDetail } from '../types/translation';
 
 const fontSize = [
     {
@@ -20,17 +19,22 @@ const fontSize = [
     }
 ]
 
+
 export class TextView extends IView {
 
     protected _textPanelContainer = new Container();
-    // protected _fontFamilies : string[] = ['Ronowstd Gbs'];
     protected _sprakerText : Text;
     protected _phrase : Text;
     protected _nextIcon : Sprite; //小三角形圖標
+    // animation
     protected _nextIconAnimtor : Tween<any>; //小三角形圖標上下浮動動畫
     protected _allowNextIconDisplay : boolean = true; 
     protected _typingEffect : number | NodeJS.Timeout | undefined;
     protected _typingTotalDuration : number = 0;
+    //Transalte
+    protected _isTranslate : boolean = false;
+    protected _fontFamilies : string[] = ['Ronowstd Gbs'];
+    protected _currenttext : Partial<Pick<IEpisodeText, 'SpeakerName' | 'Phrase' | 'TLPhrase' | 'TLSpeakerName'>> = {}
     
     constructor(){
         super();
@@ -94,7 +98,8 @@ export class TextView extends IView {
 
     public clear(): void {
         this._textPanelContainer.alpha = 0;
-        // this._fontFamilies = ['Ronowstd Gbs'];
+        this._fontFamilies = ['Ronowstd Gbs'];
+        this._currenttext = {};
     }
 
     static new(){
@@ -107,13 +112,22 @@ export class TextView extends IView {
         Phrase,
         TLPhrase,
         TLSpeakerName
-    } : IEpisodeText & Partial<IEpisodeTranslateDetail>){
+    } : IEpisodeText){
 
         if(!SpeakerName && Phrase.length === 0){
             this._typingTotalDuration = 0;
             // return this._hideTextPanelAnimation();
             this.hideTextPanel();
             return;
+        }
+
+        if(TLPhrase || TLSpeakerName){
+            this._currenttext = { 
+                SpeakerName, 
+                TLSpeakerName, 
+                Phrase: Order > 1 ? `${this._currenttext.Phrase}\n${Phrase}` : Phrase, 
+                TLPhrase: Order > 1 ? `${this._currenttext.TLPhrase}\n${TLPhrase}` : TLPhrase
+            };
         }
 
         if(this._textPanelContainer.alpha === 0){
@@ -126,45 +140,49 @@ export class TextView extends IView {
         this._nextIconAnimtor?.stop();
 
         //speaker text
-        this._sprakerText.text = SpeakerName ?? '';
-        if(this._sprakerText.width >= 275){
-            this._sprakerText.style.fontSize = 35;
-        }else{
-            this._sprakerText.style.fontSize = 40;
-        }
-
+        this._sprakerText.text = (this._isTranslate ? TLSpeakerName : SpeakerName) ?? '';
+        this._sprakerText.style.fontSize = this._sprakerText.width >= 275 ? 35 : 40;
+        this._sprakerText.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
+        
         //phrase text
+        this._phrase.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
         this._phrase.text = Order > 1 ? `${this._phrase.text}\n` : '';
+
         this._typingTotalDuration = Phrase.length * 50 + 500;
 
-        let phrase = Phrase.replace('/n', '\n');
+        let phrase = this._isTranslate ? TLPhrase!.replace('/n', '\n')  : Phrase.replace('/n', '\n') ;
         let phrase_index = 0;
         if(this._typingEffect){
             clearInterval(this._typingEffect);
-            this._typingEffect = undefined;
+            this._typingEffect = void 0;
         }
         this._typingEffect = setInterval(()=>{
             if(phrase_index === phrase.length){
                 this._allowNextIconDisplay && this._playNextIconAnim(); //order check?
                 clearInterval(this._typingEffect);
-                this._typingEffect = undefined;
+                this._typingEffect = void 0;
             }
             this._phrase.text += phrase.charAt(phrase_index);
             phrase_index ++;
         }, 50)
     }
 
-    // toggleTLContent(){
-    // }
-    
-    changeFontFamily(family : string){
-        this._sprakerText.style.fontFamily = family;
-        this._phrase.style.fontFamily = family;
-    }
+    toggleTextContent(){
+        if(this._typingEffect){
+            clearInterval(this._typingEffect);
+            this._typingEffect = void 0;
+        }
 
-    // addFontFamily(family : string){
-    //     this._fontFamilies.push(family);
-    // }
+        this._sprakerText.text = (this._isTranslate ? this._currenttext.TLSpeakerName : this._currenttext.SpeakerName) || '';
+        this._sprakerText.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
+
+        this._phrase.text = (this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase)?.replace('/n', '\n') || '';
+        this._phrase.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
+    }
+    
+    addFontFamily(family : string){
+        this._fontFamilies.push(family);
+    }
 
     _hideTextPanelAnimation(){        
         new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
@@ -194,6 +212,14 @@ export class TextView extends IView {
 
     set allowNextIconDisplay(bool : boolean){
         this._allowNextIconDisplay = bool;
+    }
+
+    get isTranslate(){
+        return this._isTranslate;
+    }
+
+    set isTranslate(bool : boolean){
+        this._isTranslate = bool;
     }
 
 }

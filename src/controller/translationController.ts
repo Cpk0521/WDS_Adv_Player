@@ -47,8 +47,7 @@ export class TranslationController {
   async load(options : TLProps){
     if(options.content){
       this._translateModel = options.content;
-      this._hasTranslate = true;
-      return this._hasTranslate;
+      return this._hasTranslate = true;
     }
     
     let reader : TranslateReader | undefined;
@@ -56,12 +55,18 @@ export class TranslationController {
       reader = this._TLReaderMap.get(options.loadParser);
     }
     if(!reader){
-      throw Error('No Translate Reader found');
+      console.error('No Translate Reader found');
+      return this._hasTranslate = false;
     }
-
-    this._translateModel = await reader.read(options.EpId);
-    if(this._translateModel){
-      this._hasTranslate = true;
+    
+    try{
+      this._translateModel = await reader.read(options.EpId)
+      if(this._translateModel){
+        this._hasTranslate = true;
+      }
+    }catch(e){
+      console.error('No Translate file found');
+      return this._hasTranslate = false;
     }
 
     return this._hasTranslate;
