@@ -1,24 +1,8 @@
 import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture } from 'pixi.js';
 import { Tween } from 'tweedle.js';
 import { IView } from "../types/View";
-import { FontSizes, IEpisodeText } from "../types/Episode";
-import { baseAssets, advConstant} from '../constant/advConstant';
-
-const fontSize = [
-    {
-        fontsize : FontSizes.Small,
-        size : advConstant.SmallFontSize,
-    },
-    {
-        fontsize : FontSizes.Middle,
-        size : advConstant.MiddleFontSize,
-    },
-    {
-        fontsize : FontSizes.Large,
-        size : advConstant.LargeFontSize
-    }
-]
-
+import { IEpisodeText } from "../types/Episode";
+import { baseAssets } from '../constant/advConstant';
 
 export class TextView extends IView {
 

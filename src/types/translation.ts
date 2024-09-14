@@ -11,7 +11,6 @@ export interface IEpisodeTranslateDetail {
     Phrase: string;
 }
 
-
 //Controller
 export const languageVals = ["en", "zhcn", "zhtw"] as const;
 

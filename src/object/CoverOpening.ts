@@ -5,7 +5,7 @@ import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
 import fragmentShader from '../shader/circleShader.frag?raw';
 
-export class CoverOpening extends Container{
+export class CoverOpening extends Container {
 
     protected ptn_bg : TilingSprite;
     protected _anim_jugon : AnimatedSprite;
@@ -165,7 +165,7 @@ export class CoverOpening extends Container{
         this._animation.start();
     }
 
-    start(percent : number){
+    progress(percent : number){
         if(this._locked) return;
         const text = `${percent} %`
         if(percent === 100){
@@ -177,10 +177,15 @@ export class CoverOpening extends Container{
         this._percent_text.text = text;
     }
 
-    throwError(error? : any){
+    error(error? : any){
         this._locked = true;
         this._percent_text.tint = 0xFF0000;
         this._percent_text.text = error ? `ERROR : ${error}` : 'ERROR';
+    }
+
+    log(text : string){    
+        this._percent_text.tint = 0xFFFFFF;
+        this._percent_text.text = text;
     }
     
     close(callback? : Function){

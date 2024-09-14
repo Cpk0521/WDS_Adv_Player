@@ -37,7 +37,7 @@ export class AdvPlayer extends Container {
   protected _textView: TextView;
   protected _movieView: MovieView;
   protected _fadeView : FadeView;
-  protected _historyView: HistoryView;
+  // protected _historyView: HistoryView;
   protected _uiView: UIView;
   protected _coverOpening: CoverOpening;
   // Controller
@@ -72,7 +72,7 @@ export class AdvPlayer extends Container {
 
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
-    this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
+    // this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
     this._fadeView = new FadeView().addTo(this, Layer.FadeLayer);
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
@@ -108,7 +108,7 @@ export class AdvPlayer extends Container {
     this._textView.clear();
     this._movieView.clear();
     this._fadeView.clear();
-    this._historyView.clear();
+    // this._historyView.clear();
     this._uiView.clear();
 
     //re-create the cover
@@ -125,13 +125,13 @@ export class AdvPlayer extends Container {
           source = resPath.advJson(source);
         }
         source = await loadJson<IEpisodeModel>(source).catch(() => {
-          this._coverOpening.throwError("The episode ID or URL is not correct, please re-confirm.");
+          this._coverOpening.error("The episode ID or URL is not correct, please re-confirm.");
           throw new Error("The episode ID or URL is not correct, please re-confirm.");
         });
       }
 
       if (!checkImplements<IEpisodeModel>(source)) {
-        this._coverOpening.throwError("Episode file format error.");
+        this._coverOpening.error("Episode file format error.");
         throw new Error("Episode file format error.");
       }
 
@@ -166,16 +166,19 @@ export class AdvPlayer extends Container {
           })
           // load TL font
           this._textView.addFontFamily(TLfont.family);
+          this._coverOpening.log('loading translate font...');
           await Assets.load(TLfont.url);
         }
       }
 
-      await loadResourcesFromEpisode(source, this._isVoice, (percentage) => {
-        this._coverOpening.start(Math.floor(percentage * 100));
-      }).catch(() => this._coverOpening.throwError())
+      await loadResourcesFromEpisode(
+        source, 
+        this._isVoice, 
+        (percentage) => this._coverOpening.progress(Math.floor(percentage * 100))
+      )
+      .catch(() => this._coverOpening.error());
 
       res(this._episode);
-      
     }));
   }
 
@@ -259,7 +262,7 @@ export class AdvPlayer extends Container {
     }
 
     //對話列表
-    this._historyView.execute(this.currentTrack);
+    // this._historyView.execute(this.currentTrack);
 
     // 隱藏上輪的
     this._soundController.sound(this.currentTrack);

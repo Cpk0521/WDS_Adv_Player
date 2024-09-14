@@ -42,6 +42,7 @@ export class UIView extends IView {
                 }
             })
         
+        //translate button
         this._translateBtn = UIButton
             .create(Texture.from(baseAssets.icon_translate), base_bg, pressed_bg)
             .addTo(this)

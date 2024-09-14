@@ -40,15 +40,14 @@ export interface IEpisodeModel {
 export type IEpisodeDetail = {
     Id : number
     EpisodeMasterId : number
-    Title : string | null
+    Title? : string
 } & IEpisodeEffect &
     IEpisodeText &
     IEpisodeBackground &
     IEpisodeFade &
     IEpisodeSound &
     IEpisodeMovie &
-    IEpisodeCharacter 
-    // & IEpisodeTranslate
+    IEpisodeCharacter
 
 export interface IEpisodeEffect {
     Effect? : string
@@ -174,15 +173,3 @@ export enum CharacterPositions
 	InnerRight,//1920/2 +320
 	OuterRight//1920/2 + 495 ???
 }
-
-
-// Episode Title data
-// export interface IEpisodeTitle {
-//     EpisodeId : number
-//     Title : string
-//     Chapter? : string
-//     StoryType : StoryTypes
-//     Order : number
-//     Prev : number | undefined | null
-//     Next : number | undefined | null
-// }
