@@ -42,9 +42,10 @@ function createApp() {
 
   window.onresize = () => resize();
   resize();
-
+  
   return pixiapp;
 }
+
 
 const { id, tl } = getUrlParams(["id", "tl"]);
 
@@ -57,7 +58,6 @@ advplayer.addTo(app.stage);
 // advplayer.loadAndPlay('110081');
 // advplayer.loadAndPlay('1010101');
 // advplayer.loadAndPlay('2003503'); 
-// advplayer.loadAndPlay('2000101');
 // advplayer.loadAndPlay('1010110', 'zhcn');
 // 1010119
 

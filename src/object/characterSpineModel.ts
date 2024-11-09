@@ -45,7 +45,7 @@ export class AdventureAnimationStandCharacter {
         this._model.state.setAnimation(0, "breath", true);
         this._model.state.tracks[0].timeScale = this._loopMotionData?.LoopSpeed || 1;
         // clac the y position
-        switch(this._loopMotionData?.Size || 2){
+        switch(this._loopMotionData?.Size ?? 1){
             case 1:
                 this._model.scale.set(0.77);
                 this._model.y = 1000;
@@ -137,9 +137,9 @@ export class AdventureAnimationStandCharacter {
             anim.trackTime = 1;
         }
         
-        clearTimeout(this._eyeBlinkTimeout);
         if(eyeAnimationName){
-            this._eyeBlinkAnimation(4, eyeAnimationName, 3.2);
+            clearTimeout(this._eyeBlinkTimeout);
+            this._eyeBlinkAnimation(4, eyeAnimationName, 3.5);
         }
 
         if(eyeMotionName && !eyeAnimationName){

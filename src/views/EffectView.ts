@@ -1,30 +1,36 @@
-import { Container, Graphics, BLEND_MODES, BlurFilter } from "pixi.js";
+//https://github.com/karai17/awesome-love-shaders/blob/master/sepia/sepia.glsl
+//https://github.com/nical/GLSL-Raymarching/blob/master/src/shaders/Sepia.frag
+import { Container, Graphics, BLEND_MODES, BlurFilter, Filter, Sprite, Texture } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
 import { IEpisodeEffect, WindowEffects } from "../types/Episode";
+import { baseAssets } from "../constant/advConstant";
 
 export class EffectView extends IView {
 
     // protected _canvasGroup : Container | undefined
-    protected _sepiaEffectObject : Graphics;
+    protected _sepiaEffectObject : Sprite;
     protected _whiteBlurEffectObject : Graphics;
     protected _blur_filter : BlurFilter;
+    // protected _sepia_filter : Filter;
     protected _whiteBlurEffectAnimation : Tween<Record<string, any>>
 
     constructor(){
         super()
 
         this.sortableChildren = true;
-
-        //sepia setting 顏色不確定!!!
-        this._sepiaEffectObject = new Graphics();
+        
+        // sepia setting 顏色不確定!!!
+        // this._sepia_filter = new Filter(undefined, fragmentShader);
+        // this.filters = [this._sepia_filter];
+        // this._sepia_filter.enabled = false;
+        this._sepiaEffectObject = new Sprite(Texture.from(baseAssets.sepia));
+        this._sepiaEffectObject.width = 1920;
+        this._sepiaEffectObject.height = 1080;
         this._sepiaEffectObject.zIndex = 20;
-        this._sepiaEffectObject.beginFill(0xECD543); // new Color(0.5568628, 0.380392164, 0.380392164, 1 )
-        this._sepiaEffectObject.drawRect(0, 0, 1920, 1080);
-        this._sepiaEffectObject.blendMode = BLEND_MODES.MULTIPLY;
+        this._sepiaEffectObject.alpha = .75;
         this.addChild(this._sepiaEffectObject);
         this._sepiaEffectObject.visible = false;
-
 
         //white blur edge effect setting
         this._whiteBlurEffectObject = new Graphics();
@@ -48,6 +54,8 @@ export class EffectView extends IView {
         if(this._sepiaEffectObject.visible){
             this._sepiaEffectObject.visible = false;
         }
+        // this._sepia_filter.enabled = false;
+        // this.filters = [];
 
         if(this._whiteBlurEffectObject.visible){
             this._whiteBlurEffectObject.visible = false;
@@ -70,6 +78,9 @@ export class EffectView extends IView {
                     if(!this._sepiaEffectObject.visible){
                         this._sepiaEffectObject.visible = true;
                     }
+                    // if(!this._sepia_filter.enabled){
+                    //     this._sepia_filter.enabled = true;
+                    // }
                     break
                 case WindowEffects.WhiteBlur:
                     if(!this._whiteBlurEffectObject.visible){
@@ -90,7 +101,9 @@ export class EffectView extends IView {
             if(this._sepiaEffectObject.visible){
                 this._sepiaEffectObject.visible = false;
             }
-
+            // if(this._sepia_filter.enabled){
+            //     this._sepia_filter.enabled = false;
+            // }
             if(this._whiteBlurEffectObject.visible){
                 this._whiteBlurEffectObject.visible = false;
                 this._blur_filter.enabled = false;
@@ -109,3 +122,19 @@ export class EffectView extends IView {
     }
 
 }
+
+
+// const fragmentShader = `
+//     varying vec2 vTextureCoord;
+//     uniform sampler2D uSampler;
+
+//     float u_opacity = 0.75;
+
+//     void main() {
+//         vec4 texColor = texture2D(uSampler, vTextureCoord);
+//         float grey = dot(texColor.rgb, vec3(0.299, 0.587, 0.114));
+//         vec4 sepia = vec4(grey, grey, grey, u_opacity);
+//         sepia *= vec4(1.0, 0.95, 0.82, u_opacity);
+//         gl_FragColor = sepia;
+//     }
+// `

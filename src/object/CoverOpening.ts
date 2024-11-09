@@ -161,7 +161,7 @@ export class CoverOpening extends Container {
             this._top_text.text = `サイドストーリー${order == 1 ? '(前編)' : '(後編)'}`;
             this._middle_text.text = `${title}`
         }
-        
+    
         this._animation.start();
     }
 

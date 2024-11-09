@@ -2,9 +2,9 @@ import path from 'path';
 import { defineConfig } from 'vite'
 
 export default defineConfig(({ command, mode }) => {
-    // const isDev = command === 'serve';
 
     return {
+        base: './',
         define: {
             __VERSION__: JSON.stringify(require('./package.json').version),
         },

@@ -11,10 +11,10 @@ import { EffectView } from "./views/EffectView";
 import { MovieView } from "./views/MovieView";
 import { TextView } from "./views/TextView";
 import { FadeView } from "./views/FadeView";
-import { HistoryView } from "./views/HistoryView";
+// import { HistoryView } from "./views/HistoryView";
 import { UIView } from "./views/UIView";
 //
-import { CoverOpening } from "./object/CoverOpening";
+import { CoverOpening } from "./object/coverOpening";
 //manager
 import { SoundController } from "./controller/soundController";
 import { TranslationController } from "./controller/translationController";
@@ -276,6 +276,9 @@ export class AdvPlayer extends Container {
       // await fade_process;
     }
 
+    //effect處理
+    this._effectView.execute(this.currentTrack);
+
     //背景處理
     if(index > 0){
       let bg_process = this._backgroundView.execute(this.currentTrack);
@@ -286,9 +289,6 @@ export class AdvPlayer extends Container {
         // await bg_process;
       }
     };
-
-    //effect處理
-    this._effectView.execute(this.currentTrack);
 
     // Animations 確保動畫跑完
     await Promise.all(this._processing)
@@ -302,11 +302,12 @@ export class AdvPlayer extends Container {
       // this._processing.push(movie_process);
       this._characterView.hideCharacter(); //隱藏在場上的角色
       this._textView.hideTextPanel(); //
-      await movie_process;
+      await movie_process; //確保影片跑完
     }
     
     //spine處理
     this._characterView.execute(this.currentTrack);
+    
     //對話處理
     let phrase = this.currentTrack.Phrase;
     let isSameGroup = this.currentTrack.GroupOrder == this.nextTrack?.GroupOrder;
