@@ -19,10 +19,10 @@
 //     SliderDivisionValue: 100.0,
 // };
 
-export const playerSize = {
-    Width: 1920,
-    Height: 1080,
-};
+// export const playerSize = {
+//     Width: 1920,
+//     Height: 1080,
+// };
 
 export enum Layer {
     BackgroundLayer = 1,
@@ -71,5 +71,5 @@ export const TLFonts = [
     },
 ];
 
-export const baseAssetsUrl =
-    "https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/";
+export const baseAssetsUrl = "https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/";
+

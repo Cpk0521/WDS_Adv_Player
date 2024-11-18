@@ -97,6 +97,7 @@ export async function loadResourcesFromEpisode(
 
         //spine
         unit.CharacterMotions.forEach((motion) => {
+            motion.SpineId = motion.SpineId === 10205 ? 10201 : motion.SpineId;
             if (motion.SpineId != 0 && !resources[`spine_${motion.SpineId}`]) {
                 resources[`spine_${motion.SpineId}`] = resPath.spine(
                     motion.SpineId
@@ -125,5 +126,6 @@ export async function loadResourcesFromEpisode(
 
 export default {
     loadJson,
+    loadCsv,
     loadResourcesFromEpisode
 }
