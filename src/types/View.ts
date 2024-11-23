@@ -18,6 +18,8 @@ export abstract class IView extends Container{
         this.visible = false;
     }
     
-    public clear(): void {}
+    public clear(): void {
+        throw new Error("Method not implemented.");
+    }
 }
 

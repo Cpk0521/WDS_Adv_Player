@@ -61,9 +61,6 @@ export class AdvPlayer extends Container {
       preferCreateImageBitmap: false,
     });
 
-    //register the tweedle timer to pixi ticker
-    // Ticker.shared.add(() => Group.shared.update());
-
     //advPlayer setting
     this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
     this.sortableChildren = true;
@@ -166,7 +163,7 @@ export class AdvPlayer extends Container {
           })
           // load TL font
           this._textView.addFontFamily(TLfont.family);
-          this._coverOpening.log('loading translate font...');
+          this._coverOpening.log('loading translate assets...');
           await Assets.load(TLfont.url);
         }
       }

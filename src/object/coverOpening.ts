@@ -179,12 +179,14 @@ export class CoverOpening extends Container {
 
     error(error? : any){
         this._locked = true;
-        this._percent_text.tint = 0xFF0000;
+        // this._percent_text.tint = 0xFF0000;
+        this._percent_text.style.fill = 0xFF0000;
         this._percent_text.text = error ? `ERROR : ${error}` : 'ERROR';
     }
 
     log(text : string){    
-        this._percent_text.tint = 0xFFFFFF;
+        // this._percent_text.tint = 0xFFFFFF;
+        this._percent_text.style.fill = 0xFFFFFF;
         this._percent_text.text = text;
     }
     
