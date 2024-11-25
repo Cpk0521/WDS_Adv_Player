@@ -193,7 +193,7 @@ export class AdvPlayer extends Container {
           title: this._episode.Title,
           order: this._episode.Order,
           TLTitle : this._translationController.translateModel?.TLTitle,
-          info : this._translationController.translateModel?.translator
+          info : this._translationController.translateModel?.info
       });
 
       //load故事所需的資源

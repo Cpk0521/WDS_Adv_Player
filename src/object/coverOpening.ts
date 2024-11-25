@@ -185,23 +185,21 @@ export class CoverOpening extends Container {
         if(type === StoryTypes.Main || type === StoryTypes.Event){
             this._top_text.text = chapter;
             this._middle_text.text = `第　${order}　話`;
-            // this._bottom_text.text = title;
             this._bottom_text.text = !!TLTitle ?  `${TLTitle}` : `${title}`;
-            this._bottom_text.style.fontFamily = !!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1];
+            this._bottom_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1]) || this._fontFamilies[0];
         }
 
         if(type === StoryTypes.Side){
             //side`
             this._top_text.text = `サイドストーリー${order == 1 ? '(前編)' : '(後編)'}`;
-            // this._middle_text.text = `${title}`
             this._middle_text.text = !!TLTitle ? `${TLTitle}` : `${title}`;
-            this._middle_text.style.fontFamily = !!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1];
+            this._middle_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1]) || this._fontFamilies[0];
         }
 
         //info
         if(info){
             this._info_text.text = `${info}`;
-            this._info_text.style.fontFamily = this._fontFamilies[1];
+            this._info_text.style.fontFamily = this._fontFamilies[1] || this._fontFamilies[0];
         }
 
         this._animation.start();

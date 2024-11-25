@@ -126,10 +126,10 @@ export class TextView extends IView {
         //speaker text
         this._sprakerText.text = (this._isTranslate ? TLSpeakerName : SpeakerName) ?? '';
         this._sprakerText.style.fontSize = this._sprakerText.width >= 275 ? 35 : 40;
-        this._sprakerText.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
+        this._sprakerText.style.fontFamily = (this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
         
         //phrase text
-        this._phrase.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
+        this._phrase.style.fontFamily = (this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
         this._phrase.text = Order > 1 ? `${this._phrase.text}\n` : '';
 
         this._typingTotalDuration = Phrase.length * 50 + 500;
