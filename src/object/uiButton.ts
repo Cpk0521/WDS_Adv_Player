@@ -36,6 +36,10 @@ export class UIButton extends Sprite {
         return this;
     }
 
+    clear(){
+        this._onClickList = [];
+    }
+
     pos(x : number, y? : number){
         this.position.set(x, y);
         return this;

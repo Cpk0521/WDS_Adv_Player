@@ -52,6 +52,8 @@ export class UIView extends IView {
 
     public clear(): void {
         this.alpha = 0;
+        // this.AutoBtn.clear();
+        this.TranslateBtn.clear();
     }
 
     enableTLBtn(){

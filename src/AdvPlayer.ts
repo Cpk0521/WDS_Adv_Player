@@ -80,6 +80,25 @@ export class AdvPlayer extends Container {
     //Cover
     this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
     
+    //ui button setting
+    this._uiView.AutoBtn.addclickFun(() => {
+      this._isAuto = this._uiView.AutoBtn.Pressed;
+      if(this._trackPromise && this._isAuto){
+        this._trackPromise = this._trackPromise.then((
+          previous_then_not_execute : boolean
+        )=>{
+          if(!this._isAuto){ //如果不是在auto下就返回
+            return true; // 返回未播放信息
+          }
+          if(previous_then_not_execute){ //如果未播放過
+            this._trackPromise = void 0; //清除Promise
+            this._renderFrame(); //播放
+          }
+          return false; // 返回已播放了信息
+        })
+      }
+    });
+
     //log
     banner();
   }
@@ -140,41 +159,51 @@ export class AdvPlayer extends Container {
         await this.clear();
       }
 
-      this._episode = source as IEpisodeModel;
-      this._coverOpening.init(
-        this._episode.StoryType,
-        this._episode.Chapter,
-        this._episode.Title,
-        this._episode.Order
-      );
-
-      if (translate) {
+      //如果有翻譯語言 就load該語言的翻譯文件
+      if(translate){
         await this._translationController.load({
           EpId : source.EpisodeId,
-          loadParser : translate
+          loadParser : translate,
         });
-        const TLfont = TLFonts.find(font => font.language === translate);
-        if(TLfont && this._translationController.hasTranslate){
+        //如果有翻譯文件 ui配置&load font asset
+        if(this._translationController.hasTranslate){
           this._uiView.enableTLBtn();
           this._textView.isTranslate = this._translationController.hasTranslate;
           this._uiView.TranslateBtn.addclickFun(()=>{
             this._textView.isTranslate = this._uiView.TranslateBtn.Pressed;
             this._textView.toggleTextContent();
           })
-          // load TL font
-          this._textView.addFontFamily(TLfont.family);
-          this._coverOpening.log('loading translate assets...');
-          await Assets.load(TLfont.url);
+          //font asset 
+          const TLfont = TLFonts.find(font => font.language === translate);
+          if(TLfont){
+            this._textView.addFontFamily(TLfont.family);
+            this._coverOpening.addFontFamily(TLfont.family);
+            if(!Assets.cache.has(TLfont.url)){
+              this._coverOpening.log('loading assets...');
+              await Assets.load(TLfont.url);
+            }
+          }
         }
       }
+      
+      this._episode = source as IEpisodeModel;
+      this._coverOpening.init({
+          type: this._episode.StoryType,
+          chapter: this._episode.Chapter,
+          title: this._episode.Title,
+          order: this._episode.Order,
+          TLTitle : this._translationController.translateModel?.TLTitle,
+          info : this._translationController.translateModel?.translator
+      });
 
+      //load故事所需的資源
       await loadResourcesFromEpisode(
         source, 
         this._isVoice, 
         (percentage) => this._coverOpening.progress(Math.floor(percentage * 100))
       )
       .catch(() => this._coverOpening.error());
-
+      
       res(this._episode);
     }));
   }
@@ -211,20 +240,9 @@ export class AdvPlayer extends Container {
       }, 400)
     });
 
-    //ui view
-    this._uiView.alpha = 1;
-    this._uiView.AutoBtn.addclickFun(() => {
-      this._isAuto = this._uiView.AutoBtn.Pressed;
-      if (this._isAuto && this._trackPromise) {        
-        this._trackPromise.then((bool : boolean) => {
-          //確保開了auto後會自動播放下一個並且不會重複執行
-          if (bool) {
-            this._renderFrame();
-          }
-        });
-      }
-    });
-
+    //ui view showing
+    this._isAuto ? this._uiView.AutoBtn.Pressed = this._isAuto : this._uiView.alpha = 1;
+    
     this._preRenderFrame();
   }
   
@@ -254,7 +272,7 @@ export class AdvPlayer extends Container {
       let tl = this._translationController.findTranslate(this.currentTrack.Id);
       if (tl) {
         this.currentTrack.TLSpeakerName = tl.SpeakerName;
-        this.currentTrack.TLPhrase = tl.Phrase;
+        this.currentTrack.TLPhrase = tl.translation || tl.Phrase;
       }
     }
 

@@ -1,15 +1,18 @@
 import { loadCsv } from "../utils/loadResources";
 
 export interface IEpisodeTranslateModel {
-  translator: string;
+  translator?: string;
   proofreader?: string;
+  TLTitle? : string;
+  info? : string;
   translateDetail: IEpisodeTranslateDetail[];
 }
 
 export interface IEpisodeTranslateDetail {
-  Id: number;
-  SpeakerName?: string;
+  Id: string ;
+  SpeakerName: string;
   Phrase: string;
+  translation? : string
 }
 
 export const languageVals = ["en", "zhcn", "zhtw"] as const;
@@ -33,17 +36,16 @@ export interface TLProps {
 //   url : '',
 //   async read(epId) {
 //     let source = `${this.url}/${epId}.json`;
-//     const records = await loadCsv<any>(source);
+//     const records = await loadCsv<IEpisodeTranslateDetail>(source);
 //     let translateColumn: IEpisodeTranslateDetail[] = [];
 //     for(let record of records) {
 //       let temp = record;
-//       temp["Phrase"] = record["translation"];
+//       temp["Phrase"] = record["translation"] || '';
 //       delete temp["translation"];
 //       translateColumn.push(temp);
 //     }
 //     return translateColumn.length > 1 ?
 //     {
-//       translator : '',
 //       translateDetail : translateColumn
 //     } :
 //     void 0;
@@ -53,22 +55,27 @@ export interface TLProps {
 const zhcnReader : TranslateReader = {
   language : 'zhcn',
   url : 'https://raw.githubusercontent.com/DreamGallery/WDS-Translation-Csv/main',
-  async read(epId) {
+  async read(epId) : Promise<IEpisodeTranslateModel | undefined> {
     let source = `${this.url}/TranslationCsv/${epId}.csv`;
-    const records = await loadCsv<any>(source);
-    let translateColumn: IEpisodeTranslateDetail[] = [];
-    for(let record of records) {
-      let temp = record;
-      temp["Phrase"] = record["translation"];
-      delete temp["translation"];
-      translateColumn.push(temp);
+    const records = await loadCsv<IEpisodeTranslateDetail>(source);
+    const TLdetail : IEpisodeTranslateModel = {
+      translateDetail : records.filter((record) => record.Phrase) as IEpisodeTranslateDetail[],
     }
-    return translateColumn.length > 1 ?
-    {
-      translator : '',
-      translateDetail : translateColumn
-    } :
-    void 0;
+    for(let record of records.filter((record) => !record.Phrase)) {
+      if(record.Id.toLowerCase() === 'translator'){
+        TLdetail.translator = record.SpeakerName;
+      }
+      if(record.Id.toLowerCase() === 'proofreader'){
+        TLdetail.proofreader = record.SpeakerName;
+      }
+      if(record.Id.toLowerCase() === 'title' || record.Id.toLowerCase() === 'tltitle'){
+        TLdetail.TLTitle = record.SpeakerName;
+      }
+      if(record.Id.toLowerCase() === 'info'){
+        TLdetail.info = record.SpeakerName;
+      }
+    }
+    return records.length > 1 ? TLdetail : void 0;
   }
 }
 
@@ -97,7 +104,7 @@ export class TranslationController {
     }
     
     try{
-      this._translateModel = await reader.read(options.EpId)
+      this._translateModel = await reader.read(options.EpId);
       if(this._translateModel){
         this._hasTranslate = true;
       }

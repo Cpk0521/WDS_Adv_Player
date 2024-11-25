@@ -165,7 +165,9 @@ export class TextView extends IView {
     }
     
     addFontFamily(family : string){
-        this._fontFamilies.push(family);
+        if(!this._fontFamilies.includes(family)){
+            this._fontFamilies.push(family);
+        }
     }
 
     _hideTextPanelAnimation(){        

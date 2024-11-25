@@ -1,9 +1,18 @@
 import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Filter, Container } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { StoryTypes } from "../types/Episode";
+import { IEpisodeTranslateModel } from '../controller/translationController'
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
 import fragmentShader from '../shader/circleShader.frag?raw';
+
+type CoverOpeningProps = {
+    type : StoryTypes;
+    chapter: string;
+    title : string;
+    order : number;
+} 
+& Partial<Omit<IEpisodeTranslateModel, 'translateDetail'>>
 
 export class CoverOpening extends Container {
 
@@ -17,6 +26,9 @@ export class CoverOpening extends Container {
     protected _middle_text : Text;
     protected _bottom_text : Text;
     protected _percent_text : Text;
+    protected _info_text : Text;
+    //Transalte
+    protected _fontFamilies : string[] = ['Ronowstd Gbs'];
     
     constructor(){
         super();
@@ -91,6 +103,20 @@ export class CoverOpening extends Container {
 		this._percent_text.position.set(1920 - 120, 1080 - 80);
         this.addChild(this._percent_text);
 
+        this._info_text = new Text('', {
+            fill: "#4a424b",
+            fontFamily : 'Ronowstd Gbs',
+            fontSize : 45,
+            leading: 4,
+            letterSpacing: -1,
+        })
+        this._info_text.x = 1920/2;
+        this._info_text.y = 775;
+        this._info_text.anchor.set(.5);
+        this._info_text.alpha = 0;
+        this.addChild(this._info_text);
+        anim_arr.push(new Tween(this._info_text).to({alpha : 1}, 1000));
+
         this._top_text = new Text('', {
             fill: "#4a424b",
             fontFamily : 'Ronowstd Gbs',
@@ -148,20 +174,36 @@ export class CoverOpening extends Container {
         return new this();
     }
 
-    init(type : StoryTypes, chapter: string, title : string, order : number){
+    addFontFamily(family : string){
+        if(!this._fontFamilies.includes(family)){
+            this._fontFamilies.push(family);
+        }
+    }
+
+    init({type, chapter, title, order, TLTitle, info} : CoverOpeningProps){
         //text
         if(type === StoryTypes.Main || type === StoryTypes.Event){
             this._top_text.text = chapter;
             this._middle_text.text = `第　${order}　話`;
-            this._bottom_text.text = title;
+            // this._bottom_text.text = title;
+            this._bottom_text.text = !!TLTitle ?  `${TLTitle}` : `${title}`;
+            this._bottom_text.style.fontFamily = !!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1];
         }
 
         if(type === StoryTypes.Side){
             //side`
             this._top_text.text = `サイドストーリー${order == 1 ? '(前編)' : '(後編)'}`;
-            this._middle_text.text = `${title}`
+            // this._middle_text.text = `${title}`
+            this._middle_text.text = !!TLTitle ? `${TLTitle}` : `${title}`;
+            this._middle_text.style.fontFamily = !!TLTitle ? this._fontFamilies[0] : this._fontFamilies[1];
         }
-    
+
+        //info
+        if(info){
+            this._info_text.text = `${info}`;
+            this._info_text.style.fontFamily = this._fontFamilies[1];
+        }
+
         this._animation.start();
     }
 
@@ -179,14 +221,12 @@ export class CoverOpening extends Container {
 
     error(error? : any){
         this._locked = true;
-        // this._percent_text.tint = 0xFF0000;
         this._percent_text.style.fill = 0xFF0000;
         this._percent_text.text = error ? `ERROR : ${error}` : 'ERROR';
     }
 
     log(text : string){    
-        // this._percent_text.tint = 0xFFFFFF;
-        this._percent_text.style.fill = 0xFFFFFF;
+        this._percent_text.style.fill = 0x4a424b;
         this._percent_text.text = text;
     }
     

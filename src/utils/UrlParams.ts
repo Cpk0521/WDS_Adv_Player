@@ -1,13 +1,5 @@
-export function getUrlParams(params: string | string[]) : {[param : string] : string | undefined}{
-    if(typeof params === 'string'){
-        params = [ params ]
-    }
-
+export function getUrlParams(): { [param: string]: string | undefined } {
     let queryString = window.location.search;
     let urlParams = new URLSearchParams(queryString);
-    
-    let result : {[param : string] : string | undefined} = {}
-    params.forEach(param => result[param] = urlParams.get(param) || undefined)
-
-    return result
+    return Object.fromEntries(urlParams.entries());
 }

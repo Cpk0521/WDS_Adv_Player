@@ -1,7 +1,7 @@
 import { Assets, ProgressCallback } from "pixi.js";
 import resPath from "./resPath";
 import { IEpisodeModel } from "../types/Episode";
-import { csvToObj } from 'csv-to-js-parser';
+import { parse } from 'papaparse'
 
 export async function loadJson<T extends Object>(source : string) : Promise<T>{
     return fetch(source)
@@ -9,7 +9,6 @@ export async function loadJson<T extends Object>(source : string) : Promise<T>{
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
-
             return response.json() as Promise<T>;
         })
 }
@@ -17,11 +16,13 @@ export async function loadJson<T extends Object>(source : string) : Promise<T>{
 export async function loadCsv<T>(source : string) : Promise<T[]>{
     return fetch(source)
         .then(response => {
+            if(!response.ok){
+                throw new Error(response.statusText);
+            }
             return response.text();
         })
         .then(async (csvtext)=>{
-            const records : T[] = csvToObj(csvtext, ",");
-            return records as T[];
+            return parse(csvtext, {header: true}).data as T[];
         })
 }
 
@@ -97,7 +98,6 @@ export async function loadResourcesFromEpisode(
 
         //spine
         unit.CharacterMotions.forEach((motion) => {
-            motion.SpineId = motion.SpineId === 10205 ? 10201 : motion.SpineId;
             if (motion.SpineId != 0 && !resources[`spine_${motion.SpineId}`]) {
                 resources[`spine_${motion.SpineId}`] = resPath.spine(
                     motion.SpineId

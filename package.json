@@ -1,6 +1,6 @@
 {
   "name": "wds-adventure-player",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A self made event viewer to render events in game",
   "author": "CPK",
   "license": "MIT",
@@ -22,6 +22,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.5.1",
+    "@types/papaparse": "^5.3.15",
     "gh-pages": "^6.1.0",
     "rimraf": "^5.0.1",
     "terser": "^5.19.2",
@@ -30,7 +31,7 @@
   },
   "dependencies": {
     "@pixi/sound": "^5.2.1",
-    "csv-to-js-parser": "^2.3.7",
+    "papaparse": "^5.4.1",
     "pixi-spine": "^4.0.4",
     "pixi.js": "^7.3.2",
     "tweedle.js": "^2.1.0"
