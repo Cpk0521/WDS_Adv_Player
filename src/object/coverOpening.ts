@@ -29,6 +29,8 @@ export class CoverOpening extends Container {
     protected _info_text : Text;
     //Transalte
     protected _fontFamilies : string[] = ['Ronowstd Gbs'];
+
+    protected _isauto: boolean = false;
     
     constructor(){
         super();
@@ -170,6 +172,10 @@ export class CoverOpening extends Container {
         return this;
     }
 
+    public setAuto(value : boolean){
+        this._isauto = value;
+    }
+
     static new(){
         return new this();
     }
@@ -210,7 +216,9 @@ export class CoverOpening extends Container {
         const text = `${percent} %`
         if(percent === 100){
             this._percent_text.alpha = 0;
-            this._touch_Animation.start();
+            if(!this._isauto){
+                this._touch_Animation.start();
+            }
             return;
         }
         
@@ -243,7 +251,9 @@ export class CoverOpening extends Container {
                 this.visible = false; 
                 Ticker.shared.remove(this._BGupdate, this);
                 this._anim_jugon.stop();
-                this._touch_Animation.stop();
+                if(!this._isauto){
+                    this._touch_Animation.stop();
+                }
                 this.destroy(true);
                 callback?.();
             })

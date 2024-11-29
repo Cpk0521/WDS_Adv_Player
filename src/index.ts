@@ -2,7 +2,8 @@ import { getUrlParams } from "./utils/UrlParams";
 import { AdvPlayer } from "./AdvPlayer";
 import { createApp } from "./utils/createApp";
 
-const { id, tl } = getUrlParams();
+const { id, tl, at } = getUrlParams();
+
 const app = createApp();
 
 const advplayer = AdvPlayer.create();
@@ -16,9 +17,9 @@ advplayer.addTo(app.stage);
 // 1010119
 
 if (id) {
-  advplayer.loadAndPlay(id, tl);
+  advplayer.loadAndPlay(id, tl, at);
 } else {
   let _id = prompt("Please enter the story Id", "1000000");
-  _id && advplayer.loadAndPlay(_id, tl);
+  _id && advplayer.loadAndPlay(_id, tl, at);
 }
 
