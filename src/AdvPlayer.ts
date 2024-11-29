@@ -215,12 +215,12 @@ export class AdvPlayer extends Container {
     translate?: string,
     auto?: string
   ) {
-    this.load(source, translate).then(() => this._onready());
     if (auto === "true") {
       this._isAuto = true;
       this._coverOpening.setAuto(true);
       document.removeEventListener("visibilitychange", this._handleVisibilityChange);
     }
+    this.load(source, translate).then(() => this._onready());
   }
 
   public play() {
@@ -236,11 +236,14 @@ export class AdvPlayer extends Container {
     }
     this._loadPromise = void 0;
     //cover
-    // this._coverOpening.once("pointertap", this._play, this);
-    setTimeout(() => {
-      this._play()},3000
-    );
-  }
+    if (this._isAuto) {
+      setTimeout(() => {
+        this._play()},3000
+      );
+    } else {
+      this._coverOpening.once("pointertap", this._play, this);
+    }
+}
 
   protected _play() {
     this._coverOpening.close(()=>{
