@@ -93,6 +93,7 @@ export class CharacterView extends IView {
                 characterAnimation.eyeAnimationName = expression?.EyeBlink ?? undefined;
                 characterAnimation.cheekAnimationName = expression?.Cheek;
                 characterAnimation.mouthAnimationName = expression?.Mouth;
+                characterAnimation.FacialExpressionMasterId = motiondata.FacialExpressionMasterId
             }
 
             if(motiondata.HeadMotionMasterId){

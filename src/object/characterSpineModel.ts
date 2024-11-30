@@ -13,6 +13,7 @@ export interface characterAnimation {
     headAnimationName : string,
     cheekAnimationName : string,
     headMotionName : string,
+    FacialExpressionMasterId? : number
 }
 
 export interface ILoopMotion {
@@ -118,7 +119,8 @@ export class AdventureAnimationStandCharacter {
             mouthAnimationName, 
             cheekAnimationName, 
             headAnimationName, 
-            headMotionName 
+            headMotionName,
+            FacialExpressionMasterId
         } = characterAnimation
 
         if(bodyAnimationName){    
@@ -137,6 +139,12 @@ export class AdventureAnimationStandCharacter {
             anim.trackTime = 1;
         }
         
+        //如果是新表情 則重設眨眼動作
+        if(FacialExpressionMasterId){
+            clearTimeout(this._eyeBlinkTimeout);
+        }
+
+        //如果有眨眼動作則重設眨眼動作並且眨眼, 如果沒有眨眼動作則沿用用上一次
         if(eyeAnimationName){
             clearTimeout(this._eyeBlinkTimeout);
             this._eyeBlinkAnimation(4, eyeAnimationName, 3.5);
@@ -170,6 +178,7 @@ export class AdventureAnimationStandCharacter {
         this._model.state.tracks[trackIndex].listener = {
             complete : () => {
                 this._eyeBlinkTimeout = setTimeout(()=>{
+                    clearTimeout(this._eyeBlinkTimeout);
                     this._eyeBlinkAnimation(trackIndex, animationName, time);
                 }, time * 1000)
             }
