@@ -215,7 +215,7 @@ export class AdvPlayer extends Container {
     translate?: string,
     auto?: string
   ) {
-    if (auto === "true") {
+    if (auto?.toLocaleLowerCase() === "true") {
       this._isAuto = true;
       this._coverOpening.setAuto(true);
       document.removeEventListener("visibilitychange", this._handleVisibilityChange);

@@ -127,7 +127,7 @@ export class AdventureAnimationStandCharacter {
             entry.mixDuration = motion ? motion.Second : 0.2;
         }
 
-        if(eyebrowAnimationName && eyebrowAnimationName !== this._motions.eyebrowAnimationName){
+        if(eyebrowAnimationName && this.checkhasAnimation(eyebrowAnimationName) && eyebrowAnimationName !== this._motions.eyebrowAnimationName){
             const anim = this._model.state.setAnimation(2, eyebrowAnimationName, false);
             anim.timeScale = 0;
         }
@@ -203,6 +203,10 @@ export class AdventureAnimationStandCharacter {
                 }
             }
         }
+    }
+
+    checkhasAnimation(animationName : string){
+        return this._model.state.hasAnimation(animationName);
     }
 
     showCharacter(){
