@@ -113,9 +113,12 @@ export class BackgroundView extends IView {
       }
 
       newbg = newbg || this._bgMap.get(BackgroundImageFileName)!;
-      newbg.zIndex = 1;
-      newbg.alpha = 0;
-      this.addChild(newbg);
+      
+      if(newbg!= this._currentBG){
+        newbg.zIndex = 1;
+        newbg.alpha = 0;
+        this.addChild(newbg);
+      }
     }
 
     // 如果有 StillPhotoFileName
@@ -210,7 +213,7 @@ export class BackgroundView extends IView {
       });
     }
 
-    if (newbg) {
+    if (newbg && newbg != this._currentBG) {
       newbg.alpha = 1;
       this._currentBG && this.removeChild(this._currentBG);
       this._currentBG = newbg;

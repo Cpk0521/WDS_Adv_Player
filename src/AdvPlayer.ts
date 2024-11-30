@@ -238,8 +238,8 @@ export class AdvPlayer extends Container {
     //cover
     if (this._isAuto) {
       setTimeout(() => {
-        this._play()},3000
-      );
+        this._play();
+      },3000);
     } else {
       this._coverOpening.once("pointertap", this._play, this);
     }
@@ -339,7 +339,14 @@ export class AdvPlayer extends Container {
     }
     
     //spine處理
-    this._characterView.execute(this.currentTrack);
+    //如果有characterImage，則不顯示spine
+    if(this.currentTrack.BackgroundCharacterImageFileName){
+      this._characterView.hideCharacter();
+    }
+    //否則正常執行
+    else{
+      this._characterView.execute(this.currentTrack);
+    }
     
     //對話處理
     let phrase = this.currentTrack.Phrase;
