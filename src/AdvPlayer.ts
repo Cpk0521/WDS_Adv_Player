@@ -53,6 +53,8 @@ export class AdvPlayer extends Container {
   protected _processing: Promise<any>[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
 
+  protected _handleVisibilityChange = this._onBlur.bind(this);
+
   constructor() {
     super();
 
@@ -65,7 +67,7 @@ export class AdvPlayer extends Container {
     this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
     this.sortableChildren = true;
     this.eventMode = "static";
-    document.addEventListener("visibilitychange", this._onBlur.bind(this));
+    document.addEventListener("visibilitychange", this._handleVisibilityChange);
 
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
@@ -210,8 +212,14 @@ export class AdvPlayer extends Container {
 
   public loadAndPlay(
     source: string | IEpisodeModel,
-    translate?: string
+    translate?: string,
+    auto?: string
   ) {
+    if (auto === "true") {
+      this._isAuto = true;
+      this._coverOpening.setAuto(true);
+      document.removeEventListener("visibilitychange", this._handleVisibilityChange);
+    }
     this.load(source, translate).then(() => this._onready());
   }
 
@@ -228,8 +236,14 @@ export class AdvPlayer extends Container {
     }
     this._loadPromise = void 0;
     //cover
-    this._coverOpening.once("pointertap", this._play, this);
-  }
+    if (this._isAuto) {
+      setTimeout(() => {
+        this._play()},3000
+      );
+    } else {
+      this._coverOpening.once("pointertap", this._play, this);
+    }
+}
 
   protected _play() {
     this._coverOpening.close(()=>{
@@ -244,6 +258,10 @@ export class AdvPlayer extends Container {
     this._isAuto ? this._uiView.AutoBtn.Pressed = this._isAuto : this._uiView.alpha = 1;
     
     this._preRenderFrame();
+
+    if (this._isAuto) {
+      this._uiView.hide();
+    }
   }
   
   protected _next() {
