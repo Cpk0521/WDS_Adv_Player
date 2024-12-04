@@ -91,7 +91,7 @@ export class BackgroundView extends IView {
 
       this._currentCard = card || this._bgMap.get(BackgroundCharacterImageFileName)!;
       this._currentCardLabel = BackgroundCharacterImageFileName;
-      this.addChild(this._currentCard!);
+      this.addChild(this._currentCard!);      
     }
 
     let FadeDuration : number = 0;
@@ -167,7 +167,9 @@ export class BackgroundView extends IView {
     if (BackgroundImageFileFadeType) {
       switch (BackgroundImageFileFadeType){
         case FadeTypes.CrossFade:
-          new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000).start();
+          if(newbg){
+            new Tween(newbg).to({ alpha: 1 }, FadeValue1 * 1000).start();
+          }
           FadeDuration = FadeValue1 * 1000;
           break;
         default:
