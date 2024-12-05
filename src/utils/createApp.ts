@@ -10,6 +10,7 @@ export function createApp() {
       hello: false,
       width: 1920,
       height: 1080,
+      backgroundAlpha : 0,
     });
   
     (globalThis as any).__PIXI_APP__ = pixiapp;
