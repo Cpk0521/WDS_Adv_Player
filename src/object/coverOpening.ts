@@ -113,8 +113,8 @@ export class CoverOpening extends Container {
             letterSpacing: -1,
         })
         this._info_text.x = 1920/2;
-        this._info_text.y = 775;
-        this._info_text.anchor.set(.5);
+        this._info_text.y = 745;
+        this._info_text.anchor.set(.5, 0);
         this._info_text.alpha = 0;
         this.addChild(this._info_text);
         anim_arr.push(new Tween(this._info_text).to({alpha : 1}, 1000));
@@ -204,7 +204,7 @@ export class CoverOpening extends Container {
 
         //info
         if(info){
-            this._info_text.text = `${info}`;
+            this._info_text.text = `${info.replaceAll('/n', '\n').replaceAll("\\n", '\n')}`;
             this._info_text.style.fontFamily = this._fontFamilies[1] || this._fontFamilies[0];
         }
 
