@@ -61,39 +61,17 @@ export class BackgroundView extends IView {
       this._currentCameraEffects = void 0;
     }
 
-    //清除之前的 BackgroundCharacterImageFileName
-    if(!BackgroundCharacterImageFileName && this._currentCard){
-      this.removeChild(this._currentCard);
-      this._currentCard = void 0
-    }
-
-    //如果沒有就什麼都不做
+    //如果都沒有
     if (
       !BackgroundImageFileName &&
       !BackgroundCharacterImageFileName &&
       !StillPhotoFileName
     ) {
+      //清除之前的 BackgroundCharacterImageFileName
+      this._characterImageControl();
       return;
     }
-
-    //如果有 BackgroundCharacterImageFileName
-    if (BackgroundCharacterImageFileName && BackgroundCharacterImageFileName != this._currentCardLabel){
-      let card;
-
-      if (!this._bgMap.has(BackgroundCharacterImageFileName)){
-        card = new Sprite(Assets.get(`card_${BackgroundCharacterImageFileName}`));
-        card.anchor.set(0.5);
-        card.scale.set(1.17);
-        card.position.set(1920 / 2, 1080 / 2);
-        card.zIndex = 2;
-        this._bgMap.set(BackgroundCharacterImageFileName, card);
-      }
-
-      this._currentCard = card || this._bgMap.get(BackgroundCharacterImageFileName)!;
-      this._currentCardLabel = BackgroundCharacterImageFileName;
-      this.addChild(this._currentCard!);      
-    }
-
+  
     let FadeDuration : number = 0;
     let ZoomDuration : number = 0;
     let newbg: Sprite | undefined ;
@@ -136,9 +114,12 @@ export class BackgroundView extends IView {
       }
     
       newbg = newbg || this._bgMap.get(StillPhotoFileName)!;
-      newbg.zIndex = 1;
-      newbg.alpha = 0;
-      this.addChild(newbg);
+
+      if(newbg!= this._currentBG){
+        newbg.zIndex = 1;
+        newbg.alpha = 0;
+        this.addChild(newbg);
+      }
     }
     
     // 如果有SceneCameraEffect
@@ -182,6 +163,7 @@ export class BackgroundView extends IView {
     //如果有Fade效果 會等一段時間才更換背景 並等待動畫完成
     if(FadeDuration > 0){
       setTimeout(()=>{
+        this._characterImageControl(BackgroundCharacterImageFileName);
         this._insertBG(newbg, this._cuttentZoom);
       }, FadeDuration);  
       
@@ -194,6 +176,7 @@ export class BackgroundView extends IView {
     
     //如果沒有Fade效果 但有zoomEffect 就直接更換背景 並等待動畫完成
     if(this._cuttentZoom){
+      this._characterImageControl(BackgroundCharacterImageFileName); //正常來說這邊應該沒有 但為了避免bug所以還是加上
       this._insertBG(newbg, this._cuttentZoom);
       return new Promise<void>((res, _) => {
         setTimeout(()=>{
@@ -203,6 +186,7 @@ export class BackgroundView extends IView {
     }
 
     //什麼都沒有 就直接換
+    this._characterImageControl(BackgroundCharacterImageFileName);
     this._insertBG(newbg, this._cuttentZoom);
     return;
   }
@@ -220,6 +204,32 @@ export class BackgroundView extends IView {
       this._currentBG && this.removeChild(this._currentBG);
       this._currentBG = newbg;
     }
+  }
+
+  _characterImageControl(BackgroundCharacterImageFileName? : string) {
+    //清除之前的 BackgroundCharacterImageFileName
+    if(!BackgroundCharacterImageFileName && this._currentCard){
+      this.removeChild(this._currentCard);
+      this._currentCard = void 0
+    }
+
+    // 如果有 BackgroundCharacterImageFileName
+    if (BackgroundCharacterImageFileName && BackgroundCharacterImageFileName != this._currentCardLabel){
+      let card;
+
+      if (!this._bgMap.has(BackgroundCharacterImageFileName)){
+        card = new Sprite(Assets.get(`card_${BackgroundCharacterImageFileName}`));
+        card.anchor.set(0.5);
+        card.scale.set(1.17);
+        card.position.set(1920 / 2, 1080 / 2);
+        card.zIndex = 2;
+        this._bgMap.set(BackgroundCharacterImageFileName, card);
+      }
+
+      this._currentCard = card || this._bgMap.get(BackgroundCharacterImageFileName)!;
+      this._currentCardLabel = BackgroundCharacterImageFileName;
+      this.addChild(this._currentCard!);      
+    }  
   }
 
 }

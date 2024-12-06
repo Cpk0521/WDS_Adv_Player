@@ -215,15 +215,12 @@ export class AdvPlayer extends Container {
     translate?: string,
     auto?: string
   ) {
-    if (auto?.toLocaleLowerCase() === "true") {
-      this._isAuto = true;
-      this._coverOpening.setAuto(true);
-      document.removeEventListener("visibilitychange", this._handleVisibilityChange);
-    }
+    this._autoLock(auto);
     this.load(source, translate).then(() => this._onready());
   }
 
-  public play() {
+  public play(auto?: string) {
+    this._autoLock(auto);
     if (this._loadPromise) {
       this._loadPromise.then(() => this._onready());
     }
@@ -271,6 +268,7 @@ export class AdvPlayer extends Container {
 
   protected async _preRenderFrame(){
     if(this._currentIndex != 0 || !this.currentTrack) return;
+    this._effectView.execute(this.currentTrack);
     this._backgroundView.execute(this.currentTrack);
   }
 
@@ -434,6 +432,13 @@ export class AdvPlayer extends Container {
     if (this._isAuto) {
       this._uiView.ShortShow();
     }
+  }
+
+  protected _autoLock(autoString? : string){
+    if(autoString?.toLocaleLowerCase() != 'true') return;
+    this._isAuto = true;
+    this._coverOpening.setAuto(true);
+    document.removeEventListener("visibilitychange", this._handleVisibilityChange);
   }
 
   get Track() {
