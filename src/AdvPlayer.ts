@@ -297,18 +297,19 @@ export class AdvPlayer extends Container {
 
     // 隱藏上輪的
     this._soundController.sound(this.currentTrack);
-    this._effectView.hideEffect(this.currentTrack);
 
     let fade_process = this._fadeView.execute(this.currentTrack);
     if (fade_process) {
       this._processing.push(fade_process);
       this._characterView.hideCharacter(); //隱藏在場上的角色
       this._textView.hideTextPanel(); //
-      // await fade_process;
     }
 
     //effect處理
-    this._effectView.execute(this.currentTrack);
+    let effect_process = this._effectView.execute(this.currentTrack);
+    if(effect_process){
+      this._processing.push(effect_process);
+    }
 
     //背景處理
     if(index > 0){
@@ -317,7 +318,6 @@ export class AdvPlayer extends Container {
         this._processing.push(bg_process);
         this._characterView.hideCharacter(); //隱藏在場上的角色
         this._textView.hideTextPanel(); //
-        // await bg_process;
       }
     };
 
@@ -386,7 +386,7 @@ export class AdvPlayer extends Container {
     if (this._isAuto) {
       // 計算auto等候時間
       // duration += (advConstant.ProcessingWaitTime * 1000);
-      duration += 1500;
+      duration += 1700;
 
       return (this._trackPromise = new Promise((res, _) => {
         let timeout: any = setTimeout(() => {

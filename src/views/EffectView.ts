@@ -3,7 +3,7 @@
 import { Sprite, Texture, ObservablePoint } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { IView } from "../types/View";
-import { IEpisodeEffect, WindowEffects } from "../types/Episode";
+import { IEpisodeEffect, IEpisodeFade, WindowEffects } from "../types/Episode";
 import { baseAssets } from "../constant/advConstant";
 
 export class EffectView extends IView {
@@ -73,37 +73,35 @@ export class EffectView extends IView {
         }
     }
 
-    execute(effect : IEpisodeEffect): void {
+    execute({ 
+        Effect, 
+        WindowEffect,
+        BackgroundImageFileFadeType,
+        FadeValue1 = 0,
+    } : IEpisodeEffect & IEpisodeFade){
         
-        const { Effect, WindowEffect } = effect
-
         if(Effect){
             console.log('暫時沒有見過 所以不知道怎樣做!', Effect)
         }
 
-        if(WindowEffect){
-            switch (WindowEffect) {
-                case WindowEffects.Sepia:
-                    if(!this._sepiaEffectObject.visible){
-                        this._sepiaEffectObject.visible = true;
-                    }
-                    // if(!this._sepia_filter.enabled){
-                    //     this._sepia_filter.enabled = true;
-                    // }
-                    break
-                case WindowEffects.WhiteBlur:
-                    if(!this._whiteBlurEffectObject.visible){
-                        this._whiteBlurEffectObject.visible = true;
-                        // this._blur_filter.enabled = true;
-                        this._whiteBlurEffectAnimation.start();
-                    }
-                    break
-            }
+        const FadeDuration = BackgroundImageFileFadeType ? FadeValue1 * 1000 : 0;
+        
+        if(FadeDuration > 0){
+            return new Promise<void>((res, _) => {
+                setTimeout(() => {
+                    this._effectControl(WindowEffect);
+                    res();
+                }, FadeDuration)
+            })
         }
+
+        this._effectControl(WindowEffect);
+        return;
     }
 
-    hideEffect(effect : IEpisodeEffect){
-        if(!effect.WindowEffect){
+    _effectControl(WindowEffect? : WindowEffects){
+        // 如果沒有WindowEffect 之前的有顯示的話就隱藏
+        if(!WindowEffect){
             if(this._sepiaEffectObject.visible){
                 this._sepiaEffectObject.visible = false;
             }
@@ -115,9 +113,26 @@ export class EffectView extends IView {
                 // this._blur_filter.enabled = false;
                 this._whiteBlurEffectAnimation.stop();
             }
+            return;
+        }
+
+        // 如果有WindowEffect 就顯示出來或者繼續顯示
+        if(WindowEffect){
+            switch (WindowEffect){
+                case WindowEffects.Sepia:
+                    if(!this._sepiaEffectObject.visible){
+                        this._sepiaEffectObject.visible = true;
+                    }
+                    break;
+                case WindowEffects.WhiteBlur:
+                    if(!this._whiteBlurEffectObject.visible){
+                        this._whiteBlurEffectObject.visible = true;                        
+                        this._whiteBlurEffectAnimation.start();
+                    }
+                    break;
+            }
         }
     }
-
 
     get epiaEffectObject(){
         return this._sepiaEffectObject;
