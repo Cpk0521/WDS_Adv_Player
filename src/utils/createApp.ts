@@ -1,22 +1,27 @@
 import { Group } from "tweedle.js";
 import { Application, Ticker } from "pixi.js";
 
-export function createApp() {
+export async function createApp(preference: 'webgl' | 'webgpu' = 'webgpu') {
     if (document.getElementById("WDS")) {
       document.getElementById("WDS")!.remove();
     }
   
-    const pixiapp = new Application<HTMLCanvasElement>({
-      hello: false,
+    const pixiapp = new Application();
+
+    await pixiapp.init({
+      preference,
+      hello : true,
       width: 1920,
       height: 1080,
-      backgroundAlpha : 0,
+      antialias: true,//
+      backgroundAlpha: 1,//
+      backgroundColor : 0xdddddd,//
     });
   
     (globalThis as any).__PIXI_APP__ = pixiapp;
   
-    pixiapp.view.setAttribute("id", "WDS");
-    document.body.appendChild(pixiapp.view);
+    (pixiapp.canvas as HTMLCanvasElement).setAttribute("id", "WDS");
+    document.body.appendChild(pixiapp.canvas as HTMLCanvasElement);
   
     Ticker.shared.add(() => Group.shared.update());
   
@@ -35,8 +40,8 @@ export function createApp() {
       let resizedX = Math.floor(1920 * ratio);
       let resizedY = Math.floor(1080 * ratio);
   
-      pixiapp.view.style.width = resizedX + "px";
-      pixiapp.view.style.height = resizedY + "px";
+      pixiapp.canvas.style.width = resizedX + "px";
+      pixiapp.canvas.style.height = resizedY + "px";
     };
   
     window.onresize = () => resize();
