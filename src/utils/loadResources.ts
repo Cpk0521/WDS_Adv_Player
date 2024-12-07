@@ -102,6 +102,9 @@ export async function loadResourcesFromEpisode(
                 resources[`spine_${motion.SpineId}`] = resPath.spine(
                     motion.SpineId
                 );
+                resources[`spine_atlas_${motion.SpineId}`] = resPath.spine_atlas(
+                    motion.SpineId
+                );
             }
         });
     });

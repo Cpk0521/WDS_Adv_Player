@@ -1,5 +1,4 @@
 import { Container, FederatedPointerEvent, Assets, Ticker} from "pixi.js";
-import "@pixi-spine/loader-uni";
 import "@pixi/sound";
 // import { Group } from 'tweedle.js';
 //type

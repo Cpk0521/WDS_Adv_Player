@@ -5,6 +5,7 @@ export const resPath = {
     seMaster : `${baseAssetsUrl}/manifest/SE.json`, 
     advJson : (epId : number | string) => `${baseAssetsUrl}/episode/${epId}.json`,
     spine : (spineId : number) => `${baseAssetsUrl}/spine/${spineId}.skel`,
+    spine_atlas : (spineId : number) => `${baseAssetsUrl}/spine/${spineId}.atlas`,
     background : (name : string) => `${baseAssetsUrl}/background/${name}.png`,
     cards : (charId : string) => `${baseAssetsUrl}/card/${charId}.png`,
     still : (label : string) => `${baseAssetsUrl}/still/${label}.png`,
