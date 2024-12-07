@@ -320,8 +320,8 @@ export class AdvPlayer extends Container {
 
     //有動畫要處理的話 就隱藏對話框及角色
     if(this._processing.length > 0){
-      this._characterView.hideCharacter(); //隱藏在場上的角色
       await this._textView.hideTextPanelAnimation();
+      this._characterView.hideCharacter(); //隱藏在場上的角色
     }
 
     // SE&BGM 聲音處理
@@ -369,6 +369,7 @@ export class AdvPlayer extends Container {
     // 計算等候時間
     let duration = Math.max(
       this._soundController.voiceDuration, 
+      this._soundController.seDuration, 
       this._textView.typingTotalDuration ?? 0
     );
 
@@ -377,7 +378,7 @@ export class AdvPlayer extends Container {
       if (isSameGroup) {
         duration += 1200;
       }
-
+      
       setTimeout(() => {
         //確保按下了一次後不會繼續
         if (index + 1 === this._currentIndex) {
