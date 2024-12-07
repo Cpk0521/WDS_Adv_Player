@@ -1,6 +1,6 @@
 import { Assets, AlphaFilter, Graphics} from "pixi.js";
 import { Tween } from "tweedle.js";
-import { Spine } from '@esotericsoftware/spine-pixi';
+import { Spine } from '@esotericsoftware/spine-pixi-v7';
 import { baseAssets } from "../constant/advConstant";
 
 export class AdvTimeElapsedAnimation extends Graphics{

@@ -1,0 +1,512 @@
+diff --git a/node_modules/@esotericsoftware/spine-core/dist/SkeletonBinary.js b/node_modules/@esotericsoftware/spine-core/dist/SkeletonBinary.js
+index 441b116..76fb6c7 100644
+--- a/node_modules/@esotericsoftware/spine-core/dist/SkeletonBinary.js
++++ b/node_modules/@esotericsoftware/spine-core/dist/SkeletonBinary.js
+@@ -68,7 +68,7 @@ export class SkeletonBinary {
+         skeletonData.y = input.readFloat();
+         skeletonData.width = input.readFloat();
+         skeletonData.height = input.readFloat();
+-        skeletonData.referenceScale = input.readFloat() * scale;
++        skeletonData.referenceScale = scale;
+         let nonessential = input.readBoolean();
+         if (nonessential) {
+             skeletonData.fps = input.readFloat();
+@@ -100,12 +100,12 @@ export class SkeletonBinary {
+             data.shearX = input.readFloat();
+             data.shearY = input.readFloat();
+             data.length = input.readFloat() * scale;
+-            data.inherit = input.readByte();
++            data.inherit = input.readInt(true);
+             data.skinRequired = input.readBoolean();
+             if (nonessential) {
+                 Color.rgba8888ToColor(data.color, input.readInt32());
+-                data.icon = input.readString() ?? undefined;
+-                data.visible = input.readBoolean();
++                data.icon = undefined;
++                data.visible = true;
+             }
+             skeletonData.bones.push(data);
+         }
+@@ -124,7 +124,7 @@ export class SkeletonBinary {
+             data.attachmentName = input.readStringRef();
+             data.blendMode = input.readInt(true);
+             if (nonessential)
+-                data.visible = input.readBoolean();
++                data.visible = true;
+             skeletonData.slots.push(data);
+         }
+         // IK constraints.
+@@ -135,20 +135,17 @@ export class SkeletonBinary {
+                 throw new Error("IK constraint data name must not be null.");
+             let data = new IkConstraintData(name);
+             data.order = input.readInt(true);
++            data.skinRequired = input.readBoolean();
+             nn = input.readInt(true);
+             for (let ii = 0; ii < nn; ii++)
+                 data.bones.push(skeletonData.bones[input.readInt(true)]);
+             data.target = skeletonData.bones[input.readInt(true)];
+-            let flags = input.readByte();
+-            data.skinRequired = (flags & 1) != 0;
+-            data.bendDirection = (flags & 2) != 0 ? 1 : -1;
+-            data.compress = (flags & 4) != 0;
+-            data.stretch = (flags & 8) != 0;
+-            data.uniform = (flags & 16) != 0;
+-            if ((flags & 32) != 0)
+-                data.mix = (flags & 64) != 0 ? input.readFloat() : 1;
+-            if ((flags & 128) != 0)
+-                data.softness = input.readFloat() * scale;
++            data.mix = input.readFloat();
++            data.softness = input.readFloat() * scale;
++            data.bendDirection = input.readByte();
++            data.compress = input.readBoolean();
++            data.stretch = input.readBoolean();
++            data.uniform = input.readBoolean();
+             skeletonData.ikConstraints.push(data);
+         }
+         // Transform constraints.
+@@ -159,39 +156,25 @@ export class SkeletonBinary {
+                 throw new Error("Transform constraint data name must not be null.");
+             let data = new TransformConstraintData(name);
+             data.order = input.readInt(true);
++            data.skinRequired = input.readBoolean();
+             nn = input.readInt(true);
+             for (let ii = 0; ii < nn; ii++)
+                 data.bones.push(skeletonData.bones[input.readInt(true)]);
+             data.target = skeletonData.bones[input.readInt(true)];
+-            let flags = input.readByte();
+-            data.skinRequired = (flags & 1) != 0;
+-            data.local = (flags & 2) != 0;
+-            data.relative = (flags & 4) != 0;
+-            if ((flags & 8) != 0)
+-                data.offsetRotation = input.readFloat();
+-            if ((flags & 16) != 0)
+-                data.offsetX = input.readFloat() * scale;
+-            if ((flags & 32) != 0)
+-                data.offsetY = input.readFloat() * scale;
+-            if ((flags & 64) != 0)
+-                data.offsetScaleX = input.readFloat();
+-            if ((flags & 128) != 0)
+-                data.offsetScaleY = input.readFloat();
+-            flags = input.readByte();
+-            if ((flags & 1) != 0)
+-                data.offsetShearY = input.readFloat();
+-            if ((flags & 2) != 0)
+-                data.mixRotate = input.readFloat();
+-            if ((flags & 4) != 0)
+-                data.mixX = input.readFloat();
+-            if ((flags & 8) != 0)
+-                data.mixY = input.readFloat();
+-            if ((flags & 16) != 0)
+-                data.mixScaleX = input.readFloat();
+-            if ((flags & 32) != 0)
+-                data.mixScaleY = input.readFloat();
+-            if ((flags & 64) != 0)
+-                data.mixShearY = input.readFloat();
++            data.local = input.readBoolean();
++            data.relative = input.readBoolean();
++            data.offsetRotation = input.readFloat();
++            data.offsetX = input.readFloat() * scale;
++            data.offsetY = input.readFloat() * scale;
++            data.offsetScaleX = input.readFloat();
++            data.offsetScaleY = input.readFloat();
++            data.offsetShearY = input.readFloat();
++            data.mixRotate = input.readFloat();
++            data.mixX = input.readFloat();
++            data.mixY = input.readFloat();
++            data.mixScaleX = input.readFloat();
++            data.mixScaleY = input.readFloat();
++            data.mixShearY = input.readFloat();
+             skeletonData.transformConstraints.push(data);
+         }
+         // Path constraints.
+@@ -207,12 +190,10 @@ export class SkeletonBinary {
+             for (let ii = 0; ii < nn; ii++)
+                 data.bones.push(skeletonData.bones[input.readInt(true)]);
+             data.target = skeletonData.slots[input.readInt(true)];
+-            const flags = input.readByte();
+-            data.positionMode = flags & 1;
+-            data.spacingMode = (flags >> 1) & 3;
+-            data.rotateMode = (flags >> 3) & 3;
+-            if ((flags & 128) != 0)
+-                data.offsetRotation = input.readFloat();
++            data.positionMode = input.readInt(true);
++            data.spacingMode = input.readInt(true);
++            data.rotateMode = input.readInt(true);
++            data.offsetRotation = input.readFloat();
+             data.position = input.readFloat();
+             if (data.positionMode == PositionMode.Fixed)
+                 data.position *= scale;
+@@ -224,53 +205,6 @@ export class SkeletonBinary {
+             data.mixY = input.readFloat();
+             skeletonData.pathConstraints.push(data);
+         }
+-        // Physics constraints.
+-        n = input.readInt(true);
+-        for (let i = 0, nn; i < n; i++) {
+-            const name = input.readString();
+-            if (!name)
+-                throw new Error("Physics constraint data name must not be null.");
+-            const data = new PhysicsConstraintData(name);
+-            data.order = input.readInt(true);
+-            data.bone = skeletonData.bones[input.readInt(true)];
+-            let flags = input.readByte();
+-            data.skinRequired = (flags & 1) != 0;
+-            if ((flags & 2) != 0)
+-                data.x = input.readFloat();
+-            if ((flags & 4) != 0)
+-                data.y = input.readFloat();
+-            if ((flags & 8) != 0)
+-                data.rotate = input.readFloat();
+-            if ((flags & 16) != 0)
+-                data.scaleX = input.readFloat();
+-            if ((flags & 32) != 0)
+-                data.shearX = input.readFloat();
+-            data.limit = ((flags & 64) != 0 ? input.readFloat() : 5000) * scale;
+-            data.step = 1 / input.readUnsignedByte();
+-            data.inertia = input.readFloat();
+-            data.strength = input.readFloat();
+-            data.damping = input.readFloat();
+-            data.massInverse = (flags & 128) != 0 ? input.readFloat() : 1;
+-            data.wind = input.readFloat();
+-            data.gravity = input.readFloat();
+-            flags = input.readByte();
+-            if ((flags & 1) != 0)
+-                data.inertiaGlobal = true;
+-            if ((flags & 2) != 0)
+-                data.strengthGlobal = true;
+-            if ((flags & 4) != 0)
+-                data.dampingGlobal = true;
+-            if ((flags & 8) != 0)
+-                data.massGlobal = true;
+-            if ((flags & 16) != 0)
+-                data.windGlobal = true;
+-            if ((flags & 32) != 0)
+-                data.gravityGlobal = true;
+-            if ((flags & 64) != 0)
+-                data.mixGlobal = true;
+-            data.mix = (flags & 128) != 0 ? input.readFloat() : 1;
+-            skeletonData.physicsConstraints.push(data);
+-        }
+         // Default skin.
+         let defaultSkin = this.readSkin(input, skeletonData, true, nonessential);
+         if (defaultSkin) {
+@@ -341,12 +275,10 @@ export class SkeletonBinary {
+             skin = new Skin("default");
+         }
+         else {
+-            let skinName = input.readString();
++            let skinName = input.readStringRef();
+             if (!skinName)
+                 throw new Error("Skin name must not be null.");
+             skin = new Skin(skinName);
+-            if (nonessential)
+-                Color.rgba8888ToColor(skin.color, input.readInt32());
+             skin.bones.length = input.readInt(true);
+             for (let i = 0, n = skin.bones.length; i < n; i++)
+                 skin.bones[i] = skeletonData.bones[input.readInt(true)];
+@@ -356,8 +288,6 @@ export class SkeletonBinary {
+                 skin.constraints.push(skeletonData.transformConstraints[input.readInt(true)]);
+             for (let i = 0, n = input.readInt(true); i < n; i++)
+                 skin.constraints.push(skeletonData.pathConstraints[input.readInt(true)]);
+-            for (let i = 0, n = input.readInt(true); i < n; i++)
+-                skin.constraints.push(skeletonData.physicsConstraints[input.readInt(true)]);
+             slotCount = input.readInt(true);
+         }
+         for (let i = 0; i < slotCount; i++) {
+@@ -375,22 +305,20 @@ export class SkeletonBinary {
+     }
+     readAttachment(input, skeletonData, skin, slotIndex, attachmentName, nonessential) {
+         let scale = this.scale;
+-        let flags = input.readByte();
+-        const name = (flags & 8) != 0 ? input.readStringRef() : attachmentName;
+-        if (!name)
+-            throw new Error("Attachment name must not be null");
+-        switch ((flags & 0b111)) { // BUG?
++        let name = input.readStringRef();
++        if (!name) name = attachmentName;
++        switch (input.readByte()) {
+             case AttachmentType.Region: {
+-                let path = (flags & 16) != 0 ? input.readStringRef() : null;
+-                const color = (flags & 32) != 0 ? input.readInt32() : 0xffffffff;
+-                const sequence = (flags & 64) != 0 ? this.readSequence(input) : null;
+-                let rotation = (flags & 128) != 0 ? input.readFloat() : 0;
++                let path = input.readStringRef();
++                let rotation = input.readFloat();
+                 let x = input.readFloat();
+                 let y = input.readFloat();
+                 let scaleX = input.readFloat();
+                 let scaleY = input.readFloat();
+                 let width = input.readFloat();
+                 let height = input.readFloat();
++                let color = input.readInt32();
++                let sequence = this.readSequence(input);
+                 if (!path)
+                     path = name;
+                 let region = this.attachmentLoader.newRegionAttachment(skin, name, path, sequence);
+@@ -411,7 +339,8 @@ export class SkeletonBinary {
+                 return region;
+             }
+             case AttachmentType.BoundingBox: {
+-                let vertices = this.readVertices(input, (flags & 16) != 0);
++                let vertexCount = input.readInt(true);
++                let vertices = this.readVertices(input, vertexCount);
+                 let color = nonessential ? input.readInt32() : 0;
+                 let box = this.attachmentLoader.newBoundingBoxAttachment(skin, name);
+                 if (!box)
+@@ -424,17 +353,18 @@ export class SkeletonBinary {
+                 return box;
+             }
+             case AttachmentType.Mesh: {
+-                let path = (flags & 16) != 0 ? input.readStringRef() : name;
+-                const color = (flags & 32) != 0 ? input.readInt32() : 0xffffffff;
+-                const sequence = (flags & 64) != 0 ? this.readSequence(input) : null;
++                let path = input.readStringRef();
++                const color = input.readInt32();
++                let vertexCount = input.readInt(true);
++                const uvs = this.readFloatArray(input, vertexCount << 1, 1);
++                const triangles = this.readShortArray(input);
++                const vertices = this.readVertices(input, vertexCount);
+                 const hullLength = input.readInt(true);
+-                const vertices = this.readVertices(input, (flags & 128) != 0);
+-                const uvs = this.readFloatArray(input, vertices.length, 1);
+-                const triangles = this.readShortArray(input, (vertices.length - hullLength - 2) * 3);
++                const sequence = this.readSequence(input);
+                 let edges = [];
+                 let width = 0, height = 0;
+                 if (nonessential) {
+-                    edges = this.readShortArray(input, input.readInt(true));
++                    edges = this.readShortArray(input);
+                     width = input.readFloat();
+                     height = input.readFloat();
+                 }
+@@ -462,14 +392,14 @@ export class SkeletonBinary {
+                 return mesh;
+             }
+             case AttachmentType.LinkedMesh: {
+-                const path = (flags & 16) != 0 ? input.readStringRef() : name;
+-                if (path == null)
+-                    throw new Error("Path of linked mesh must not be null");
+-                const color = (flags & 32) != 0 ? input.readInt32() : 0xffffffff;
+-                const sequence = (flags & 64) != 0 ? this.readSequence(input) : null;
+-                const inheritTimelines = (flags & 128) != 0;
+-                const skinIndex = input.readInt(true);
++                let path = input.readStringRef();
++                if (!path)
++                    path = name;
++                const color = input.readInt32();
++                const skinName = input.readStringRef();
+                 const parent = input.readStringRef();
++                const inheritTimelines = input.readBoolean();
++                const sequence = this.readSequence(input);
+                 let width = 0, height = 0;
+                 if (nonessential) {
+                     width = input.readFloat();
+@@ -485,13 +415,14 @@ export class SkeletonBinary {
+                     mesh.width = width * scale;
+                     mesh.height = height * scale;
+                 }
+-                this.linkedMeshes.push(new LinkedMesh(mesh, skinIndex, slotIndex, parent, inheritTimelines));
++                this.linkedMeshes.push(new LinkedMesh(mesh, skinName, slotIndex, parent, inheritTimelines));
+                 return mesh;
+             }
+             case AttachmentType.Path: {
+-                const closed = (flags & 16) != 0;
+-                const constantSpeed = (flags & 32) != 0;
+-                const vertices = this.readVertices(input, (flags & 64) != 0);
++                const closed = input.readBoolean();
++                const constantSpeed = input.readBoolean();
++                let vertexCount = input.readInt(true);
++                const vertices = this.readVertices(input, vertexCount);
+                 const lengths = Utils.newArray(vertices.length / 6, 0);
+                 for (let i = 0, n = lengths.length; i < n; i++)
+                     lengths[i] = input.readFloat() * scale;
+@@ -526,7 +457,8 @@ export class SkeletonBinary {
+             }
+             case AttachmentType.Clipping: {
+                 const endSlotIndex = input.readInt(true);
+-                const vertices = this.readVertices(input, (flags & 16) != 0);
++                let vertexCount = input.readInt(true);
++                const vertices = this.readVertices(input, vertexCount);
+                 let color = nonessential ? input.readInt32() : 0;
+                 let clip = this.attachmentLoader.newClippingAttachment(skin, name);
+                 if (!clip)
+@@ -543,18 +475,18 @@ export class SkeletonBinary {
+         return null;
+     }
+     readSequence(input) {
++        if (!input.readBoolean()) return null;
+         let sequence = new Sequence(input.readInt(true));
+         sequence.start = input.readInt(true);
+         sequence.digits = input.readInt(true);
+         sequence.setupIndex = input.readInt(true);
+         return sequence;
+     }
+-    readVertices(input, weighted) {
++    readVertices(input, vertexCount) {
+         const scale = this.scale;
+-        const vertexCount = input.readInt(true);
+         const vertices = new Vertices();
+         vertices.length = vertexCount << 1;
+-        if (!weighted) {
++        if (!input.readBoolean()) {
+             vertices.vertices = this.readFloatArray(input, vertices.length, scale);
+             return vertices;
+         }
+@@ -586,10 +518,12 @@ export class SkeletonBinary {
+         }
+         return array;
+     }
+-    readShortArray(input, n) {
++    // readShortArray(input, n) {
++    readShortArray(input) {
++        let n = input.readInt(true);
+         let array = new Array(n);
+         for (let i = 0; i < n; i++)
+-            array[i] = input.readInt(true);
++            array[i] = input.readShort();
+         return array;
+     }
+     readAnimation(input, name, skeletonData) {
+@@ -800,14 +734,6 @@ export class SkeletonBinary {
+             let boneIndex = input.readInt(true);
+             for (let ii = 0, nn = input.readInt(true); ii < nn; ii++) {
+                 let type = input.readByte(), frameCount = input.readInt(true);
+-                if (type == BONE_INHERIT) {
+-                    let timeline = new InheritTimeline(frameCount, boneIndex);
+-                    for (let frame = 0; frame < frameCount; frame++) {
+-                        timeline.setFrame(frame, input.readFloat(), input.readByte());
+-                    }
+-                    timelines.push(timeline);
+-                    continue;
+-                }
+                 let bezierCount = input.readInt(true);
+                 switch (type) {
+                     case BONE_ROTATE:
+@@ -846,22 +772,21 @@ export class SkeletonBinary {
+         for (let i = 0, n = input.readInt(true); i < n; i++) {
+             let index = input.readInt(true), frameCount = input.readInt(true), frameLast = frameCount - 1;
+             let timeline = new IkConstraintTimeline(frameCount, input.readInt(true), index);
+-            let flags = input.readByte();
+-            let time = input.readFloat(), mix = (flags & 1) != 0 ? ((flags & 2) != 0 ? input.readFloat() : 1) : 0;
+-            let softness = (flags & 4) != 0 ? input.readFloat() * scale : 0;
++            let time = input.readFloat(), mix = input.readFloat();
++            let softness = input.readFloat() * scale;
+             for (let frame = 0, bezier = 0;; frame++) {
+-                timeline.setFrame(frame, time, mix, softness, (flags & 8) != 0 ? 1 : -1, (flags & 16) != 0, (flags & 32) != 0);
++                timeline.setFrame(frame, time, mix, softness, input.readByte(), input.readBoolean(), input.readBoolean());
+                 if (frame == frameLast)
+                     break;
+-                flags = input.readByte();
+-                const time2 = input.readFloat(), mix2 = (flags & 1) != 0 ? ((flags & 2) != 0 ? input.readFloat() : 1) : 0;
+-                const softness2 = (flags & 4) != 0 ? input.readFloat() * scale : 0;
+-                if ((flags & 64) != 0) {
+-                    timeline.setStepped(frame);
+-                }
+-                else if ((flags & 128) != 0) {
+-                    setBezier(input, timeline, bezier++, frame, 0, time, time2, mix, mix2, 1);
+-                    setBezier(input, timeline, bezier++, frame, 1, time, time2, softness, softness2, scale);
++                const time2 = input.readFloat(), mix2 = input.readFloat();
++                const softness2 = input.readFloat() * scale;
++                switch (input.readByte()) {
++                    case CURVE_STEPPED:
++                        timeline.setStepped(frame);
++                        break;
++                    case CURVE_BEZIER:
++                        setBezier(input, timeline, bezier++, frame, 0, time, time2, mix, mix2, 1);
++                        setBezier(input, timeline, bezier++, frame, 1, time, time2, softness, softness2, scale);
+                 }
+                 time = time2;
+                 mix = mix2;
+@@ -906,18 +831,17 @@ export class SkeletonBinary {
+             let index = input.readInt(true);
+             let data = skeletonData.pathConstraints[index];
+             for (let ii = 0, nn = input.readInt(true); ii < nn; ii++) {
+-                const type = input.readByte(), frameCount = input.readInt(true), bezierCount = input.readInt(true);
+-                switch (type) {
++                switch (input.readByte()) {
+                     case PATH_POSITION:
+                         timelines
+-                            .push(readTimeline1(input, new PathConstraintPositionTimeline(frameCount, bezierCount, index), data.positionMode == PositionMode.Fixed ? scale : 1));
++                            .push(readTimeline1(input, new PathConstraintPositionTimeline(input.readInt(true), input.readInt(true), index), data.positionMode == PositionMode.Fixed ? scale : 1));
+                         break;
+                     case PATH_SPACING:
+                         timelines
+-                            .push(readTimeline1(input, new PathConstraintSpacingTimeline(frameCount, bezierCount, index), data.spacingMode == SpacingMode.Length || data.spacingMode == SpacingMode.Fixed ? scale : 1));
++                            .push(readTimeline1(input, new PathConstraintSpacingTimeline(input.readInt(true), input.readInt(true), index), data.spacingMode == SpacingMode.Length || data.spacingMode == SpacingMode.Fixed ? scale : 1));
+                         break;
+                     case PATH_MIX:
+-                        let timeline = new PathConstraintMixTimeline(frameCount, bezierCount, index);
++                        let timeline = new PathConstraintMixTimeline(input.readInt(true), input.readInt(true), index);
+                         let time = input.readFloat(), mixRotate = input.readFloat(), mixX = input.readFloat(), mixY = input.readFloat();
+                         for (let frame = 0, bezier = 0, frameLast = timeline.getFrameCount() - 1;; frame++) {
+                             timeline.setFrame(frame, time, mixRotate, mixX, mixY);
+@@ -942,43 +866,6 @@ export class SkeletonBinary {
+                 }
+             }
+         }
+-        // Physics timelines.
+-        for (let i = 0, n = input.readInt(true); i < n; i++) {
+-            const index = input.readInt(true) - 1;
+-            for (let ii = 0, nn = input.readInt(true); ii < nn; ii++) {
+-                const type = input.readByte(), frameCount = input.readInt(true);
+-                if (type == PHYSICS_RESET) {
+-                    const timeline = new PhysicsConstraintResetTimeline(frameCount, index);
+-                    for (let frame = 0; frame < frameCount; frame++)
+-                        timeline.setFrame(frame, input.readFloat());
+-                    timelines.push(timeline);
+-                    continue;
+-                }
+-                const bezierCount = input.readInt(true);
+-                switch (type) {
+-                    case PHYSICS_INERTIA:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintInertiaTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_STRENGTH:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintStrengthTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_DAMPING:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintDampingTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_MASS:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintMassTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_WIND:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintWindTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_GRAVITY:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintGravityTimeline(frameCount, bezierCount, index), 1));
+-                        break;
+-                    case PHYSICS_MIX:
+-                        timelines.push(readTimeline1(input, new PhysicsConstraintMixTimeline(frameCount, bezierCount, index), 1));
+-                }
+-            }
+-        }
+         // Deform timelines.
+         for (let i = 0, n = input.readInt(true); i < n; i++) {
+             let skin = skeletonData.skins[input.readInt(true)];
+@@ -1095,7 +982,7 @@ export class SkeletonBinary {
+                 let event = new Event(time, eventData);
+                 event.intValue = input.readInt(false);
+                 event.floatValue = input.readFloat();
+-                event.stringValue = input.readString();
++                event.stringValue = input.readBoolean() ? input.readString() : eventData.stringValue;
+                 if (event.stringValue == null)
+                     event.stringValue = eventData.stringValue;
+                 if (event.data.audioPath) {
+@@ -1203,13 +1090,13 @@ export class BinaryInput {
+ }
+ class LinkedMesh {
+     parent;
+-    skinIndex;
++    skin;
+     slotIndex;
+     mesh;
+     inheritTimeline;
+-    constructor(mesh, skinIndex, slotIndex, parent, inheritDeform) {
++    constructor(mesh, skin, slotIndex, parent, inheritDeform) {
+         this.mesh = mesh;
+-        this.skinIndex = skinIndex;
++        this.skin = skin;
+         this.slotIndex = slotIndex;
+         this.parent = parent;
+         this.inheritTimeline = inheritDeform;

@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Spine } from '@esotericsoftware/spine-pixi';
+import { Spine } from '@esotericsoftware/spine-pixi-v7';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
 import LoopMotion from "../constant/LoopMotion";
 import ChangeBodyMotion from "../constant/ChangeBodyMotion";
