@@ -304,7 +304,7 @@ export class AdvPlayer extends Container {
       this._processing.push(fade_process);
     }
 
-    //第一次執行 preRenderFrame已經處理過 
+    //第一次無須執行 preRenderFrame已經處理過 
     if(index > 0){
       //effect處理
       let effect_process = this._effectView.execute(this.currentTrack);

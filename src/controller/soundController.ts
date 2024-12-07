@@ -98,6 +98,7 @@ export class SoundController {
       });
 
       context.once("end", () => {
+        context.off('progress');
         this._currentSe = null;
       });
     }
@@ -123,7 +124,7 @@ export class SoundController {
       );
 
       let instance = this._currentVoice?.play();
-      (instance as IMediaInstance).on("end", () => {
+      (instance as IMediaInstance).once("end", () => {
         this._onVoiceEnd?.();
         this._onVoiceEnd = void 0;
         this._currentVoice = null;
