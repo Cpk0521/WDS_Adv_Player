@@ -115,7 +115,7 @@ export class TextView extends IView {
         }
 
         if(this._textPanelContainer.alpha === 0){
-            this._showTextPanelAnimation();
+            this.showTextPanelAnimation();
             // this.showTextPanel();
         }
         
@@ -134,7 +134,7 @@ export class TextView extends IView {
 
         this._typingTotalDuration = Phrase.length * 50 + 500;
 
-        let phrase = this._isTranslate ? TLPhrase!.replace('/n', '\n')  : Phrase.replace('/n', '\n') ;
+        let phrase = this._isTranslate ? TLPhrase!.replaceAll('/n', '\n')  : Phrase.replaceAll('/n', '\n') ;
         let phrase_index = 0;
         if(this._typingEffect){
             clearInterval(this._typingEffect);
@@ -160,7 +160,7 @@ export class TextView extends IView {
         this._sprakerText.text = (this._isTranslate ? this._currenttext.TLSpeakerName : this._currenttext.SpeakerName) || '';
         this._sprakerText.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
 
-        this._phrase.text = (this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase)?.replace('/n', '\n') || '';
+        this._phrase.text = (this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase)?.replaceAll('/n', '\n') || '';
         this._phrase.style.fontFamily = this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0];
     }
     
@@ -170,11 +170,18 @@ export class TextView extends IView {
         }
     }
 
-    _hideTextPanelAnimation(){        
-        new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+    hideTextPanelAnimation(){
+        if(this._textPanelContainer.alpha === 1){
+            return new Promise<void>((res, _) => {
+                new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+                setTimeout(() => {
+                    res();
+                }, 250);
+            })
+        }
     }
 
-    _showTextPanelAnimation(){
+    showTextPanelAnimation(){
         new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
     }
 

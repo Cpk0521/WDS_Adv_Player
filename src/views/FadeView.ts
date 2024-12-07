@@ -41,7 +41,7 @@ export class FadeView extends IView {
         FadeValue1 = 0,
         FadeValue2 = 0,
         FadeValue3 = 0,
-    }: IEpisodeFade) {
+    }: IEpisodeFade) : (() => Promise<void>) | undefined {
       let fadein: Tween<any> | undefined;
       
       if (BackgroundImageFileFadeType) {
@@ -77,12 +77,14 @@ export class FadeView extends IView {
       }
 
       if(fadein){
-        fadein.start();
-        return new Promise<void>((res, _)=>{
-          setTimeout(()=>{
-            res();
-          }, this._totalDuration + 200)
-        })
+        return () => {
+          fadein.start(); //
+          return new Promise<void>((res, _)=>{
+            setTimeout(()=>{
+              res();
+            }, this._totalDuration + 200)
+          })
+        }
       }
       else{
         return;
