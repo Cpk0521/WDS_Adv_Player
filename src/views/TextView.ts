@@ -115,7 +115,7 @@ export class TextView extends IView {
         }
 
         if(this._textPanelContainer.alpha === 0){
-            this._showTextPanelAnimation();
+            this.showTextPanelAnimation();
             // this.showTextPanel();
         }
         
@@ -170,11 +170,18 @@ export class TextView extends IView {
         }
     }
 
-    _hideTextPanelAnimation(){        
-        new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+    hideTextPanelAnimation(){
+        if(this._textPanelContainer.alpha === 1){
+            return new Promise<void>((res, _) => {
+                new Tween(this._textPanelContainer).to({alpha : 0}, 100).start();
+                setTimeout(() => {
+                    res();
+                }, 250);
+            })
+        }
     }
 
-    _showTextPanelAnimation(){
+    showTextPanelAnimation(){
         new Tween(this._textPanelContainer).to({alpha : 1}, 100).start();
     }
 

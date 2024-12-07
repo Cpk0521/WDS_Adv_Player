@@ -50,7 +50,8 @@ export class AdvPlayer extends Container {
   protected _isAuto: boolean = false;
   protected _isVoice: boolean = true;
   protected _isAdventureEnded: boolean = false;
-  protected _processing: Promise<any>[] = [];
+  // protected _processing: Promise<any>[] = [];
+  protected _processing: (()=>Promise<any>)[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
 
   protected _handleVisibilityChange = this._onBlur.bind(this);
@@ -252,13 +253,15 @@ export class AdvPlayer extends Container {
     });
 
     //ui view showing
-    this._isAuto ? this._uiView.AutoBtn.Pressed = this._isAuto : this._uiView.alpha = 1;
-    
-    this._preRenderFrame();
-
-    if (this._isAuto) {
+    if(this._isAuto){
+      this._uiView.AutoBtn.Pressed = this._isAuto;
       this._uiView.hide();
     }
+    else{
+      this._uiView.alpha = 1;
+    }
+    
+    this._preRenderFrame();
   }
   
   protected _next() {
@@ -295,45 +298,48 @@ export class AdvPlayer extends Container {
     //對話列表
     // this._historyView.execute(this.currentTrack);
 
-    // 隱藏上輪的
-    this._soundController.sound(this.currentTrack);
-
+    //過場動畫處理
     let fade_process = this._fadeView.execute(this.currentTrack);
-    if (fade_process) {
+    if (!!fade_process) {
       this._processing.push(fade_process);
-      this._characterView.hideCharacter(); //隱藏在場上的角色
-      this._textView.hideTextPanel(); //
     }
 
-    //effect處理
-    let effect_process = this._effectView.execute(this.currentTrack);
-    if(effect_process){
-      this._processing.push(effect_process);
-    }
-
-    //背景處理
+    //第一次執行 preRenderFrame已經處理過 
     if(index > 0){
+      //effect處理
+      let effect_process = this._effectView.execute(this.currentTrack);
+      if(!!effect_process){
+        this._processing.push(effect_process);
+      }
+      
+      //背景處理
       let bg_process = this._backgroundView.execute(this.currentTrack);
-      if (bg_process) {
+      if (!!bg_process) {
         this._processing.push(bg_process);
-        this._characterView.hideCharacter(); //隱藏在場上的角色
-        this._textView.hideTextPanel(); //
       }
     };
 
-    // Animations 確保動畫跑完
-    await Promise.all(this._processing)
+    //有動畫要處理的話 就隱藏對話框及角色
+    if(this._processing.length > 0){
+      this._characterView.hideCharacter(); //隱藏在場上的角色
+      await this._textView.hideTextPanelAnimation();
+    }
+
+    // SE&BGM 聲音處理
+    this._soundController.sound(this.currentTrack);
+
+    // Animations 確保動畫先跑完
+    await Promise.all(this._processing.map((_p)=>_p()))
       .then(() => {
         this._processing = [];
       });
-
+    
     //影片處理
     let movie_process = this._movieView.execute(this.currentTrack);
     if (movie_process) {
-      // this._processing.push(movie_process);
       this._characterView.hideCharacter(); //隱藏在場上的角色
-      this._textView.hideTextPanel(); //
-      await movie_process; //確保影片跑完
+      await this._textView.hideTextPanelAnimation();//
+      await movie_process(); //確保影片跑完
     }
     
     //spine處理

@@ -78,7 +78,7 @@ export class EffectView extends IView {
         WindowEffect,
         BackgroundImageFileFadeType,
         FadeValue1 = 0,
-    } : IEpisodeEffect & IEpisodeFade){
+    } : IEpisodeEffect & IEpisodeFade) :  (() => Promise<void>) | undefined {
         
         if(Effect){
             console.log('暫時沒有見過 所以不知道怎樣做!', Effect)
@@ -87,7 +87,7 @@ export class EffectView extends IView {
         const FadeDuration = BackgroundImageFileFadeType ? FadeValue1 * 1000 : 0;
         
         if(FadeDuration > 0){
-            return new Promise<void>((res, _) => {
+            return () => new Promise<void>((res, _) => {
                 setTimeout(() => {
                     this._effectControl(WindowEffect);
                     res();

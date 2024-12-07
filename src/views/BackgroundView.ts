@@ -48,7 +48,7 @@ export class BackgroundView extends IView {
     FadeValue1 = 0,
     FadeValue2 = 0,
     FadeValue3 = 0,
-  }: IEpisodeBackground & IEpisodeFade) {
+  }: IEpisodeBackground & IEpisodeFade) :  (() => Promise<void>) | undefined  {
 
     //清除之前的CameraEffect
     if (this._currentCameraEffects && this._cuttentZoom) {
@@ -153,6 +153,9 @@ export class BackgroundView extends IView {
           }
           FadeDuration = FadeValue1 * 1000;
           break;
+        case FadeTypes.TimeElapsed:
+          FadeDuration = 1000;
+          break
         default:
           FadeDuration = FadeValue1 * 1000;
           break;
@@ -162,27 +165,31 @@ export class BackgroundView extends IView {
     //執行更換背景
     //如果有Fade效果 會等一段時間才更換背景 並等待動畫完成
     if(FadeDuration > 0){
-      setTimeout(()=>{
-        this._characterImageControl(BackgroundCharacterImageFileName);
-        this._insertBG(newbg, this._cuttentZoom);
-      }, FadeDuration);  
-      
-      return new Promise<void>((res, _) => {
+      return () => {
         setTimeout(()=>{
-          res();
-        }, FadeDuration + 250);
-      })
+          this._characterImageControl(BackgroundCharacterImageFileName);
+          this._insertBG(newbg, this._cuttentZoom);
+        }, FadeDuration);  
+        
+        return new Promise<void>((res, _) => {
+          setTimeout(()=>{
+            res();
+          }, FadeDuration + 250);
+        })
+      }
     }
     
     //如果沒有Fade效果 但有zoomEffect 就直接更換背景 並等待動畫完成
     if(this._cuttentZoom){
-      this._characterImageControl(BackgroundCharacterImageFileName); //正常來說這邊應該沒有 但為了避免bug所以還是加上
-      this._insertBG(newbg, this._cuttentZoom);
-      return new Promise<void>((res, _) => {
-        setTimeout(()=>{
-          res();
-        }, ZoomDuration);
-      })
+      return () => {
+        this._characterImageControl(BackgroundCharacterImageFileName); //正常來說這邊應該沒有 但為了避免bug所以還是加上
+        this._insertBG(newbg, this._cuttentZoom);
+        return new Promise<void>((res, _) => {
+          setTimeout(()=>{
+            res();
+          }, ZoomDuration);
+        })
+      }
     }
 
     //什麼都沒有 就直接換
