@@ -33,10 +33,10 @@
     "vite": "^3.2.3"
   },
   "dependencies": {
-    "@esotericsoftware/spine-pixi-v7": "4.2.67",
-    "@pixi/sound": "^5.2.1",
+    "@esotericsoftware/spine-pixi-v8": "4.2.67",
+    "@pixi/sound": "^6.0.1",
     "papaparse": "^5.4.1",
-    "pixi.js": "^7.3.2",
+    "pixi.js": "^8.6.3",
     "tweedle.js": "^2.1.0"
   }
 }
