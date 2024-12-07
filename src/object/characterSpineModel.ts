@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Spine, SkeletonData } from '@pixi-spine/runtime-4.1';
+import { Spine } from '@esotericsoftware/spine-pixi';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
 import LoopMotion from "../constant/LoopMotion";
 import ChangeBodyMotion from "../constant/ChangeBodyMotion";
@@ -36,15 +36,17 @@ export class AdventureAnimationStandCharacter {
     protected _loopMotionData: ILoopMotion | undefined
     protected _eyeBlinkTimeout : number | NodeJS.Timeout | undefined;
 
-    constructor(skeletonData : SkeletonData, spineId : number) {
+    constructor(spineId : number) {
         this._spineId = spineId;
         this._charId = `${this._spineId}`.slice(0, 3);
         //create spine model
-        this._model = new Spine(skeletonData);
+        this._model = Spine.from(`spine_${spineId}`, `spine_atlas_${spineId}`);
         this._model.name = this._charId;
         this._loopMotionData = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
         this._model.state.setAnimation(0, "breath", true);
-        this._model.state.tracks[0].timeScale = this._loopMotionData?.LoopSpeed || 1;
+        if (this._model.state.tracks[0] != null) {
+            this._model.state.tracks[0].timeScale = this._loopMotionData?.LoopSpeed || 1;
+        }
         // clac the y position
         switch(this._loopMotionData?.Size ?? 1){
             case 1:
@@ -125,8 +127,12 @@ export class AdventureAnimationStandCharacter {
 
         if(bodyAnimationName){    
             let motion = ChangeBodyMotion.find(({BeforeMotionName, AfterMotionName}) => BeforeMotionName == this._motions.bodyAnimationName && AfterMotionName == bodyAnimationName);
-            let entry = this._model.state.setAnimation(1, bodyAnimationName, false);
+            // esoteric官方的mixDuration必须在第一次update前设置才可以生效，这里关闭autoUpdate，设置完mixDuration后再打开
+            this._model.autoUpdate = false;
+            let entry = this._model.state.setAnimation(1, bodyAnimationName, false)
             entry.mixDuration = motion ? motion.Second : 0.2;
+            this._model.update(0);
+            this._model.autoUpdate = true;
         }
 
         if(eyebrowAnimationName && this.checkhasAnimation(eyebrowAnimationName) && eyebrowAnimationName !== this._motions.eyebrowAnimationName){
@@ -175,12 +181,14 @@ export class AdventureAnimationStandCharacter {
 
     _eyeBlinkAnimation(trackIndex: number, animationName: string, time : number = 1){
         this._model.state.setAnimation(trackIndex, animationName, false);
-        this._model.state.tracks[trackIndex].listener = {
-            complete : () => {
-                this._eyeBlinkTimeout = setTimeout(()=>{
-                    clearTimeout(this._eyeBlinkTimeout);
-                    this._eyeBlinkAnimation(trackIndex, animationName, time);
-                }, time * 1000)
+        if (this._model.state.tracks[trackIndex]) {
+            this._model.state.tracks[trackIndex].listener = {
+                complete : () => {
+                    this._eyeBlinkTimeout = setTimeout(()=>{
+                        clearTimeout(this._eyeBlinkTimeout);
+                        this._eyeBlinkAnimation(trackIndex, animationName, time);
+                    }, time * 1000)
+                }
             }
         }
     }
@@ -203,7 +211,7 @@ export class AdventureAnimationStandCharacter {
     hideCharacter(){
         //還原bodyAnimation + 要停止update
         clearTimeout(this._eyeBlinkTimeout);
-        const clearTrack =  this._model.state.setEmptyAnimation(1);
+        const clearTrack =  this._model.state.setEmptyAnimation(1, 0);
         clearTrack.listener = {
             complete: () => {
                 if(this._model.visible){
@@ -215,11 +223,14 @@ export class AdventureAnimationStandCharacter {
     }
 
     checkhasAnimation(animationName : string){
-        return this._model.state.hasAnimation(animationName);
+        return this._model.skeleton.data.findAnimation(animationName) !== null;
     }
 
     showCharacter(){
-        this._model.autoUpdate = true;
+        if (!this._model.autoUpdate){
+            this._model.update(0);
+            this._model.autoUpdate = true; // 如果不放在 if 里面，在场上且没新动作的角色动画会越来越快
+        }
         this._model.visible = true;
     }
 

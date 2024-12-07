@@ -12,6 +12,18 @@
   resolved "https://registry.yarnpkg.com/@esbuild/linux-loong64/-/linux-loong64-0.15.18.tgz#128b76ecb9be48b60cf5cfc1c63a4f00691a3239"
   integrity sha512-L4jVKS82XVhw2nvzLg/19ClLWg0y27ulRwuP7lcyL6AbUWB5aPglXY3M21mauDQMDfRLs8cQmeT03r/+X3cZYQ==
 
+"@esotericsoftware/spine-core@4.1.54":
+  version "4.1.54"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-core/-/spine-core-4.1.54.tgz#78caeba5a7aa6bbb73f2ebe6b1aa47f73d91b2ec"
+  integrity sha512-AWveBC+sj1GvmrBPSIzQ2TuCV21ZLPCVkPjYEfeyGpoDN76yK1+gCwvO8/hPlRwB9hZy6IcB1dnz/QatynjChA==
+
+"@esotericsoftware/spine-pixi@~4.1.0":
+  version "4.1.54"
+  resolved "https://registry.yarnpkg.com/@esotericsoftware/spine-pixi/-/spine-pixi-4.1.54.tgz#36764c777ae66c2e1ed236c566e0e3a8c1787f5c"
+  integrity sha512-jDiIrUBh7OMvSHKTczq29lZsWPg8wE0LpQtm1/lFevR3FJft4rSUv5jPOYFSaNF+j9Hp9lb5ph3j/fjhnxvDrQ==
+  dependencies:
+    "@esotericsoftware/spine-core" "4.1.54"
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.yarnpkg.com/@isaacs/cliui/-/cliui-8.0.2.tgz#b37667b7bc181c168782259bab42474fbf52b550"
@@ -63,41 +75,6 @@
   dependencies:
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
-
-"@pixi-spine/base@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/base/-/base-4.0.3.tgz#b745496e9ed18231157a330b0bedbbcfae8b240c"
-  integrity sha512-0bunaWebaDswLFtYZ6whV+ZvgLQ7oANcvbPmIOoVpS/1pOY3Y/GAnWOFbgp3qt9Q/ntLYqNjGve6xq0IqpsTAA==
-
-"@pixi-spine/loader-base@^4.0.4":
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/loader-base/-/loader-base-4.0.4.tgz#6d54ef34d79fe67bb12b50b080f91e1edaca6a9f"
-  integrity sha512-Grgu+PxiUpgYWpuMRr3h5jrN3ZTnwyXfu3HuYdFb6mbJTTMub4xBPALeui+O+tw0k9RNRAr99pUzu9Rc9XTbAw==
-
-"@pixi-spine/loader-uni@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/loader-uni/-/loader-uni-4.0.3.tgz#7119f3c938a1c091d5921ade208021140372958d"
-  integrity sha512-tfhTJrnuog8ObKbbiSG1wV/nIUc3O98WfwS6lCmewaupoMIKF0ujg21MCqXUXJvljQJzU9tbURI+DWu4w9dnnA==
-
-"@pixi-spine/runtime-3.7@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/runtime-3.7/-/runtime-3.7-4.0.3.tgz#0ebb2ab3abf932e11f9b425e1bcb421e21400400"
-  integrity sha512-zuopKtSqjRc37wjW5xJ64j9DbiBB7rkPMFeldeWBPCbfZiCcFcwSZwZnrcgC+f4HIGo0NeviAvJGM8Hcf3AyeA==
-
-"@pixi-spine/runtime-3.8@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/runtime-3.8/-/runtime-3.8-4.0.3.tgz#e3839d6887d7ee4f12a9cdf051eac7558642cd0c"
-  integrity sha512-lIhb4jOTon+FVYLO9AIgcB6jf9hC+RLEn8PesaDRibDocQ1htVCkEIhCIU3Mc00fuqIby7lMBsINeS/Th0q3bw==
-
-"@pixi-spine/runtime-4.0@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/runtime-4.0/-/runtime-4.0-4.0.3.tgz#04e3168ab051ec0e9f92805a3dda3ba8dd311e26"
-  integrity sha512-2Y8qhxRkg/yH/9VylGsRVAd5W+dXVPhHTjFk0RR9wEUzTCkdZ17pE+56s2nESi2X3sYNKkz8FowfaqIvXnVGxw==
-
-"@pixi-spine/runtime-4.1@^4.0.3":
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/@pixi-spine/runtime-4.1/-/runtime-4.1-4.0.3.tgz#2d8ebdd4f0d828c41909586dc032da332bd62409"
-  integrity sha512-jK433snCQMC4FUPiDgyIcxhiatvRNSxqgs0CgHjjQ0l8GlY6gPpkkdThQ6GsFNme1SUZ4uvnWwawXFIGjW1IpQ==
 
 "@pixi/accessibility@7.3.2":
   version "7.3.2"
@@ -1009,19 +986,6 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha512-MnUuEycAemtSaeFSjXKW/aroV7akBbY+Sv+RkyqFjgAe73F+MR0TBWKBRDkmfWq/HiFmdavfZ1G7h4SPZXaCSg==
 
-pixi-spine@^4.0.4:
-  version "4.0.4"
-  resolved "https://registry.yarnpkg.com/pixi-spine/-/pixi-spine-4.0.4.tgz#3eb0f1c202173a1203a5a15757711b9f808b8a79"
-  integrity sha512-XRq1yARVoi4av7RXnd9+P37SWI9+e4/f5yTScZPJGB+sY5VcRYN6BYkBQ+y8nUKI1aJIjlms9z+pGxqikm+eFQ==
-  dependencies:
-    "@pixi-spine/base" "^4.0.3"
-    "@pixi-spine/loader-base" "^4.0.4"
-    "@pixi-spine/loader-uni" "^4.0.3"
-    "@pixi-spine/runtime-3.7" "^4.0.3"
-    "@pixi-spine/runtime-3.8" "^4.0.3"
-    "@pixi-spine/runtime-4.0" "^4.0.3"
-    "@pixi-spine/runtime-4.1" "^4.0.3"
-
 pixi.js@^7.3.2:
   version "7.3.2"
   resolved "https://registry.yarnpkg.com/pixi.js/-/pixi.js-7.3.2.tgz#86f0287a3763e9141691f496e384a2763fb6552c"
@@ -1168,8 +1132,16 @@ source-map@^0.6.0:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
   integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0:
-  name string-width-cjs
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -1187,8 +1159,14 @@ string-width@^5.0.1, string-width@^5.1.2:
     emoji-regex "^9.2.2"
     strip-ansi "^7.0.1"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  name strip-ansi-cjs
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==

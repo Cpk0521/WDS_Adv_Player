@@ -1,7 +1,6 @@
 import { Assets, AlphaFilter, Graphics} from "pixi.js";
 import { Tween } from "tweedle.js";
-import '@pixi-spine/loader-uni';
-import { Spine } from '@pixi-spine/runtime-4.1';
+import { Spine } from '@esotericsoftware/spine-pixi';
 import { baseAssets } from "../constant/advConstant";
 
 export class AdvTimeElapsedAnimation extends Graphics{
@@ -16,8 +15,8 @@ export class AdvTimeElapsedAnimation extends Graphics{
         this.drawRect(0, 0, 1920, 1080);
         this.alpha = 0;
 
-        Assets.load(baseAssets.jugon_progress).then((asset)=>{
-            this._jugon = new Spine(asset.spineData);
+        Assets.load([baseAssets.jugon_progress, baseAssets.jugon_progress_atlas]).then(()=>{
+            this._jugon = Spine.from(baseAssets.jugon_progress, baseAssets.jugon_progress_atlas);
             this._jugon.scale.set(.25);
             this._jugon.visible = false;
             this.addChild(this._jugon);

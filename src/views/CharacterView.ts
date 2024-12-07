@@ -73,7 +73,7 @@ export class CharacterView extends IView {
             }
             else{
                 if(!this._standCharacters.has(`${motiondata.SpineId}`)){
-                    model = new AdventureAnimationStandCharacter(Assets.get(`spine_${motiondata.SpineId}`).spineData, motiondata.SpineId)
+                    model = new AdventureAnimationStandCharacter(motiondata.SpineId)
                     model.addTo(this);
                     this._standCharacters.set(`${motiondata.SpineId}`, model)
                 }

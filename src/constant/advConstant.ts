@@ -59,6 +59,7 @@ export const baseAssets = {
     illust_jugon_2: "./img_story_scene_illust_jugon_2.png",
     illust_jugon_3: "./img_story_scene_illust_jugon_3.png",
     jugon_progress: "./jugon_progress/jugon_progress.skel",
+    jugon_progress_atlas: "./jugon_progress/jugon_progress.atlas",
     sepia : "./sepia2.png"
     
 };
