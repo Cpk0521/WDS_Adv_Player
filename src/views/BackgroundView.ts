@@ -1,6 +1,6 @@
 import { Sprite, Assets } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IView } from "../types/View";
+import { IView, episodeExecutable } from "../types/View";
 import { FadeTypes, IEpisodeBackground, IEpisodeFade } from "../types/Episode";
 import SceneCameraList from "../constant/SceneCamera";
 
@@ -15,7 +15,7 @@ type CameraEffect = {
   CameraMoveTurnaroundTimeSeconds: number;
 };
 
-export class BackgroundView extends IView {
+export class BackgroundView extends IView implements episodeExecutable{
   protected readonly _bgMap: Map<string, Sprite> = new Map();
 
   protected _currentBG: Sprite | undefined;

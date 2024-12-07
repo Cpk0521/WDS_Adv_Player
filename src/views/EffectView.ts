@@ -13,7 +13,7 @@ export class EffectView extends IView {
     protected _whiteBlurEffectObject : Sprite;
     // protected _blur_filter : BlurFilter;
     // protected _sepia_filter : Filter;
-    protected _whiteBlurEffectAnimation : Tween<ObservablePoint<any>>
+    protected _whiteBlurEffectAnimation : Tween<ObservablePoint>
 
     constructor(){
         super()

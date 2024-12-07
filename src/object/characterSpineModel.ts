@@ -1,5 +1,5 @@
 import { Container } from "pixi.js";
-import { Spine } from '@esotericsoftware/spine-pixi-v7';
+import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { CharacterAppearanceTypes, CharacterPositions } from "../types/Episode";
 import LoopMotion from "../constant/LoopMotion";
 import ChangeBodyMotion from "../constant/ChangeBodyMotion";
@@ -40,7 +40,10 @@ export class AdventureAnimationStandCharacter {
         this._spineId = spineId;
         this._charId = `${this._spineId}`.slice(0, 3);
         //create spine model
-        this._model = Spine.from(`spine_${spineId}`, `spine_atlas_${spineId}`);
+        this._model = Spine.from({
+            skeleton : `spine_${spineId}`,
+            atlas : `spine_atlas_${spineId}`
+        });
         this._model.name = this._charId;
         this._loopMotionData = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
         this._model.state.setAnimation(0, "breath", true);

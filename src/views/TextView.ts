@@ -1,4 +1,4 @@
-import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture } from 'pixi.js';
+import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture, NineSliceSprite  } from 'pixi.js';
 import { Tween } from 'tweedle.js';
 import { IView } from "../types/View";
 import { IEpisodeText } from "../types/Episode";

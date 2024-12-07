@@ -1,4 +1,4 @@
-import { Container, FederatedPointerEvent, Assets, Ticker} from "pixi.js";
+import { Container, FederatedPointerEvent, Assets, Ticker, Sprite} from "pixi.js";
 import "@pixi/sound";
 // import { Group } from 'tweedle.js';
 //type
@@ -64,9 +64,9 @@ export class AdvPlayer extends Container {
     });
 
     //advPlayer setting
-    // this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
-    // this.sortableChildren = true;
-    // this.eventMode = "static";
+    this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
+    this.sortableChildren = true;
+    this.eventMode = "static";
     // document.addEventListener("visibilitychange", this._handleVisibilityChange);
 
     // //views
@@ -114,101 +114,101 @@ export class AdvPlayer extends Container {
     return this;
   }
 
-  // public async clear() {
-  //   await Assets.unloadBundle(`${this._episode!.EpisodeId}_bundle`);
-  //   this._currentIndex = 0;
-  //   this._episode = void 0;
+  public async clear() {
+    await Assets.unloadBundle(`${this._episode!.EpisodeId}_bundle`);
+    this._currentIndex = 0;
+    this._episode = void 0;
 
-  //   //hide all view!
-  //   this._backgroundView.clear();
-  //   this._characterView.clear();
-  //   this._effectView.clear();
-  //   this._textView.clear();
-  //   this._movieView.clear();
-  //   this._fadeView.clear();
-  //   // this._historyView.clear();
-  //   this._uiView.clear();
+    //hide all view!
+    // this._backgroundView.clear();
+    // this._characterView.clear();
+    // this._effectView.clear();
+    // this._textView.clear();
+    // this._movieView.clear();
+    // this._fadeView.clear();
+    // // this._historyView.clear();
+    // this._uiView.clear();
 
-  //   //re-create the cover
-  //   this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
-  // }
+    // //re-create the cover
+    // this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
+  }
 
-//   public async load(
-//     source: string | IEpisodeModel,
-//     translate?: string
-//   ) {
-//     return (this._loadPromise = new Promise<IEpisodeModel>(async (res, _) => {
-//       if (typeof source === "string") {
-//         if (!isURL(source)) {
-//           source = resPath.advJson(source);
-//         }
-//         source = await loadJson<IEpisodeModel>(source).catch(() => {
-//           this._coverOpening.error("The episode ID or URL is not correct, please re-confirm.");
-//           throw new Error("The episode ID or URL is not correct, please re-confirm.");
-//         });
-//       }
+  public async load(
+    source: string | IEpisodeModel,
+    translate?: string
+  ) {
+    return (this._loadPromise = new Promise<IEpisodeModel>(async (res, _) => {
+      if (typeof source === "string") {
+        if (!isURL(source)) {
+          source = resPath.advJson(source);
+        }
+        source = await loadJson<IEpisodeModel>(source).catch(() => {
+          // this._coverOpening.error("The episode ID or URL is not correct, please re-confirm.");
+          throw new Error("The episode ID or URL is not correct, please re-confirm.");
+        });
+      }
 
-//       if (!checkImplements<IEpisodeModel>(source)) {
-//         this._coverOpening.error("Episode file format error.");
-//         throw new Error("Episode file format error.");
-//       }
+      if (!checkImplements<IEpisodeModel>(source)) {
+        // this._coverOpening.error("Episode file format error.");
+        throw new Error("Episode file format error.");
+      }
 
-//       if (!Assets.cache.has(baseAssets.font)) {
-//         await Assets.load(baseAssets.font);
-//       }
+      if (!Assets.cache.has(baseAssets.font)) {
+        await Assets.load(baseAssets.font);
+      }
 
-//       if (this._episode) {
-//         await this.clear();
-//       }
+      if (this._episode) {
+        await this.clear();
+      }
 
-//       //如果有翻譯語言 就load該語言的翻譯文件
-//       if(translate){
-//         await this._translationController.load({
-//           EpId : source.EpisodeId,
-//           loadParser : translate,
-//         });
-//         //如果有翻譯文件 ui配置&load font asset
-//         if(this._translationController.hasTranslate){
-//           this._uiView.enableTLBtn();
-//           this._textView.isTranslate = this._translationController.hasTranslate;
-//           this._uiView.TranslateBtn.addclickFun(()=>{
-//             this._textView.isTranslate = this._uiView.TranslateBtn.Pressed;
-//             this._textView.toggleTextContent();
-//           })
-//           //font asset 
-//           const TLfont = TLFonts.find(font => font.language === translate);
-//           if(TLfont){
-//             this._textView.addFontFamily(TLfont.family);
-//             this._coverOpening.addFontFamily(TLfont.family);
-//             if(!Assets.cache.has(TLfont.url)){
-//               this._coverOpening.log('loading assets...');
-//               await Assets.load(TLfont.url);
-//             }
-//           }
-//         }
-//       }
+      //如果有翻譯語言 就load該語言的翻譯文件
+      // if(translate){
+      //   await this._translationController.load({
+      //     EpId : source.EpisodeId,
+      //     loadParser : translate,
+      //   });
+      //   //如果有翻譯文件 ui配置&load font asset
+      //   if(this._translationController.hasTranslate){
+      //     this._uiView.enableTLBtn();
+      //     this._textView.isTranslate = this._translationController.hasTranslate;
+      //     this._uiView.TranslateBtn.addclickFun(()=>{
+      //       this._textView.isTranslate = this._uiView.TranslateBtn.Pressed;
+      //       this._textView.toggleTextContent();
+      //     })
+      //     //font asset 
+      //     const TLfont = TLFonts.find(font => font.language === translate);
+      //     if(TLfont){
+      //       this._textView.addFontFamily(TLfont.family);
+      //       this._coverOpening.addFontFamily(TLfont.family);
+      //       if(!Assets.cache.has(TLfont.url)){
+      //         this._coverOpening.log('loading assets...');
+      //         await Assets.load(TLfont.url);
+      //       }
+      //     }
+      //   }
+      // }
       
-//       this._episode = source as IEpisodeModel;
-//       this._coverOpening.init({
-//           type: this._episode.StoryType,
-//           chapter: this._episode.Chapter,
-//           title: this._episode.Title,
-//           order: this._episode.Order,
-//           TLTitle : this._translationController.translateModel?.TLTitle,
-//           info : this._translationController.translateModel?.info
-//       });
+      this._episode = source as IEpisodeModel;
+      // this._coverOpening.init({
+      //     type: this._episode.StoryType,
+      //     chapter: this._episode.Chapter,
+      //     title: this._episode.Title,
+      //     order: this._episode.Order,
+      //     TLTitle : this._translationController.translateModel?.TLTitle,
+      //     info : this._translationController.translateModel?.info
+      // });
 
-//       //load故事所需的資源
-//       await loadResourcesFromEpisode(
-//         source, 
-//         this._isVoice, 
-//         (percentage) => this._coverOpening.progress(Math.floor(percentage * 100))
-//       )
-//       .catch(() => this._coverOpening.error());
+      //load故事所需的資源
+      await loadResourcesFromEpisode(
+        source, 
+        this._isVoice, 
+        // (percentage) => this._coverOpening.progress(Math.floor(percentage * 100))
+      )
+      // .catch(() => this._coverOpening.error());
       
-//       res(this._episode);
-//     }));
-//   }
+      res(this._episode);
+    }));
+  }
 
 //   public loadAndPlay(
 //     source: string | IEpisodeModel,
@@ -421,12 +421,12 @@ export class AdvPlayer extends Container {
     
 //   }
 
-//   protected _onBlur() {
-//     if (this._isAuto && document.hidden) {
-//       this._isAuto = false;
-//       this._uiView.AutoBtn.Pressed = false;
-//     }
-//   }
+  // protected _onBlur() {
+  //   if (this._isAuto && document.hidden) {
+  //     this._isAuto = false;
+  //     this._uiView.AutoBtn.Pressed = false;
+  //   }
+  // }
 
 //   protected _tap(e: FederatedPointerEvent) {
 //     if (e.target !== this) {

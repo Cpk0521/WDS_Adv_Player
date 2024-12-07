@@ -1,4 +1,4 @@
-import { Texture, VideoResource, Sprite, Assets } from "pixi.js";
+import { Texture, Sprite, Assets, VideoSource } from "pixi.js";
 import { IView } from "../types/View";
 import { IEpisodeMovie } from "../types/Episode";
 
@@ -14,7 +14,7 @@ export class MovieView extends IView {
 
         this.addChild(this._currentMovie);
 
-        const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
+        const controller = (this._currentMovie.texture as Texture<VideoSource>).baseTexture.resource.source;
         return () => controller.play().then(()=>{
             this.removeChild(this._currentMovie!);
             this.hide();
@@ -29,7 +29,7 @@ export class MovieView extends IView {
 
     pauseMovie(){
         if(this._currentMovie){
-            const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
+            const controller = (this._currentMovie.texture as Texture<VideoSource>).baseTexture.resource.source;
             controller.pause();
         }
     }
