@@ -6,6 +6,7 @@ import { IEpisodeSound } from "../types/Episode";
 export class SoundController {
   protected _isVoice: boolean = true;
   protected _voiceDuration: number = 0;
+  protected _seDuration: number = 0;
   protected _currentBgm: Sound | undefined | null = null;
   protected _currentVoice: Sound | undefined | null = null;
   protected _currentSe: Sound | undefined | null = null;
@@ -87,12 +88,16 @@ export class SoundController {
     if (Assets.cache.has(`se_${FileName}`)) {
       this._currentSe = Assets.get(`se_${FileName}`);
       let instance = this._currentSe?.play();
-      this._voiceDuration = Math.max(
-        (this._currentSe?.duration ?? 0) * 1000,
-        this._voiceDuration
-      );
+      this._seDuration = ((this._currentSe?.duration ?? 0) * 1000);
 
-      (instance as IMediaInstance).on("end", () => {
+      // this._currentSe?.context.audioContext.
+      const context = (instance as IMediaInstance);
+      
+      context.on('progress', ()=>{
+        this._seDuration = (((1-context.progress) * (this._currentSe?.duration || 0)) * 1000) + 500;
+      });
+
+      context.once("end", () => {
         this._currentSe = null;
       });
     }
@@ -130,10 +135,15 @@ export class SoundController {
     this._currentSe?.stop();
     this._currentVoice?.stop();
     this._voiceDuration = 0;
+    this._seDuration = 0;
   }
 
   get voiceDuration() {
     return this._voiceDuration;
+  }
+
+  get seDuration() {
+    return this._seDuration;
   }
 
   get onVoiceEnd() : Function | undefined {
