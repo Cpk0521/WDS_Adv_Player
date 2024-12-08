@@ -1,10 +1,10 @@
-import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Filter, Container } from "pixi.js";
+import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Container } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { StoryTypes } from "../types/Episode";
 import { IEpisodeTranslateModel } from '../controller/translationController'
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
-import fragmentShader from '../shader/circleShader.frag?raw';
+// import fragmentShader from '../shader/circleShader.frag?raw';
 
 type CoverOpeningProps = {
     type : StoryTypes;
@@ -37,7 +37,11 @@ export class CoverOpening extends Container {
 
         this.addChild(createEmptySprite({}));
 
-        this.ptn_bg = new TilingSprite(Texture.from(baseAssets.bg_pattern), 2200, 1860);
+        this.ptn_bg = new TilingSprite({
+            texture : Texture.from(baseAssets.bg_pattern), 
+            width: 2200, 
+            height: 1860
+        });
         this.ptn_bg.anchor.set(0.5);
         this.ptn_bg.position.set(1920/2, 1080/2);
         this.ptn_bg.angle = -30;
@@ -46,17 +50,20 @@ export class CoverOpening extends Container {
         Ticker.shared.add(this._BGupdate, this);
 
         const graphics = new Graphics();
-        graphics.lineStyle(5, 0x4e4c5e, 1);
-        graphics.beginFill(0xFFFFFF, 1);
-        graphics.drawRect(-(1920/2) -10, -(410/2) , 1940, 410);
-        graphics.endFill();
+        graphics
+            .rect(-(1920/2) -10, -(410/2) , 1940, 410)
+            .fill(0xFFFFFF)
+            .stroke({
+                width : 5,
+                color : 0x4e4c5e,
+            })
         graphics.position.set(1920/2, 530);
         graphics.scale.set(1);
         graphics.height = 0;
         this.addChild(graphics);
         const graphicsAnim = new Tween(graphics).to({height : 410 }, 500);
 
-        const anim_arr :　Tween<any>[] = [];
+        const anim_arr : Tween<any>[] = [];
         
         const jugonArr = [
             Texture.from(baseAssets.illust_jugon_1),
@@ -94,23 +101,29 @@ export class CoverOpening extends Container {
         
         
         //text
-        this._percent_text = new Text('', {
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 50,
-            leading: 4,
-            letterSpacing: -1,
+        this._percent_text = new Text({
+            text :'',
+            style : {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 50,
+                leading: 4,
+                letterSpacing: -1,
+            }
         });
         this._percent_text.anchor.set(1, 0.5);
 		this._percent_text.position.set(1920 - 120, 1080 - 80);
         this.addChild(this._percent_text);
 
-        this._info_text = new Text('', {
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 45,
-            leading: 4,
-            letterSpacing: -1,
+        this._info_text = new Text({
+            text : '', 
+            style : {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 45,
+                leading: 4,
+                letterSpacing: -1,
+            }
         })
         this._info_text.x = 1920/2;
         this._info_text.y = 745;
@@ -119,12 +132,15 @@ export class CoverOpening extends Container {
         this.addChild(this._info_text);
         anim_arr.push(new Tween(this._info_text).to({alpha : 1}, 1000));
 
-        this._top_text = new Text('', {
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 41.5,
-            leading: 4,
-            letterSpacing: -1,
+        this._top_text = new Text({
+            text : '', 
+            style :{
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 41.5,
+                leading: 4,
+                letterSpacing: -1,
+            }
         });
         this._top_text.x = 1920/2;
         this._top_text.y = 410;
@@ -133,12 +149,15 @@ export class CoverOpening extends Container {
         this.addChild(this._top_text);
         anim_arr.push(new Tween(this._top_text).to({alpha : 1}, 1000));
 
-        this._middle_text = new Text('', {
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 100,
-            leading: 4,
-            letterSpacing: -1,
+        this._middle_text = new Text({
+            text : '', 
+            style : {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 100,
+                leading: 4,
+                letterSpacing: -1,
+            }
         });
         this._middle_text.x = 1920/2;
         this._middle_text.y = 530;
@@ -147,12 +166,15 @@ export class CoverOpening extends Container {
         this.addChild(this._middle_text);
         anim_arr.push(new Tween(this._middle_text).to({alpha : 1}, 1000));
 
-        this._bottom_text = new Text('', {
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 48.5,
-            leading: 4,
-            letterSpacing: -1,
+        this._bottom_text = new Text({
+            text : '', 
+            style : {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 48.5,
+                leading: 4,
+                letterSpacing: -1,
+            }
         });
         this._bottom_text.x = 1920/2;
         this._bottom_text.y = 650;
@@ -161,7 +183,7 @@ export class CoverOpening extends Container {
         this.addChild(this._bottom_text);
         anim_arr.push(new Tween(this._bottom_text).to({alpha : 1}, 1000));
 
-        this._animation = graphicsAnim.chain(...anim_arr);            
+        this._animation = graphicsAnim.chain(...anim_arr);  
     }
 
     public addTo<T extends Container>(parent : T, order? : number): this {
@@ -237,24 +259,25 @@ export class CoverOpening extends Container {
     }
     
     close(callback? : Function){
-        const shaderFilter = new Filter(undefined, fragmentShader, {
-            uTime: 0,
-            u_resolution: [1920, 1080],
-        })
-        this.filters = [shaderFilter];
-
-        return new Tween(shaderFilter.uniforms)
-            .to({ uTime: 1 }, 600)
+        //由於webgpu要用wgsl frag只支持webgl 所以只好用v8新功能代替
+        const circleMask = new Graphics();
+        circleMask.circle(0, 0, 1920/1.7).fill(0x000000);
+        circleMask.position.set(1920/2, 1080/2);
+        this.setMask({
+            mask: circleMask,
+            inverse: true,
+        });
+        this.addChild(circleMask);
+        new Tween(circleMask.scale)
+            .from({x: 0, y: 0}).to({x: 1, y: 1}, 600)
             .onComplete(()=>{
-                shaderFilter.enabled = false; //turn off shader
-                shaderFilter.destroy(); //destroy shader
                 this.visible = false; 
                 Ticker.shared.remove(this._BGupdate, this);
                 this._anim_jugon.stop();
                 if(!this._isauto){
                     this._touch_Animation.stop();
                 }
-                this.destroy(true);
+                this.destroy({children : true});
                 callback?.();
             })
             .start();

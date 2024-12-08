@@ -53,7 +53,6 @@ export const baseAssets = {
     name_bg: "./frm_story_scene_name_bg.png",
     serif_window_bg: "./frm_story_scene_serif_window_bg.png",
     bg_pattern: "./ptn_common_05.png",
-    loading_bg: "./img_loading_bg_bg01.png",
     tap_to_start: "./txt_title_common_start.png",
     illust_jugon_1: "./img_story_scene_illust_jugon_1.png",
     illust_jugon_2: "./img_story_scene_illust_jugon_2.png",
@@ -61,8 +60,7 @@ export const baseAssets = {
     jugon_progress: "./jugon_progress/jugon_progress.skel",
     jugon_progress_atlas: "./jugon_progress/jugon_progress.atlas",
     sepia : "./sepia2.png",
-    whiteBlur : "./whiteBlurEffect.png",
-    
+    whiteBlur : "./whiteBlurEffect.png",    
 };
 
 export const TLFonts = [

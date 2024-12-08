@@ -1,27 +1,30 @@
 import { Group } from "tweedle.js";
 import { Application, Ticker } from "pixi.js";
 
+export let displaypPeference: 'webgl' | 'webgpu';
+
 export async function createApp(preference: 'webgl' | 'webgpu' = 'webgpu') {
     if (document.getElementById("WDS")) {
       document.getElementById("WDS")!.remove();
     }
-  
+
     const pixiapp = new Application();
 
     await pixiapp.init({
       preference,
-      hello : true,
+      hello : false,
       width: 1920,
       height: 1080,
-      antialias: true,//
-      backgroundAlpha: 1,//
-      backgroundColor : 0xdddddd,//
+      backgroundAlpha: 0,
+      // backgroundColor : 0xdddddd,
     });
   
+    displaypPeference = preference;
+
     (globalThis as any).__PIXI_APP__ = pixiapp;
   
-    (pixiapp.canvas as HTMLCanvasElement).setAttribute("id", "WDS");
-    document.body.appendChild(pixiapp.canvas as HTMLCanvasElement);
+    pixiapp.canvas.setAttribute("id", "WDS");
+    document.body.appendChild(pixiapp.canvas);
   
     Ticker.shared.add(() => Group.shared.update());
   
@@ -43,7 +46,7 @@ export async function createApp(preference: 'webgl' | 'webgpu' = 'webgpu') {
       pixiapp.canvas.style.width = resizedX + "px";
       pixiapp.canvas.style.height = resizedY + "px";
     };
-  
+    
     window.onresize = () => resize();
     resize();
     

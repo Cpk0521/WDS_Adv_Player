@@ -1,8 +1,9 @@
 import { Container, FederatedPointerEvent, Sprite, Texture } from "pixi.js";
 
-export class UIButton extends Sprite {
+export class UIButton extends Container {
 
     protected _content : Sprite;
+    protected _base_sprite : Sprite;
     protected _base_bg : Texture;
     protected _pressed_bg : Texture;
     protected _isPressed : boolean = false;
@@ -10,21 +11,24 @@ export class UIButton extends Sprite {
     protected _config : any;
 
     constructor(contentIcon : Texture, base_bg : Texture, pressed_bg : Texture, config? : any){
-        super(base_bg);
+        super();
 
-        this._content = new Sprite(contentIcon);
         this._base_bg = base_bg;
-        this._pressed_bg = pressed_bg;
-        this._config = config ?? {};
+        this._base_sprite = new Sprite(this._base_bg);
+        this._base_sprite.anchor.set(0.5);
+        this.addChild(this._base_sprite);
 
-        this.addChild(this._content);
         this.eventMode = 'static';
         this.cursor = 'pointer';
         this.on('pointertap', this._onclick, this);
-        this.anchor.set(0.5);
 
+        this._pressed_bg = pressed_bg;
+        this._content = new Sprite(contentIcon);
         this._content.anchor.set(0.5);
         this._content.tint = 0x4b4b4b;
+        this.addChild(this._content);
+
+        this._config = config ?? {};
     }
 
     static create(contentIcon : Texture, base_bg : Texture, pressed_bg : Texture, config? : any){
@@ -62,11 +66,11 @@ export class UIButton extends Sprite {
         this._isPressed = value;
 
         if(this._isPressed){
-            this.texture = this._pressed_bg;
+            this._base_sprite.texture = this._pressed_bg;
             this._content.tint = 0xffffff;
         }
         else{
-            this.texture = this._base_bg;
+            this._base_sprite.texture = this._base_bg;
             this._content.tint = 0x4b4b4b;
         }
 

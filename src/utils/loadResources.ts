@@ -1,4 +1,6 @@
-import { Assets, ProgressCallback } from "pixi.js";
+import { Assets, AssetsBundle, ProgressCallback, loadTextures} from "pixi.js";
+import "@pixi/sound";
+import '@esotericsoftware/spine-pixi-v8'
 import resPath from "./resPath";
 import { IEpisodeModel } from "../types/Episode";
 import { parse } from 'papaparse'
@@ -126,9 +128,15 @@ export async function loadResourcesFromEpisode(
     return Assets.loadBundle(`${episodeTrack.EpisodeId}_bundle`, callback)
 }
 
+export function loadPlayerAssetsBundle(name : string, bundle : AssetsBundle["assets"]){
+    Assets.addBundle(name, bundle);
+    return Assets.loadBundle(name);
+}
+
 
 export default {
     loadJson,
     loadCsv,
-    loadResourcesFromEpisode
+    loadResourcesFromEpisode,
+    loadPlayerAssetsBundle
 }
