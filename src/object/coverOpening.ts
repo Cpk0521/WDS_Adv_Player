@@ -263,13 +263,14 @@ export class CoverOpening extends Container {
         const circleMask = new Graphics();
         circleMask.circle(0, 0, 1920/1.7).fill(0x000000);
         circleMask.position.set(1920/2, 1080/2);
+        circleMask.scale.set(0); //有閃爍 可能是沒有設做0導致的
         this.setMask({
             mask: circleMask,
             inverse: true,
         });
         this.addChild(circleMask);
         new Tween(circleMask.scale)
-            .from({x: 0, y: 0}).to({x: 1, y: 1}, 600)
+            .to({x: 1, y: 1}, 600)
             .onComplete(()=>{
                 this.visible = false; 
                 Ticker.shared.remove(this._BGupdate, this);

@@ -6,7 +6,7 @@
 <div align="center">
   
   <img src="https://img.shields.io/badge/typescript-%233178C6?style=for-the-badge&logo=typescript&logoColor=white">
-  <img src="https://img.shields.io/badge/pixijs%207.3.2%20-%23e22162.svg?style=for-the-badge">
+  <img src="https://img.shields.io/badge/pixijs%208.6.3%20-%23e22162.svg?style=for-the-badge">
   <img src="https://img.shields.io/badge/spine%204.1-%23CC6699?style=for-the-badge&logoColor=white">
 </div>
 

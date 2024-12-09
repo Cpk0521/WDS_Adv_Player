@@ -22,7 +22,7 @@ export class AdvTimeElapsedAnimation extends Container{
             atlas : baseAssets.jugon_progress_atlas,
         });
         this._jugon.scale.set(.25);
-        let jugon_height = this._jugon.getBounds().height;
+        let jugon_height = this._jugon.getBounds().height; //需要在visible false前才有數值 不然就是0
         this._jugon.position.set(1920 / 2, 1080 / 2 + (jugon_height/2));
         this._jugon.filters = [this.aplha_filter];
         this._jugon.state.addListener({
