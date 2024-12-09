@@ -44,7 +44,7 @@ export class AdventureAnimationStandCharacter {
             skeleton : `spine_${spineId}`,
             atlas : `spine_atlas_${spineId}`
         });
-        this._model.name = this._charId;
+        this._model.label = this._charId;
         this._loopMotionData = LoopMotion.find((lm) => lm.TargetCharacterBaseId === this._charId);
         this._model.state.setAnimation(0, "breath", true);
         if (this._model.state.tracks[0] != null) {

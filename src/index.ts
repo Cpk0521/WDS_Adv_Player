@@ -2,9 +2,9 @@ import { getUrlParams } from "./utils/UrlParams";
 import { AdvPlayer } from "./AdvPlayer";
 import { createApp } from "./utils/createApp";
 
-const { id, tl, at } = getUrlParams();
+const { id, tl, at, renderer } = getUrlParams();
 
-const app = await createApp();
+const app = await createApp(<'webgl' | 'webgpu'> renderer);
 
 const advplayer = AdvPlayer.create(); //create Adv Player
 await advplayer.init(); // init Adv Player

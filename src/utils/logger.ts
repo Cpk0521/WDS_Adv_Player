@@ -1,9 +1,9 @@
-import { displaypPeference } from "./createApp";
+import { currenRenderer } from "./createApp";
 const { log } = console
 
 export function banner(){
     let logtext = [
-        `\n\n %c  %c  World Dai Star Adv Player ${__VERSION__} (${displaypPeference}) %c  %c  https://github.com/Cpk0521  %c \n\n`,
+        `\n\n %c  %c  World Dai Star Adv Player ${__VERSION__} (${currenRenderer}) %c  %c  https://github.com/Cpk0521  %c \n\n`,
         'background: #00ffff; padding:5px 0;',
         'color: #00ffff; background: #030307; padding:5px 0;',
         'background: #00ffff; padding:5px 0;',

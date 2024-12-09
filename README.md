@@ -23,3 +23,4 @@ A adventure Player to render the stories for game [ワールドダイスター �
 |id  | Story Id | |
 |tl  | Translate language | zhcn |
 |at  | Auto play preset | true |
+|renderer  | Renderer Type | `webgl`, `webgpu` |
