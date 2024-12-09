@@ -81,7 +81,7 @@ export class AdvPlayer extends Container<any> {
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
     this._effectView = new EffectView().addTo(this, Layer.EffectLayer);
-    // this._characterView = new CharacterView().addTo(this._effectView, Layer.CharacterLayer);
+    this._characterView = new CharacterView().addTo(this._effectView, Layer.CharacterLayer);
     this._backgroundView = new BackgroundView().addTo(this._effectView, Layer.BackgroundLayer);
 
     //Cover
@@ -121,7 +121,7 @@ export class AdvPlayer extends Container<any> {
 
     //hide all view!
     this._backgroundView.clear();
-    // this._characterView.clear();
+    this._characterView.clear();
     this._effectView.clear();
     this._textView.clear();
     this._movieView.clear();
@@ -317,7 +317,7 @@ export class AdvPlayer extends Container<any> {
     //有動畫要處理的話 就隱藏對話框及角色
     if(this._processing.length > 0){
       await this._textView.hideTextPanelAnimation();
-      // this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._characterView.hideCharacter(); //隱藏在場上的角色
     }
 
     // SE&BGM 聲音處理
@@ -332,7 +332,7 @@ export class AdvPlayer extends Container<any> {
     //影片處理
     let movie_process = this._movieView.execute(this.currentTrack);
     if (movie_process) {
-      // this._characterView.hideCharacter(); //隱藏在場上的角色
+      this._characterView.hideCharacter(); //隱藏在場上的角色
       await this._textView.hideTextPanelAnimation();//
       await movie_process(); //確保影片跑完
     }
@@ -340,11 +340,11 @@ export class AdvPlayer extends Container<any> {
     //spine處理
     //如果有characterImage，則不顯示spine
     if(this.currentTrack.BackgroundCharacterImageFileName){
-      // this._characterView.hideCharacter();
+      this._characterView.hideCharacter();
     }
     //否則正常執行
     else{
-      // this._characterView.execute(this.currentTrack);
+      this._characterView.execute(this.currentTrack);
     }
     
     //對話處理
@@ -354,7 +354,7 @@ export class AdvPlayer extends Container<any> {
     this._textView.execute(this.currentTrack);
 
     //當播完聲音後 停止spine的口部動作
-    // this._soundController.onVoiceEnd = () => this._characterView.offAllLipSync();
+    this._soundController.onVoiceEnd = () => this._characterView.offAllLipSync();
   
     //聲音處理
     this._soundController.voice(this.currentTrack);
