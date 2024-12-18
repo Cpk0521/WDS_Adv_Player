@@ -1,8 +1,8 @@
 import { Sprite, Assets } from "pixi.js";
-import { IView } from "../types/View";
+import { episodeExecutable, IView } from "../types/View";
 import { IEpisodeMovie } from "../types/Episode";
 
-export class MovieView extends IView {
+export class MovieView extends IView implements episodeExecutable{
 
     protected _currentMovie : Sprite | undefined
 

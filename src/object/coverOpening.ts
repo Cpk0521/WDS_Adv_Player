@@ -4,7 +4,6 @@ import { StoryTypes } from "../types/Episode";
 import { IEpisodeTranslateModel } from '../controller/translationController'
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
-// import fragmentShader from '../shader/circleShader.frag?raw';
 
 type CoverOpeningProps = {
     type : StoryTypes;
@@ -259,7 +258,7 @@ export class CoverOpening extends Container {
     }
     
     close(callback? : Function){
-        //由於webgpu要用wgsl frag只支持webgl 所以只好用v8新功能代替
+        //由於webgpu要用wgsl frag只支持webgl 所以用v8的mask新功能代替
         const circleMask = new Graphics();
         circleMask.circle(0, 0, 1920/1.7).fill(0x000000);
         circleMask.position.set(1920/2, 1080/2);
