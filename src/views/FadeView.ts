@@ -1,11 +1,11 @@
 import { Sprite } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IView } from "../types/View";
+import { episodeExecutable, IView } from "../types/View";
 import { FadeTypes, IEpisodeFade } from "../types/Episode";
 import createEmptySprite from "../utils/emptySprite";
 import { AdvTimeElapsedAnimation } from "../object/advTimeElapsedAnimation";
 
-export class FadeView extends IView {
+export class FadeView extends IView implements episodeExecutable{
 
     protected readonly _whiteFadePanel: Sprite = createEmptySprite({ alpha: 0 });
     protected readonly _blackFadePanel: Sprite = createEmptySprite({

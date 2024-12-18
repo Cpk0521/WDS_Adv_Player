@@ -1,34 +1,36 @@
-import { Assets, AlphaFilter, Graphics} from "pixi.js";
+import { Assets, AlphaFilter, Graphics, Container} from "pixi.js";
 import { Tween } from "tweedle.js";
-import '@pixi-spine/loader-uni';
-import { Spine } from '@pixi-spine/runtime-4.1';
+import { Spine } from '@esotericsoftware/spine-pixi-v8';
 import { baseAssets } from "../constant/advConstant";
 
-export class AdvTimeElapsedAnimation extends Graphics{
+export class AdvTimeElapsedAnimation extends Container{
 
+    protected _bg : Graphics | undefined;
     protected _jugon : Spine | undefined;
     protected aplha_filter = new AlphaFilter();
     protected _spineDuratinon = 3400;
     
     constructor(){
         super();
-        this.beginFill(0xffffff);
-        this.drawRect(0, 0, 1920, 1080);
         this.alpha = 0;
+        this._bg = new Graphics();
+        this._bg.rect(0, 0, 1920, 1080).fill(0xffffff);
+        this.addChild(this._bg);
 
-        Assets.load(baseAssets.jugon_progress).then((asset)=>{
-            this._jugon = new Spine(asset.spineData);
-            this._jugon.scale.set(.25);
-            this._jugon.visible = false;
-            this.addChild(this._jugon);
-
-            let jugon_height = this._jugon.getBounds().height;
-            this._jugon.position.set(1920 / 2, 1080 / 2 + (jugon_height/2));
-            this._jugon.filters = [this.aplha_filter];
-            this._jugon.state.addListener({
-                complete :() => this._hide(),
-            })
+        this._jugon = Spine.from({
+            skeleton : baseAssets.jugon_progress,
+            atlas : baseAssets.jugon_progress_atlas,
+        });
+        this._jugon.scale.set(.25);
+        let jugon_height = this._jugon.getBounds().height; //需要在visible false前才有數值 不然就是0
+        this._jugon.position.set(1920 / 2, 1080 / 2 + (jugon_height/2));
+        this._jugon.filters = [this.aplha_filter];
+        this._jugon.state.addListener({
+            complete :() => this._hide(),
         })
+
+        this._jugon.visible = false;
+        this.addChild(this._jugon);
     }
 
     static create(){

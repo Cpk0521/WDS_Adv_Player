@@ -1,4 +1,4 @@
-import { Assets } from "@pixi/assets";
+import { Assets } from "pixi.js";
 import { IMediaInstance, sound, Sound } from "@pixi/sound";
 import { Tween } from "tweedle.js";
 import { IEpisodeSound } from "../types/Episode";

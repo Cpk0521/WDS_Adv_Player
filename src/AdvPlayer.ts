@@ -1,7 +1,4 @@
-import { Container, FederatedPointerEvent, Assets, Ticker} from "pixi.js";
-import "@pixi-spine/loader-uni";
-import "@pixi/sound";
-// import { Group } from 'tweedle.js';
+import { Container, FederatedPointerEvent, Ticker, Sprite, Assets } from "pixi.js";
 //type
 import { IEpisodeModel } from "./types/Episode";
 //views
@@ -24,22 +21,23 @@ import { baseAssets, Layer, TLFonts } from "./constant/advConstant";
 import { checkImplements, isURL } from "./utils/check";
 import { createEmptySprite } from "./utils/emptySprite";
 import { resPath } from "./utils/resPath";
-import { loadJson, loadResourcesFromEpisode } from './utils/loadResources'
+import { loadJson, loadResourcesFromEpisode, loadPlayerAssetsBundle } from './utils/loadResources'
 import { banner, TrackLog } from "./utils/logger";
 
-export class AdvPlayer extends Container {
+export class AdvPlayer extends Container<any> {
   //init
+  protected _inited : boolean = false;
   protected _loadPromise: Promise<any> | undefined;
   //View
-  protected _backgroundView: BackgroundView;
-  protected _characterView: CharacterView;
-  protected _effectView: EffectView;
-  protected _textView: TextView;
-  protected _movieView: MovieView;
-  protected _fadeView : FadeView;
+  protected _backgroundView!: BackgroundView;
+  protected _characterView!: CharacterView;
+  protected _effectView!: EffectView;
+  protected _textView!: TextView;
+  protected _movieView!: MovieView;
+  protected _fadeView! : FadeView;
   // protected _historyView: HistoryView;
-  protected _uiView: UIView;
-  protected _coverOpening: CoverOpening;
+  protected _uiView!: UIView;
+  protected _coverOpening!: CoverOpening;
   // Controller
   protected _soundController: SoundController = new SoundController();
   protected _translationController: TranslationController = new TranslationController();
@@ -59,20 +57,26 @@ export class AdvPlayer extends Container {
   constructor() {
     super();
 
-    //spine pma setting
-    Assets.setPreferences({
-      preferCreateImageBitmap: false,
-    });
-
     //advPlayer setting
-    this.addChild(createEmptySprite({ empty : true, color: 0x00dd00 }));
+    this.addChild(createEmptySprite({ empty : true, color: 0x000000 }));
     this.sortableChildren = true;
     this.eventMode = "static";
     document.addEventListener("visibilitychange", this._handleVisibilityChange);
 
+    //log
+    banner();
+  }
+
+  public static create() {
+    return new this();
+  }
+
+  public async init(){
+    await loadPlayerAssetsBundle('baseAssets', baseAssets);
+
     //views
     this._uiView = new UIView().addTo(this, Layer.UILayer);
-    // this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
+    // // this._historyView = new HistoryView().addTo(this, Layer.HistroyLayer);
     this._fadeView = new FadeView().addTo(this, Layer.FadeLayer);
     this._movieView = new MovieView().addTo(this, Layer.MovieLayer);
     this._textView = new TextView().addTo(this, Layer.TextLayer);
@@ -82,10 +86,10 @@ export class AdvPlayer extends Container {
 
     //Cover
     this._coverOpening = CoverOpening.new().addTo(this, Layer.CoverLayer);
-    
-    //ui button setting
+
+    // //ui button setting
     this._uiView.AutoBtn.addclickFun(() => {
-      this._isAuto = this._uiView.AutoBtn.Pressed;
+      this._isAuto = this._uiView!.AutoBtn.Pressed;
       if(this._trackPromise && this._isAuto){
         this._trackPromise = this._trackPromise.then((
           previous_then_not_execute : boolean
@@ -102,12 +106,7 @@ export class AdvPlayer extends Container {
       }
     });
 
-    //log
-    banner();
-  }
-
-  public static create() {
-    return new this();
+    this._inited = true;
   }
 
   public addTo<C extends Container>(parent: C): AdvPlayer {
@@ -144,18 +143,14 @@ export class AdvPlayer extends Container {
           source = resPath.advJson(source);
         }
         source = await loadJson<IEpisodeModel>(source).catch(() => {
-          this._coverOpening.error("The episode ID or URL is not correct, please re-confirm.");
+          this._coverOpening?.error("The episode ID or URL is not correct, please re-confirm.");
           throw new Error("The episode ID or URL is not correct, please re-confirm.");
         });
       }
 
       if (!checkImplements<IEpisodeModel>(source)) {
-        this._coverOpening.error("Episode file format error.");
+        this._coverOpening?.error("Episode file format error.");
         throw new Error("Episode file format error.");
-      }
-
-      if (!Assets.cache.has(baseAssets.font)) {
-        await Assets.load(baseAssets.font);
       }
 
       if (this._episode) {
@@ -190,7 +185,7 @@ export class AdvPlayer extends Container {
       }
       
       this._episode = source as IEpisodeModel;
-      this._coverOpening.init({
+      this._coverOpening?.init({
           type: this._episode.StoryType,
           chapter: this._episode.Chapter,
           title: this._episode.Title,
@@ -203,9 +198,9 @@ export class AdvPlayer extends Container {
       await loadResourcesFromEpisode(
         source, 
         this._isVoice, 
-        (percentage) => this._coverOpening.progress(Math.floor(percentage * 100))
+        (percentage) => this._coverOpening?.progress(Math.floor(percentage * 100))
       )
-      .catch(() => this._coverOpening.error());
+      .catch(() => this._coverOpening?.error());
       
       res(this._episode);
     }));
@@ -239,12 +234,12 @@ export class AdvPlayer extends Container {
         this._play();
       },3000);
     } else {
-      this._coverOpening.once("pointertap", this._play, this);
+      this._coverOpening?.once("pointertap", this._play, this);
     }
 }
 
   protected _play() {
-    this._coverOpening.close(()=>{
+    this._coverOpening?.close(()=>{
       setTimeout(() => {
         //set click event
         this.on("pointertap", this._tap, this);
@@ -254,11 +249,11 @@ export class AdvPlayer extends Container {
 
     //ui view showing
     if(this._isAuto){
-      this._uiView.AutoBtn.Pressed = this._isAuto;
-      this._uiView.hide();
+      this._uiView!.AutoBtn.Pressed = this._isAuto;
+      this._uiView!.hide();
     }
     else{
-      this._uiView.alpha = 1;
+      this._uiView!.alpha = 1;
     }
     
     this._preRenderFrame();
@@ -408,7 +403,6 @@ export class AdvPlayer extends Container {
           res(true);
         }, duration);
       }));
-
     }
 
     // 如果不是auto 就return
@@ -425,7 +419,7 @@ export class AdvPlayer extends Container {
   protected _onBlur() {
     if (this._isAuto && document.hidden) {
       this._isAuto = false;
-      this._uiView.AutoBtn.Pressed = false;
+      this._uiView!.AutoBtn.Pressed = false;
     }
   }
 
@@ -444,7 +438,7 @@ export class AdvPlayer extends Container {
   protected _autoLock(autoString? : string){
     if(autoString?.toLocaleLowerCase() != 'true') return;
     this._isAuto = true;
-    this._coverOpening.setAuto(true);
+    this._coverOpening?.setAuto(true);
     document.removeEventListener("visibilitychange", this._handleVisibilityChange);
   }
 

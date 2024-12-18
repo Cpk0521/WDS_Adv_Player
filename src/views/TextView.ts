@@ -1,10 +1,10 @@
-import { Sprite, Container, Text, TextStyle, NineSlicePlane, Texture } from 'pixi.js';
+import { Sprite, Container, Text, Texture, NineSliceSprite  } from 'pixi.js';
 import { Tween } from 'tweedle.js';
-import { IView } from "../types/View";
+import { episodeExecutable, IView } from "../types/View";
 import { IEpisodeText } from "../types/Episode";
 import { baseAssets } from '../constant/advConstant';
 
-export class TextView extends IView {
+export class TextView extends IView implements episodeExecutable{
 
     protected _textPanelContainer = new Container();
     protected _sprakerText : Text;
@@ -28,51 +28,69 @@ export class TextView extends IView {
 
         //phrase text background
         const panel_texture = Texture.from(baseAssets.serif_window_bg)
-        const PhraseTextBox = new NineSlicePlane(panel_texture, 68, 120, 68, 120);
+        const PhraseTextBox = new NineSliceSprite({
+            texture : panel_texture,
+            leftWidth : 68,
+            topHeight : 100,
+            rightWidth : 68,
+            bottomHeight : 100,
+            width : 1628,
+            height : 248
+        });
         this._textPanelContainer.addChild(PhraseTextBox);
-        PhraseTextBox.width = 1628;
-        PhraseTextBox.height = 248;
-        PhraseTextBox.x = (1920 - PhraseTextBox.width) / 2;
-        PhraseTextBox.y = 808 //(1080 / 2) + ((PhraseTextBox.height / 2) + 148);
+        this._textPanelContainer.x = (1920 - PhraseTextBox.width) / 2;
+        this._textPanelContainer.y = 808 //(1080 / 2) + ((PhraseTextBox.height / 2) + 148);
 
         //phrase text
-        this._phrase = new Text('', new TextStyle({
-            fill: "#4a424b",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 40,
-            leading: 4,
-            lineHeight : 50,
-            letterSpacing: -1,
-        }));
-        PhraseTextBox.addChild(this._phrase);
+        this._phrase = new Text({
+            text : '', 
+            style : {
+                fill: "#4a424b",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 40,
+                leading: 4,
+                lineHeight : 50,
+                letterSpacing: -1,
+            }
+        });
+        this._textPanelContainer.addChild(this._phrase);
         this._phrase.x = 93.5;
-        this._phrase.y = 76;
+        this._phrase.y = 76-2;
 
         //spraker background
         const name_panel_texture = Texture.from(baseAssets.name_bg)
-        const name_bg = new NineSlicePlane(name_panel_texture, 56, 0, 19, 62);
-        PhraseTextBox.addChild(name_bg);
-        name_bg.width = 400;
-        name_bg.height = 80;
+        const name_bg = new NineSliceSprite({
+            texture : name_panel_texture,
+            leftWidth : 75,
+            topHeight : 0,
+            rightWidth : 70,
+            bottomHeight : 0,
+            width : 400,
+            height : 80
+        });
+        this._textPanelContainer.addChild(name_bg);
         name_bg.x = 188 - (name_bg.width / 2);
         name_bg.y = -20;
 
         //spraker label
-        this._sprakerText = new Text('', new TextStyle({
-            fill: "#ffffff",
-            fontFamily : 'Ronowstd Gbs',
-            fontSize : 40,
-            letterSpacing: -1,
-            // fontVariant : 'small-caps'
-        }));
-        name_bg.addChild(this._sprakerText);
+        this._sprakerText = new Text({
+            text : '', 
+            style : {
+                fill: "#ffffff",
+                fontFamily : 'Ronowstd Gbs',
+                fontSize : 40,
+                letterSpacing: -1,
+                // fontVariant : 'small-caps'
+            }
+        });
+        this._textPanelContainer.addChild(this._sprakerText);
         this._sprakerText.anchor.set(0.5);
-        this._sprakerText.x = 200;
-        this._sprakerText.y = 30;
+        this._sprakerText.x = 188;
+        this._sprakerText.y = 10; //10-2.5;
 
         //nextIcon
         this._nextIcon = Sprite.from(baseAssets.icon_next);
-        PhraseTextBox.addChild(this._nextIcon)
+        this._textPanelContainer.addChild(this._nextIcon);
         this._nextIcon.anchor.set(.5);
         this._nextIcon.position.set(1566, 195); //to 210
         this._nextIcon.alpha = 0;

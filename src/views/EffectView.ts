@@ -2,18 +2,18 @@
 //https://github.com/nical/GLSL-Raymarching/blob/master/src/shaders/Sepia.frag
 import { Sprite, Texture, ObservablePoint } from "pixi.js";
 import { Tween } from "tweedle.js";
-import { IView } from "../types/View";
+import { episodeExecutable, IView } from "../types/View";
 import { IEpisodeEffect, IEpisodeFade, WindowEffects } from "../types/Episode";
 import { baseAssets } from "../constant/advConstant";
 
-export class EffectView extends IView {
+export class EffectView extends IView implements episodeExecutable{
 
     // protected _canvasGroup : Container | undefined
     protected _sepiaEffectObject : Sprite;
     protected _whiteBlurEffectObject : Sprite;
     // protected _blur_filter : BlurFilter;
     // protected _sepia_filter : Filter;
-    protected _whiteBlurEffectAnimation : Tween<ObservablePoint<any>>
+    protected _whiteBlurEffectAnimation : Tween<ObservablePoint>
 
     constructor(){
         super()

@@ -1,7 +1,8 @@
-import { Container } from "@pixi/display"
+import { Container } from "pixi.js"
+import { IEpisodeDetail } from "./Episode";
 
 export abstract class IView extends Container{
-    
+
     public addTo<T extends Container>(parent : T, order : number = 0): this {
         parent.addChild(this);
         if(order && parent.sortableChildren){
@@ -23,3 +24,7 @@ export abstract class IView extends Container{
     }
 }
 
+
+export interface episodeExecutable {
+    execute(parent : IEpisodeDetail): (() => Promise<void>) | undefined | void;
+}

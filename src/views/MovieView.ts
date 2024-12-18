@@ -1,8 +1,8 @@
-import { Texture, VideoResource, Sprite, Assets } from "pixi.js";
-import { IView } from "../types/View";
+import { Sprite, Assets } from "pixi.js";
+import { episodeExecutable, IView } from "../types/View";
 import { IEpisodeMovie } from "../types/Episode";
 
-export class MovieView extends IView {
+export class MovieView extends IView implements episodeExecutable{
 
     protected _currentMovie : Sprite | undefined
 
@@ -12,13 +12,18 @@ export class MovieView extends IView {
         let texture = Assets.get(`movie_${MovieFileName}`);
         this._currentMovie = new Sprite(texture);
 
-        this.addChild(this._currentMovie);
+        const videoElement = (this._currentMovie.texture.source.resource as HTMLVideoElement);
 
-        const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
-        return () => controller.play().then(()=>{
-            this.removeChild(this._currentMovie!);
-            this.hide();
-        });
+        return () => {
+            if(this._currentMovie) this.addChild(this._currentMovie); //play the video
+            return new Promise<void>((res, _) => {
+                videoElement.onended = () => {
+                    this.removeChild(this._currentMovie!);
+                    this.hide();
+                    res();
+                }
+            })
+        }
     }
     
     public clear(): void {
@@ -29,8 +34,8 @@ export class MovieView extends IView {
 
     pauseMovie(){
         if(this._currentMovie){
-            const controller = (this._currentMovie.texture as Texture<VideoResource>).baseTexture.resource.source;
-            controller.pause();
+            const videoElement = this._currentMovie.texture.source.resource as HTMLVideoElement;
+            videoElement.pause();
         }
     }
 
