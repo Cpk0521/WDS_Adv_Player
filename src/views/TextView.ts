@@ -50,12 +50,12 @@ export class TextView extends IView implements episodeExecutable{
                 fontSize : 40,
                 leading: 4,
                 lineHeight : 50,
-                letterSpacing: -1,
+                letterSpacing: -1.1,
             }
         });
         this._textPanelContainer.addChild(this._phrase);
         this._phrase.x = 93.5;
-        this._phrase.y = 76-2;
+        this._phrase.y = 75;
 
         //spraker background
         const name_panel_texture = Texture.from(baseAssets.name_bg)
@@ -84,9 +84,10 @@ export class TextView extends IView implements episodeExecutable{
             }
         });
         this._textPanelContainer.addChild(this._sprakerText);
-        this._sprakerText.anchor.set(0.5);
+        this._sprakerText.anchor.set(0.5, 0.47);
         this._sprakerText.x = 188;
-        this._sprakerText.y = 10; //10-2.5;
+        this._sprakerText.y = 10;
+
 
         //nextIcon
         this._nextIcon = Sprite.from(baseAssets.icon_next);

@@ -15,6 +15,8 @@ export class EffectView extends IView implements episodeExecutable{
     // protected _sepia_filter : Filter;
     protected _whiteBlurEffectAnimation : Tween<ObservablePoint>
 
+    protected _nextShouldHide : boolean = false;
+
     constructor(){
         super()
 
@@ -89,7 +91,7 @@ export class EffectView extends IView implements episodeExecutable{
         if(FadeDuration > 0){
             return () => new Promise<void>((res, _) => {
                 setTimeout(() => {
-                    this._effectControl(WindowEffect);
+                    this._effectControl(WindowEffect, true);
                     res();
                 }, FadeDuration)
             })
@@ -99,9 +101,10 @@ export class EffectView extends IView implements episodeExecutable{
         return;
     }
 
-    _effectControl(WindowEffect? : WindowEffects){
+    _effectControl(WindowEffect? : WindowEffects, isFade : boolean = false){
         // 如果沒有WindowEffect 之前的有顯示的話就隱藏
-        if(!WindowEffect){
+        // 如果有fade animation 並且下一個unit沒有WindowEffect 則隱藏
+        if((!WindowEffect) || (isFade && this._nextShouldHide) ){
             if(this._sepiaEffectObject.visible){
                 this._sepiaEffectObject.visible = false;
             }
@@ -131,6 +134,7 @@ export class EffectView extends IView implements episodeExecutable{
                     }
                     break;
             }
+            return;
         }
     }
 
@@ -140,6 +144,14 @@ export class EffectView extends IView implements episodeExecutable{
 
     get whiteBlurEffectObject(){
         return this._whiteBlurEffectObject;
+    }
+
+    set nextShouldHide(bool : boolean){
+        this._nextShouldHide = bool;
+    }
+
+    get nextShouldHide(){
+        return this._nextShouldHide;
     }
 
 }

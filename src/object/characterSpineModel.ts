@@ -249,4 +249,11 @@ export class AdventureAnimationStandCharacter {
         return this._spineId;
     }
 
+    set visible(bool : boolean){
+        this._model.visible = bool;
+    }
+
+    get visible(){
+        return this._model.visible;
+    }
 }

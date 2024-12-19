@@ -132,6 +132,18 @@ export class CharacterView extends IView implements episodeExecutable{
 
     }
 
+    // 預先準備character model
+    preCreateCharacterModel({ CharacterMotions }: IEpisodeCharacter){
+        CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
+            if((!this._standCharacters.has(`${motiondata.SpineId}`)) && motiondata.SpineId != 0){
+                let model = new AdventureAnimationStandCharacter(motiondata.SpineId)
+                model.visible = false;
+                model.addTo(this);
+                this._standCharacters.set(`${motiondata.SpineId}`, model)
+            }
+        })
+    }
+
     //隱藏在場上的
     hideCharacter() : void {
         this._motionCharacters.forEach(record => record.character?.hideCharacter());

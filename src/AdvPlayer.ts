@@ -266,6 +266,7 @@ export class AdvPlayer extends Container<any> {
 
   protected async _preRenderFrame(){
     if(this._currentIndex != 0 || !this.currentTrack) return;
+    this._characterView.preCreateCharacterModel(this.currentTrack);
     this._effectView.execute(this.currentTrack);
     this._backgroundView.execute(this.currentTrack);
   }
@@ -302,6 +303,8 @@ export class AdvPlayer extends Container<any> {
     //第一次無須執行 preRenderFrame已經處理過 
     if(index > 0){
       //effect處理
+      //檢查下一個unit是否需要隱藏WindowEffect
+      this._effectView.nextShouldHide = !this.nextTrack?.WindowEffect;
       let effect_process = this._effectView.execute(this.currentTrack);
       if(!!effect_process){
         this._processing.push(effect_process);
@@ -361,6 +364,7 @@ export class AdvPlayer extends Container<any> {
 
     //準備下一個unit
     this._next();
+    this._characterView.preCreateCharacterModel(this.currentTrack);
 
     // 計算等候時間
     let duration = Math.max(
