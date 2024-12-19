@@ -84,7 +84,7 @@ export class TextView extends IView implements episodeExecutable{
             }
         });
         this._textPanelContainer.addChild(this._sprakerText);
-        this._sprakerText.anchor.set(0.5, 0.47);
+        this._sprakerText.anchor.set(0.5);
         this._sprakerText.x = 188;
         this._sprakerText.y = 10;
 
