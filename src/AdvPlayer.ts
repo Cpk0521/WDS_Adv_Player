@@ -1,4 +1,4 @@
-import { Container, FederatedPointerEvent, Ticker, Sprite, Assets } from "pixi.js";
+import { Container, FederatedPointerEvent, Assets } from "pixi.js";
 //type
 import { IEpisodeModel } from "./types/Episode";
 //views
@@ -16,7 +16,8 @@ import { CoverOpening } from "./object/coverOpening";
 import { SoundController } from "./controller/soundController";
 import { TranslationController } from "./controller/translationController";
 //constant
-import { baseAssets, Layer, TLFonts } from "./constant/advConstant";
+import './constant/translationReader';
+import { baseAssets, Layer } from "./constant/advConstant";
 //utils
 import { checkImplements, isURL } from "./utils/check";
 import { createEmptySprite } from "./utils/emptySprite";
@@ -159,20 +160,20 @@ export class AdvPlayer extends Container<any> {
 
       //如果有翻譯語言 就load該語言的翻譯文件
       if(translate){
-        await this._translationController.load({
+        let hasTranslate = await this._translationController.load({
           EpId : source.EpisodeId,
           loadParser : translate,
         });
         //如果有翻譯文件 ui配置&load font asset
-        if(this._translationController.hasTranslate){
+        if(hasTranslate){
           this._uiView.enableTLBtn();
-          this._textView.isTranslate = this._translationController.hasTranslate;
+          this._textView.isTranslate = hasTranslate;
           this._uiView.TranslateBtn.addclickFun(()=>{
             this._textView.isTranslate = this._uiView.TranslateBtn.Pressed;
             this._textView.toggleTextContent();
           })
           //font asset 
-          const TLfont = TLFonts.find(font => font.language === translate);
+          const TLfont = this._translationController.getFont();
           if(TLfont){
             this._textView.addFontFamily(TLfont.family);
             this._coverOpening.addFontFamily(TLfont.family);

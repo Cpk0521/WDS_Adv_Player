@@ -63,14 +63,4 @@ export const baseAssets = {
     whiteBlur : "./whiteBlurEffect.png",    
 };
 
-export const TLFonts = [
-    {
-        language: "zhcn",
-        family: "Hiraginosansgb",
-        url: "./HiraginoSansGB.ttf",
-    },
-];
-
 export const baseAssetsUrl = "https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/";
-
-

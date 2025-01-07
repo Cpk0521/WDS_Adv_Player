@@ -1,9 +1,10 @@
-import { Assets, AssetsBundle, ProgressCallback, loadTextures} from "pixi.js";
+import { Assets, AssetsBundle, ProgressCallback } from "pixi.js";
 import "@pixi/sound";
 import '@esotericsoftware/spine-pixi-v8'
 import resPath from "./resPath";
 import { IEpisodeModel } from "../types/Episode";
 import { parse } from 'papaparse'
+import { IEpisodeTranslateDetail, IEpisodeTranslateModel } from "../types/translation";
 
 export async function loadJson<T extends Object>(source : string) : Promise<T>{
     return fetch(source)
@@ -133,10 +134,33 @@ export function loadPlayerAssetsBundle(name : string, bundle : AssetsBundle["ass
     return Assets.loadBundle(name);
 }
 
+export async function loadTranslateModel(source : string){
+    const records = await loadCsv<IEpisodeTranslateDetail>(source);
+    const TLdetail : IEpisodeTranslateModel = {
+        translateDetail : records.filter((record) => record.Phrase) as IEpisodeTranslateDetail[],
+    }
+    for(let record of records.filter((record) => !record.Phrase)) {
+        if(record.Id.toLowerCase() === 'translator'){
+            TLdetail.translator = record.SpeakerName;
+        }
+        if(record.Id.toLowerCase() === 'proofreader'){
+            TLdetail.proofreader = record.SpeakerName;
+        }
+        if(record.Id.toLowerCase() === 'title' || record.Id.toLowerCase() === 'tltitle'){
+            TLdetail.TLTitle = record.SpeakerName;
+        }
+        if(record.Id.toLowerCase() === 'info'){
+            TLdetail.info = record.SpeakerName;
+        }
+    }
+    
+    return records.length > 0 ? TLdetail : void 0;
+}
 
 export default {
     loadJson,
     loadCsv,
     loadResourcesFromEpisode,
-    loadPlayerAssetsBundle
+    loadPlayerAssetsBundle,
+    loadTranslateModel
 }
