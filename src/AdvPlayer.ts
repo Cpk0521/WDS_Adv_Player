@@ -452,7 +452,9 @@ export class AdvPlayer extends Container<any> {
   }
 
   get currentTrack() {
-    return this._episode?.EpisodeDetail[this._currentIndex];
+    return this._currentIndex >= (this._episode?.EpisodeDetail.length ?? 0)
+      ? void 0
+      : this._episode?.EpisodeDetail[this._currentIndex];
   }
 
   get nextTrack() {
