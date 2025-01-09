@@ -124,15 +124,6 @@ export class TextView extends IView implements episodeExecutable{
             return;
         }
 
-        if(TLPhrase || TLSpeakerName){
-            this._currenttext = { 
-                SpeakerName, 
-                TLSpeakerName, 
-                Phrase: Order > 1 ? `${this._currenttext.Phrase}\n${Phrase}` : Phrase, 
-                TLPhrase: Order > 1 ? `${this._currenttext.TLPhrase}\n${TLPhrase}` : TLPhrase
-            };
-        }
-
         if(this._textPanelContainer.alpha === 0){
             this.showTextPanelAnimation();
             // this.showTextPanel();
@@ -149,7 +140,16 @@ export class TextView extends IView implements episodeExecutable{
         
         //phrase text
         this._phrase.style.fontFamily = (this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
-        this._phrase.text = Order > 1 ? `${this._phrase.text}\n` : '';
+        const prevPhrase = this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase;
+        this._phrase.text = Order > 1 ? `${prevPhrase}\n` : '';
+
+        //store current text
+        this._currenttext = { 
+            SpeakerName, 
+            TLSpeakerName, 
+            Phrase: Order > 1 ? `${this._currenttext.Phrase}\n${Phrase}` : Phrase, 
+            TLPhrase: Order > 1 ? `${this._currenttext.TLPhrase}\n${TLPhrase}` : TLPhrase
+        };
 
         this._typingTotalDuration = Phrase.length * 50 + 500;
 
