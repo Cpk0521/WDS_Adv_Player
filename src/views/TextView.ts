@@ -140,7 +140,7 @@ export class TextView extends IView implements episodeExecutable{
         
         //phrase text
         this._phrase.style.fontFamily = (this._isTranslate ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
-        const prevPhrase = this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase;
+        const prevPhrase = (this._isTranslate ? this._currenttext.TLPhrase : this._currenttext.Phrase) || '';
         this._phrase.text = Order > 1 ? `${prevPhrase}\n` : '';
 
         //store current text

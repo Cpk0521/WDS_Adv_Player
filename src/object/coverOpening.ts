@@ -1,7 +1,7 @@
 import { Text, TilingSprite, Sprite, Texture, Ticker, Graphics, AnimatedSprite, Container } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { StoryTypes } from "../types/Episode";
-import { IEpisodeTranslateModel } from '../controller/translationController'
+import { IEpisodeTranslateModel } from  "../types/translation";
 import { createEmptySprite } from "../utils/emptySprite";
 import { baseAssets } from "../constant/advConstant";
 
