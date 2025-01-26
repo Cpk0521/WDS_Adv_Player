@@ -31,8 +31,7 @@ const zhcnReader: TranslateReader = {
         url: "./HiraginoSansGB.ttf",
     },
     read: function (epId: number) {
-        let source = `${this.url}/TranslationCsv/${epId}.csv`;
-        return loadTranslateModel(source);
+        return loadTranslateModel(`${this.url}/TranslationCsv/${epId}.csv`);
     },
 };
 TranslationController.addReader(zhcnReader);
@@ -46,8 +45,7 @@ const zhcnAIReader: TranslateReader = {
         url: "./HiraginoSansGB.ttf",
     },
     read: function (epId: number) {
-        let source = `${this.url}/TranslationCsv/${epId}.csv`;
-        return loadTranslateModel(source);
+        return loadTranslateModel(`${this.url}/TranslationCsv/${epId}.csv`);
     },
 };
 TranslationController.addReader(zhcnAIReader);
