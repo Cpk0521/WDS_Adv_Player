@@ -6,8 +6,8 @@ const { id, tl, at, renderer } = getUrlParams();
 
 const app = await createApp(<'webgl' | 'webgpu'> renderer);
 
-const advplayer = AdvPlayer.create(); //create Adv Player
-await advplayer.init(); // init Adv Player
+const advplayer = new AdvPlayer(); //create Adv Player
+await advplayer.init(); //init Adv Player
 advplayer.addTo(app.stage);
 
 // advplayer.loadAndPlay('1000000');

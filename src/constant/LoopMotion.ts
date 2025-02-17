@@ -290,6 +290,20 @@ export default [
         Size: 2,
     },
     {
+        Id: 514,
+        TargetCharacterBaseId: "514",
+        LoopSpeed: 1.07,
+        Height: 147,
+        Size: 2,
+    },
+    {
+        Id: 515,
+        TargetCharacterBaseId: "515",
+        LoopSpeed: 0.89,
+        Height: 145,
+        Size: 2,
+    },
+    {
         Id: 901,
         TargetCharacterBaseId: "901",
         LoopSpeed: 1.08,

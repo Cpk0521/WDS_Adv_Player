@@ -68,8 +68,10 @@ export class AdvPlayer extends Container<any> {
     banner();
   }
 
-  public static create() {
-    return new this();
+  public static async create() {
+    const self = new this();
+    await self.init();
+    return self;
   }
 
   public async init(){
