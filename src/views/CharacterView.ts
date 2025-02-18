@@ -56,7 +56,9 @@ export class CharacterView extends IView implements episodeExecutable{
         }
 
         this.offAllLipSync();
-        this._prevCharacters = [...this._motionCharacters];
+        // 把相同的slotNumber覆蓋掉 或者 增加紀錄
+        // this._prevCharacters = [...this._motionCharacters];
+        this._prevCharacters = [...this._prevCharacters.filter(item => !this._motionCharacters.some(bItem => bItem.slotNumber === item.slotNumber)), ...this._motionCharacters];
         this._motionCharacters = [];
 
         CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
