@@ -207,10 +207,11 @@ export class CoverOpening extends Container {
         }
     }
 
-    init({type, chapter, title, order, TLTitle, info} : CoverOpeningProps){
+    init({type, chapter, title, order, TLTitle, info, TLChapter} : CoverOpeningProps){
         //text
         if(type === StoryTypes.Main || type === StoryTypes.Event){
-            this._top_text.text = chapter;
+            this._top_text.text = !!TLChapter ?  `${TLChapter}` : `${chapter}`;;
+            this._top_text.style.fontFamily = (!!TLChapter ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
             this._middle_text.text = `第　${order}　話`;
             this._bottom_text.text = !!TLTitle ?  `${TLTitle}` : `${title}`;
             this._bottom_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
