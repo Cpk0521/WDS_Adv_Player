@@ -3,6 +3,7 @@ export interface IEpisodeTranslateModel {
     proofreader?: string;
     TLTitle?: string;
     info?: string;
+    TLChapter?: string;
     translateDetail: IEpisodeTranslateDetail[];
 }
 

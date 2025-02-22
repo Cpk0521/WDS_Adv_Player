@@ -152,6 +152,9 @@ export async function loadTranslateModel(source : string){
         if(record.Id.toLowerCase() === 'info'){
             TLdetail.info = record.SpeakerName;
         }
+        if(record.Id.toLowerCase() === 'chapter' || record.Id.toLowerCase() === 'tlchapter'){
+            TLdetail.TLChapter = record.SpeakerName;
+        }
     }
     
     return records.length > 0 ? TLdetail : void 0;
