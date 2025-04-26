@@ -159,11 +159,3 @@ export async function loadTranslateModel(source : string){
     
     return records.length > 0 ? TLdetail : void 0;
 }
-
-export default {
-    loadJson,
-    loadCsv,
-    loadResourcesFromEpisode,
-    loadPlayerAssetsBundle,
-    loadTranslateModel
-}

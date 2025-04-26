@@ -49,7 +49,6 @@ export class AdvPlayer extends Container<any> {
   protected _isAuto: boolean = false;
   protected _isVoice: boolean = true;
   protected _isAdventureEnded: boolean = false;
-  // protected _processing: Promise<any>[] = [];
   protected _processing: (()=>Promise<any>)[] = [];
   protected _trackPromise: Promise<boolean> | undefined;
 
@@ -68,8 +67,11 @@ export class AdvPlayer extends Container<any> {
     banner();
   }
 
-  public static async create() {
+  public static async create<C extends Container>(pixiapp? : C): Promise<AdvPlayer> {
     const self = new this();
+    if(pixiapp){
+      self.addTo(pixiapp);
+    }
     await self.init();
     return self;
   }
@@ -268,6 +270,11 @@ export class AdvPlayer extends Container<any> {
     this._currentIndex++;
     return this.currentTrack;
   }
+
+  // public seek(order : number){
+  //   if(!this._episode) return;
+  //   if(order < 0 || order >= this._episode.EpisodeDetail.length) return;
+  // }
 
   protected async _preRenderFrame(){
     if(this._currentIndex != 0 || !this.currentTrack) return;

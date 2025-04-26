@@ -6,16 +6,12 @@ const { id, tl, at, renderer } = getUrlParams();
 
 const app = await createApp(<'webgl' | 'webgpu'> renderer);
 
-const advplayer = new AdvPlayer(); //create Adv Player
-await advplayer.init(); //init Adv Player
-advplayer.addTo(app.stage);
+//create Adv Player
+const advplayer = await AdvPlayer.create(app.stage);
+(globalThis as any).advplayer = advplayer;
 
 // advplayer.loadAndPlay('1000000');
-// advplayer.loadAndPlay('110081');
-// advplayer.loadAndPlay('2001206');
-// advplayer.loadAndPlay('110081'); 
 // advplayer.loadAndPlay('1010110', 'zhcn');
-// 1010119
 
 if (id) {
   advplayer.loadAndPlay(id, tl, at);
