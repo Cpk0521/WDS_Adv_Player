@@ -63,4 +63,4 @@ export const baseAssets = {
     whiteBlur : "./whiteBlurEffect.png",    
 };
 
-export const baseAssetsUrl = "https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main/";
+export const baseAssetsUrl = "https://raw.githubusercontent.com/wds-sirius/Adv-Resource/main";
