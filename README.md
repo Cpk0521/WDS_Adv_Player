@@ -16,11 +16,32 @@ A adventure Player to render the stories for game [ワールドダイスター �
 ## Demo
 [online Demo](https://cpk0521.github.io/WDS_Adv_Player/?id=1000000)
 
-## Parameters
+## URL Parameters
 
-| Parameters  | description | optional |
+| Parameters  | description | value |
 | :-------------: | :-------------: | :-------------:|
 |id  | Story Id | |
 |tl  | Translate language | zhcn |
 |at  | Auto play preset | true |
 |renderer  | Renderer Type | `webgl`, `webgpu` |
+
+## Translation
+
+you can create a new TranslateReader in [translationReader.ts](./src/constant/translationReader.ts) file
+
+```ts
+const Reader: TranslateReader = {
+    language: "sample", // Name of the language
+    url: "", // URL of the translation file
+    font: {
+        family: "", // Font family
+        url: "", // URL of the font file
+    },
+    read: function (epId: number) { 
+      // Define the method to read the translation file
+      // If it is a CSV file, you can use loadTranslateModel() to read it.
+      // Should return data of type IEpisodeTranslateModel
+    },
+};
+TranslationController.addReader(Reader); // Add the reader to the controller
+```
