@@ -159,3 +159,34 @@ export async function loadTranslateModel(source : string){
     
     return records.length > 0 ? TLdetail : void 0;
 }
+
+export async function loadTranslateModelFromJson(source : string, epid: number){
+    const response = await fetch(source);
+    if (!response.ok) {
+        if (response.status === 404) {
+            // 翻译不存在，返回 void 0
+            return void 0;
+        }
+        throw new Error(response.statusText);
+    }
+    const jsonData = await response.json();
+    
+    // 转换自定义JSON格式为IEpisodeTranslateModel
+    if (jsonData && jsonData.translated && Array.isArray(jsonData.translated)) {
+        const translateDetail = jsonData.translated.map((item: any, index: number) => ({
+            Id: `${epid}${(index + 1).toString().padStart(3, '0')}`, // 生成正确的ID格式：{epid}{index}
+            SpeakerName: item.SpeakerName || "",
+            Phrase: "", // 原文保持为空，因为这是翻译内容
+            translation: item.Phrase || ""
+        }));
+
+        const TLdetail : IEpisodeTranslateModel = {
+            translator: "AI翻译",
+            translateDetail: translateDetail
+        };
+        
+        return translateDetail.length > 0 ? TLdetail : void 0;
+    }
+    
+    return void 0;
+}

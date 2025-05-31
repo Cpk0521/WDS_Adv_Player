@@ -1,5 +1,5 @@
 import { TranslationController } from "../controller/translationController";
-import { loadTranslateModel } from "../utils/loadResources";
+import { loadTranslateModel, loadTranslateModelFromJson } from "../utils/loadResources";
 import { TranslateReader } from "../types/translation";
 
 /**
@@ -49,3 +49,17 @@ const zhcnAIReader: TranslateReader = {
     },
 };
 TranslationController.addReader(zhcnAIReader);
+
+// zhai - 中文机翻
+const zhaiReader: TranslateReader = {
+    language: "zhai",
+    url: "https://wds-translation.littletoxic.top",
+    font: {
+        family: "Hiraginosansgb",
+        url: "./HiraginoSansGB.ttf",
+    },
+    read: function (epId: number) {
+        return loadTranslateModelFromJson(`${this.url}/${epId}.json`, epId);
+    },
+};
+TranslationController.addReader(zhaiReader);
