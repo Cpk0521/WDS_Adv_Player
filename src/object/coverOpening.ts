@@ -224,6 +224,13 @@ export class CoverOpening extends Container {
             this._middle_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
         }
 
+        if(type === StoryTypes.Special){
+            // this._top_text.text = !!TLChapter ?  `${TLChapter}` : `${chapter}`;;
+            // this._top_text.style.fontFamily = (!!TLChapter ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
+            this._middle_text.text = !!TLTitle ? `${TLTitle}` : `${title}`;
+            this._middle_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
+        }
+
         //info
         if(info){
             this._info_text.text = `${info.replaceAll('/n', '\n').replaceAll("\\n", '\n')}`;
