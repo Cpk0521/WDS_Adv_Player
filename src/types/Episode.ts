@@ -112,7 +112,8 @@ export enum StoryTypes
 	Main = 1,
 	Event,
 	Side,
-	Character
+	Character,
+    Special = 6
 }
 
 export enum NextOrderType{

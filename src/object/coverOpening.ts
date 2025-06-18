@@ -210,7 +210,7 @@ export class CoverOpening extends Container {
     init({type, chapter, title, order, TLTitle, info, TLChapter} : CoverOpeningProps){
         //text
         if(type === StoryTypes.Main || type === StoryTypes.Event){
-            this._top_text.text = !!TLChapter ?  `${TLChapter}` : `${chapter}`;;
+            this._top_text.text = !!TLChapter ?  `${TLChapter}` : `${chapter}`;
             this._top_text.style.fontFamily = (!!TLChapter ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
             this._middle_text.text = `第　${order}　話`;
             this._bottom_text.text = !!TLTitle ?  `${TLTitle}` : `${title}`;
@@ -220,6 +220,13 @@ export class CoverOpening extends Container {
         if(type === StoryTypes.Side){
             //side`
             this._top_text.text = `サイドストーリー${order == 1 ? '(前編)' : '(後編)'}`;
+            this._middle_text.text = !!TLTitle ? `${TLTitle}` : `${title}`;
+            this._middle_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
+        }
+
+        if(type === StoryTypes.Special){
+            this._top_text.text = !!TLChapter ?  `${TLChapter}` : `${chapter}`;
+            this._top_text.style.fontFamily = (!!TLChapter ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
             this._middle_text.text = !!TLTitle ? `${TLTitle}` : `${title}`;
             this._middle_text.style.fontFamily = (!!TLTitle ? this._fontFamilies[1] : this._fontFamilies[0]) || this._fontFamilies[0];
         }
