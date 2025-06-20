@@ -133,7 +133,7 @@ export class AdventureAnimationStandCharacter {
             // esoteric官方的mixDuration必须在第一次update前设置才可以生效，这里关闭autoUpdate，设置完mixDuration后再打开
             this._model.autoUpdate = false;
             let entry = this._model.state.setAnimation(1, bodyAnimationName, false)
-            entry.mixDuration = motion ? motion.Second : 0.2;
+            entry.mixDuration = motion ? motion.Second : 0.3;
             this._model.update(0);
             this._model.autoUpdate = true;
         }
