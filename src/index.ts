@@ -5,6 +5,7 @@ import { createApp } from "./utils/createApp";
 const { id, tl, at, renderer } = getUrlParams();
 
 const app = await createApp(<'webgl' | 'webgpu'> renderer);
+// const iFrameDetection = (window === window.parent);
 
 //create Adv Player
 const advplayer = await AdvPlayer.create(app.stage);

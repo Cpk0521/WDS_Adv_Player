@@ -11,7 +11,7 @@
 </div>
 
 ## About
-A adventure Player to render the stories for game [ワールドダイスター 夢のステラリウム](https://world-dai-star.com/game).
+A self-made adventure Player to render the stories for game [ワールドダイスター 夢のステラリウム](https://world-dai-star.com/game).
 
 ## Demo
 [Online Demo](https://cpk0521.github.io/WDS_Adv_Player/?id=1000000)
@@ -22,10 +22,16 @@ A adventure Player to render the stories for game [ワールドダイスター �
 | :-------------: | :-------------: | :-------------:|
 |id  | Story Id | |
 |tl  | Translate language | [#](https://github.com/Cpk0521/WDS_Adv_Player?tab=readme-ov-file#translation) |
-|at  | Auto play preset | true |
+|at  | Lock in Auto play Mode | true |
 |renderer  | Renderer Type | `webgl`, `webgpu` |
 
-## Translation
+Example : 
+ - `https://cpk0521.github.io/WDS_Adv_Player/?id=1000000`
+ - `https://cpk0521.github.io/WDS_Adv_Player/?id=2006008&tl=zhai`
+ - `https://cpk0521.github.io/WDS_Adv_Player/?renderer=webgl`
+ - `https://cpk0521.github.io/WDS_Adv_Player/?at=true`
+
+## TranslationV
 
 Currently supported languages :
   - `zhcn` - [DreamGallery/WDS-Translation-Csv](https://github.com/DreamGallery/WDS-Translation-Csv)
