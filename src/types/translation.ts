@@ -4,10 +4,10 @@ export interface IEpisodeTranslateModel {
     TLTitle?: string;
     info?: string;
     TLChapter?: string;
-    translateDetail: IEpisodeTranslateDetail[];
+    translateDetail: IEpisodeTranslateUnit[];
 }
 
-export interface IEpisodeTranslateDetail {
+export interface IEpisodeTranslateUnit {
     Id: string;
     SpeakerName: string;
     Phrase: string;

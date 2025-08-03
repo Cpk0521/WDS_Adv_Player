@@ -1,5 +1,5 @@
 import { Container } from "pixi.js"
-import { IEpisodeDetail } from "./Episode";
+import { IEpisodeUnit } from "./Episode";
 
 export abstract class IView extends Container{
 
@@ -26,5 +26,5 @@ export abstract class IView extends Container{
 
 
 export interface episodeExecutable {
-    execute(parent : IEpisodeDetail): (() => Promise<void>) | undefined | void;
+    execute(parent : IEpisodeUnit): (() => Promise<void>) | undefined | void;
 }

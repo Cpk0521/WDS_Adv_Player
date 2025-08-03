@@ -1,6 +1,6 @@
 import { Container, Assets } from "pixi.js";
 import { episodeExecutable, IView } from "../types/View";
-import { IEpisodeCharacter, IEpisodeDetailCharacterMotion } from "../types/Episode";
+import { IEpisodeCharacter, IEpisodeUnitCharacterMotion } from "../types/Episode";
 import { characterAnimation, AdventureAnimationStandCharacter } from '../object/characterSpineModel'
 // constant
 import LipSynParameters from "../constant/LipSync";
@@ -61,7 +61,7 @@ export class CharacterView extends IView implements episodeExecutable{
         this._prevCharacters = [...this._prevCharacters.filter(item => !this._motionCharacters.some(bItem => bItem.slotNumber === item.slotNumber)), ...this._motionCharacters];
         this._motionCharacters = [];
 
-        CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
+        CharacterMotions.forEach((motiondata : IEpisodeUnitCharacterMotion)=>{
 
             let model : AdventureAnimationStandCharacter | undefined = undefined;
 
@@ -137,7 +137,7 @@ export class CharacterView extends IView implements episodeExecutable{
     // 預先準備character model
     preCreateCharacterModel(epcharacter? : IEpisodeCharacter){
         if(!epcharacter) return;
-        epcharacter.CharacterMotions.forEach((motiondata : IEpisodeDetailCharacterMotion)=>{
+        epcharacter.CharacterMotions.forEach((motiondata : IEpisodeUnitCharacterMotion)=>{
             if((!this._standCharacters.has(`${motiondata.SpineId}`)) && motiondata.SpineId != 0){
                 let model = new AdventureAnimationStandCharacter(motiondata.SpineId)
                 model.visible = false;

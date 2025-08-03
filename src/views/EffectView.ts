@@ -22,10 +22,7 @@ export class EffectView extends IView implements episodeExecutable{
 
         this.sortableChildren = true;
         
-        // sepia setting 顏色不確定!!!
-        // this._sepia_filter = new Filter(undefined, fragmentShader);
-        // this.filters = [this._sepia_filter];
-        // this._sepia_filter.enabled = false;
+        // sepia color 顏色不確定!!!
         this._sepiaEffectObject = new Sprite(Texture.from(baseAssets.sepia));
         this._sepiaEffectObject.width = 1920;
         this._sepiaEffectObject.height = 1080;
@@ -34,14 +31,6 @@ export class EffectView extends IView implements episodeExecutable{
         this.addChild(this._sepiaEffectObject);
         this._sepiaEffectObject.visible = false;
 
-        // //white blur edge effect setting
-        // this._whiteBlurEffectObject = new Graphics();
-        // this._whiteBlurEffectObject.zIndex = 20;
-        // this._whiteBlurEffectObject.lineStyle(90, 0xffffff);
-        // this._whiteBlurEffectObject.drawRect(0, 0, 1920, 1080);
-        // this._whiteBlurEffectObject.visible = false;
-        // this.addChild(this._whiteBlurEffectObject)
-
         //用圖片做white blur edge effect
         this._whiteBlurEffectObject = new Sprite(Texture.from(baseAssets.whiteBlur));
         this._whiteBlurEffectObject.anchor.set(0.5);
@@ -49,15 +38,7 @@ export class EffectView extends IView implements episodeExecutable{
         this._whiteBlurEffectObject.zIndex = 20;
         this._whiteBlurEffectObject.visible = false;
         this.addChild(this._whiteBlurEffectObject);
-
-        // //blur filter setting
-        // this._blur_filter = new BlurFilter();
-        // this._whiteBlurEffectObject.filters = [this._blur_filter];
-        // this._blur_filter.enabled = false;
-        // this._blur_filter.blur = 60;
-        // this._blur_filter.quality = 20;
         
-        // this._whiteBlurEffectAnimation = new Tween(this._blur_filter.uniforms).to({blur : 80}, 2000).yoyo(true).repeat();
         this._whiteBlurEffectAnimation = new Tween(this._whiteBlurEffectObject.scale).to({x : 1.025, y : 1.025}, 2000).yoyo(true).repeat();
     }
     
@@ -65,12 +46,8 @@ export class EffectView extends IView implements episodeExecutable{
         if(this._sepiaEffectObject.visible){
             this._sepiaEffectObject.visible = false;
         }
-        // this._sepia_filter.enabled = false;
-        // this.filters = [];
-
         if(this._whiteBlurEffectObject.visible){
             this._whiteBlurEffectObject.visible = false;
-            // this._blur_filter.enabled = false;
             this._whiteBlurEffectAnimation.stop();
         }
     }
@@ -108,12 +85,8 @@ export class EffectView extends IView implements episodeExecutable{
             if(this._sepiaEffectObject.visible){
                 this._sepiaEffectObject.visible = false;
             }
-            // if(this._sepia_filter.enabled){
-            //     this._sepia_filter.enabled = false;
-            // }
             if(this._whiteBlurEffectObject.visible){
                 this._whiteBlurEffectObject.visible = false;
-                // this._blur_filter.enabled = false;
                 this._whiteBlurEffectAnimation.stop();
             }
             return;

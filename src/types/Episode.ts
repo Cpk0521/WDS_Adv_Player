@@ -1,4 +1,4 @@
-// export interface IEpisodeDetail {
+// export interface IEpisodeUnit {
 //     Id : number
 //     EpisodeMasterId : number
 //     Order : number
@@ -18,7 +18,7 @@
 //     WindowEffect : WindowEffects | null
 //     SceneCameraMasterId : number | null
 //     VoiceFileName : string | null
-//     CharacterMotions : IEpisodeDetailCharacterMotion[]
+//     CharacterMotions : IEpisodeUnitCharacterMotion[]
 //     SpeakerIconId : string | null
 //     FadeValue1 : number | null
 //     FadeValue2 : number | null
@@ -34,10 +34,10 @@ export interface IEpisodeModel {
     Next : number | undefined | null
     Chapter : string
     Title : string
-    EpisodeDetail : IEpisodeDetail[]
+    EpisodeDetail : IEpisodeUnit[]
 }
 
-export type IEpisodeDetail = {
+export type IEpisodeUnit = {
     Id : number
     EpisodeMasterId : number
     Title? : string
@@ -90,10 +90,10 @@ export interface IEpisodeMovie {
 }
 
 export interface IEpisodeCharacter {
-    CharacterMotions : IEpisodeDetailCharacterMotion[]
+    CharacterMotions : IEpisodeUnitCharacterMotion[]
 }
 
-export interface IEpisodeDetailCharacterMotion {
+export interface IEpisodeUnitCharacterMotion {
     slotNumber : number
     FacialExpressionMasterId? : number
     HeadMotionMasterId? : number

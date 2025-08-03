@@ -4,7 +4,7 @@ import '@esotericsoftware/spine-pixi-v8'
 import resPath from "./resPath";
 import { IEpisodeModel } from "../types/Episode";
 import { parse } from 'papaparse'
-import { IEpisodeTranslateDetail, IEpisodeTranslateModel } from "../types/translation";
+import { IEpisodeTranslateUnit, IEpisodeTranslateModel } from "../types/translation";
 
 export async function loadJson<T extends Object>(source : string) : Promise<T>{
     return fetch(source)
@@ -135,9 +135,9 @@ export function loadPlayerAssetsBundle(name : string, bundle : AssetsBundle["ass
 }
 
 export async function loadTranslateModel(source : string){
-    const records = await loadCsv<IEpisodeTranslateDetail>(source);
+    const records = await loadCsv<IEpisodeTranslateUnit>(source);
     const TLdetail : IEpisodeTranslateModel = {
-        translateDetail : records.filter((record) => record.Phrase) as IEpisodeTranslateDetail[],
+        translateDetail : records.filter((record) => record.Phrase) as IEpisodeTranslateUnit[],
     }
     for(let record of records.filter((record) => !record.Phrase)) {
         if(record.Id.toLowerCase() === 'translator'){

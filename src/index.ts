@@ -11,12 +11,12 @@ const app = await createApp(<'webgl' | 'webgpu'> renderer);
 const advplayer = await AdvPlayer.create(app.stage);
 (globalThis as any).advplayer = advplayer;
 
-// advplayer.loadAndPlay('1000000');
+advplayer.loadAndPlay('2006008');
 // advplayer.loadAndPlay('1010110', 'zhcn');
 
-if (id) {
-  advplayer.loadAndPlay(id, tl, at);
-} else {
-  let _id = prompt("Please enter the story Id", "1000000");
-  _id && advplayer.loadAndPlay(_id, tl, at);
-}
+// if (id) {
+//   advplayer.loadAndPlay(id, tl, at);
+// } else {
+//   let _id = prompt("Please enter the story Id", "1000000");
+//   _id && advplayer.loadAndPlay(_id, tl, at);
+// }
