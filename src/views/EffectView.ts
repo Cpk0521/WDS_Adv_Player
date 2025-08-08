@@ -1,9 +1,7 @@
-//https://github.com/karai17/awesome-love-shaders/blob/master/sepia/sepia.glsl
-//https://github.com/nical/GLSL-Raymarching/blob/master/src/shaders/Sepia.frag
 import { Sprite, Texture, ObservablePoint } from "pixi.js";
 import { Tween } from "tweedle.js";
 import { episodeExecutable, IView } from "../types/View";
-import { IEpisodeEffect, IEpisodeFade, WindowEffects } from "../types/Episode";
+import { IEpisodeBackground, IEpisodeEffect, IEpisodeFade, WindowEffects } from "../types/Episode";
 import { baseAssets } from "../constant/advConstant";
 
 export class EffectView extends IView implements episodeExecutable{
@@ -11,10 +9,9 @@ export class EffectView extends IView implements episodeExecutable{
     // protected _canvasGroup : Container | undefined
     protected _sepiaEffectObject : Sprite;
     protected _whiteBlurEffectObject : Sprite;
-    // protected _blur_filter : BlurFilter;
-    // protected _sepia_filter : Filter;
     protected _whiteBlurEffectAnimation : Tween<ObservablePoint>
 
+    protected _currentBG : string | undefined;
     protected _nextShouldHide : boolean = false;
 
     constructor(){
@@ -22,7 +19,9 @@ export class EffectView extends IView implements episodeExecutable{
 
         this.sortableChildren = true;
         
-        // sepia color 顏色不確定!!!
+        // sepia effect的顏色不確定!!!
+        // 正常來說應該是用shader來做的 但會有lag問題 + 圖層問題
+        // 所以暫時用圖片來做
         this._sepiaEffectObject = new Sprite(Texture.from(baseAssets.sepia));
         this._sepiaEffectObject.width = 1920;
         this._sepiaEffectObject.height = 1080;
@@ -53,12 +52,17 @@ export class EffectView extends IView implements episodeExecutable{
     }
 
     execute({ 
-        Effect, 
+        BackgroundImageFileName,
+        Effect,
         WindowEffect,
         BackgroundImageFileFadeType,
         FadeValue1 = 0,
-    } : IEpisodeEffect & IEpisodeFade) :  (() => Promise<void>) | undefined {
+    } : IEpisodeEffect & IEpisodeFade & IEpisodeBackground) :  (() => Promise<void>) | undefined {
         
+        if(BackgroundImageFileName){
+            this._currentBG = BackgroundImageFileName;
+        }
+
         if(Effect){
             console.log('暫時沒有見過 所以不知道怎樣做!', Effect)
         }
@@ -96,7 +100,8 @@ export class EffectView extends IView implements episodeExecutable{
         if(WindowEffect){
             switch (WindowEffect){
                 case WindowEffects.Sepia:
-                    if(!this._sepiaEffectObject.visible){
+                    // 黑色背景(1050)不用顯示
+                    if((!this._sepiaEffectObject.visible) && this._currentBG !== "1050"){
                         this._sepiaEffectObject.visible = true;
                     }
                     break;
@@ -129,6 +134,11 @@ export class EffectView extends IView implements episodeExecutable{
 
 }
 
+
+// --sepia effext的參考資料--
+
+//https://github.com/karai17/awesome-love-shaders/blob/master/sepia/sepia.glsl
+//https://github.com/nical/GLSL-Raymarching/blob/master/src/shaders/Sepia.frag
 
 // const fragmentShader = `
 //     varying vec2 vTextureCoord;
