@@ -281,6 +281,8 @@ export class AdvPlayer extends Container<any> {
     this._characterView.preCreateCharacterModel(this.currentTrack);
     this._effectView.execute(this.currentTrack);
     this._backgroundView.execute(this.currentTrack);
+    //當播完聲音後 停止spine的口部動作
+    this._soundController.onVoiceEnd = this._characterView.offAllLipSync.bind(this._characterView);
   }
 
   protected async _renderFrame() {
@@ -368,9 +370,6 @@ export class AdvPlayer extends Container<any> {
     this._textView.allowNextIconDisplay = !isSameGroup; //如果是同組就不顯示小三角形圖標
     this._textView.execute(this.currentTrack);
 
-    //當播完聲音後 停止spine的口部動作
-    this._soundController.onVoiceEnd = () => this._characterView.offAllLipSync();
-  
     //聲音處理
     this._soundController.voice(this.currentTrack);
 

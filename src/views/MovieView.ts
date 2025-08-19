@@ -19,7 +19,6 @@ export class MovieView extends IView implements episodeExecutable{
             return new Promise<void>((res, _) => {
                 videoElement.onended = () => {
                     this.removeChild(this._currentMovie!);
-                    this.hide();
                     res();
                 }
             })

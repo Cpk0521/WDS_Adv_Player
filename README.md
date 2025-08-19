@@ -31,7 +31,7 @@ Example :
  - `https://cpk0521.github.io/WDS_Adv_Player/?renderer=webgl`
  - `https://cpk0521.github.io/WDS_Adv_Player/?at=true`
 
-## TranslationV
+## Translation
 
 Currently supported languages :
   - `zhcn` - [DreamGallery/WDS-Translation-Csv](https://github.com/DreamGallery/WDS-Translation-Csv)

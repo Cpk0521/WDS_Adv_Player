@@ -1,4 +1,4 @@
-import { Container, Assets } from "pixi.js";
+import { Container } from "pixi.js";
 import { episodeExecutable, IView } from "../types/View";
 import { IEpisodeCharacter, IEpisodeUnitCharacterMotion } from "../types/Episode";
 import { characterAnimation, AdventureAnimationStandCharacter } from '../object/characterSpineModel'
