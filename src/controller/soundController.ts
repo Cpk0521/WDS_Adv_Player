@@ -118,12 +118,9 @@ export class SoundController {
       return;
     }
 
-    if (Assets.cache.has(`voice_${FileName}`)) {
-      this._currentVoice = Assets.get(`voice_${FileName}`);
-      this._voiceDuration = Math.max(
-        (this._currentVoice?.duration ?? 0) * 1000,
-        this._voiceDuration
-      );
+    if (sound.exists(FileName)) {
+      this._currentVoice = sound.find(FileName);
+      this._voiceDuration = Math.max( (this._currentVoice?.duration ?? 0) * 1000, this._voiceDuration)
 
       let instance = this._currentVoice?.play();
       (instance as IMediaInstance).once("end", () => {
@@ -131,6 +128,7 @@ export class SoundController {
         this._currentVoice = null;
       });
     }
+    
   }
 
   stopPrevSound() {

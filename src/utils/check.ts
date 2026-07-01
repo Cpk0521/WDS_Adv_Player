@@ -1,4 +1,4 @@
-export function checkImplements<T>(obj: any): obj is T {
+export function checkImplements<T>(obj: unknown): obj is T {
     if (typeof obj !== 'object' || obj === null) {
         return false;
     }
@@ -9,6 +9,8 @@ export function checkImplements<T>(obj: any): obj is T {
     return true;
 }
 
+
+
 export function isURL(url : string){
     try{
         return Boolean(new URL(url));
@@ -17,3 +19,5 @@ export function isURL(url : string){
         return false;
     }
 }
+
+

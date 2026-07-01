@@ -14,8 +14,8 @@
   ],
   "scripts": {
     "dev": "vite --port 5500",
-    "build:vite": "rimraf dist && tsc && vite build",
-    "build": "rimraf dist && vite build",
+    "build": "rimraf dist && vite build --config vite.config.ts",
+    "build:lib": "rimraf dist-lib && vite build --config vite.config.lib.ts",
     "preview": "vite preview",
     "postinstall": "patch-package",
     "predeploy": "npm run build",
