@@ -153,7 +153,7 @@ export class TextView extends IView implements episodeExecutable{
 
         this._typingTotalDuration = Phrase.length * 50 + 500;
 
-        let phrase = this._isTranslate ? TLPhrase!.replaceAll('/n', '\n')  : Phrase.replaceAll('/n', '\n') ;
+        let phrase = this._isTranslate ? TLPhrase!.replaceAll(/(?:\/n)+/g, '\n')  : Phrase.replaceAll(/(?:\/n)+/g, '\n') ;
         let phrase_index = 0;
         if(this._typingEffect){
             clearInterval(this._typingEffect);

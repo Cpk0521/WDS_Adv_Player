@@ -1,4 +1,4 @@
-export function checkImplements<T>(obj: unknown): obj is T {
+export function checkType<T>(obj: unknown): obj is T {
     if (typeof obj !== 'object' || obj === null) {
         return false;
     }

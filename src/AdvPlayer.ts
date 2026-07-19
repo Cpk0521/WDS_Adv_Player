@@ -20,7 +20,7 @@ import { TranslationController } from "./controller/translationController";
 import './constant/translationReader';
 import { baseAssets, Layer } from "./constant/advConstant";
 //utils
-import { checkImplements, isURL } from "./utils/check";
+import { checkType, isURL } from "./utils/check";
 import { createEmptySprite } from "./utils/emptySprite";
 import { resPath } from "./utils/resPath";
 import { loadJson, loadResourcesFromEpisode, loadPlayerAssetsBundle } from './utils/loadResources'
@@ -155,13 +155,13 @@ export class AdvPlayer extends Container<any> {
         if (!isURL(source)) {
           source = resPath.advJson(source);
         }
-        source = await loadJson<IEpisodeModel>(source).catch(() => {
-          this._coverOpening?.error("The episode ID or URL is not correct, please re-confirm.");
+        source = await loadJson<IEpisodeModel>(source).catch((error) => {
+          this._coverOpening?.error(error);
           throw new Error("The episode ID or URL is not correct, please re-confirm.");
         });
       }
 
-      if (!checkImplements<IEpisodeModel>(source)) {
+      if (!checkType<IEpisodeModel>(source)) {
         this._coverOpening?.error("Episode file format error.");
         throw new Error("Episode file format error.");
       }

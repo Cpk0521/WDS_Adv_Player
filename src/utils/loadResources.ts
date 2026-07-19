@@ -7,9 +7,15 @@ import { IEpisodeModel } from "../types/Episode";
 import { parse } from 'papaparse'
 import { IEpisodeTranslateUnit, IEpisodeTranslateModel } from "../types/translation";
 
+
 export async function loadJson<T extends Object>(source : string) : Promise<T>{
     return fetch(source)
         .then(response => {
+            if(response.status === 429) {
+                console.warn("Rate limited! Code 429 encountered.");
+                throw new Error(response.statusText);
+            }
+
             if (!response.ok) {
                 throw new Error(response.statusText);
             }
@@ -116,10 +122,20 @@ export async function loadResourcesFromEpisode(
     // voice
     if (isVoice) {
         resources[`voicepack_${episodeTrack.EpisodeId}`] = resPath.voicePack(episodeTrack.EpisodeId);
+        // try {
+        //     const voicefile = await fetch(resPath.voicePack(episodeTrack.EpisodeId));
+        //     if (!voicefile.ok) {
+        //         throw new Error(`Failed to load voice pack for episode ${episodeTrack.EpisodeId}`);
+        //     }
+        //     resources[`voicepack_${episodeTrack.EpisodeId}`] = resPath.voicePack(episodeTrack.EpisodeId);
+        // } catch (error) {
+        //     isVoice = false;
+        // }
     }
 
     Assets.addBundle(`${episodeTrack.EpisodeId}_bundle`, resources);
-    await Assets.loadBundle(`${episodeTrack.EpisodeId}_bundle`, callback)
+    await Assets.loadBundle(`${episodeTrack.EpisodeId}_bundle`, callback);
+
     return {
         isVoice: isVoice,
         resources: resources,
