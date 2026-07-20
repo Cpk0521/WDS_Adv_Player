@@ -90,3 +90,17 @@ const zhaiReader: TranslateReader = {
     },
 };
 TranslationController.addReader(zhaiReader);
+
+// id
+const idReader: TranslateReader = {
+    language: "id",
+    url: "https://raw.githubusercontent.com/Ryota537/WDS-Translation-Csv/main",
+    font: {
+        family: "Ronowstd Gbs",
+        url: "./RoNOWStd-GBs.otf",
+    },
+    read: function (epId: number) {
+        return loadTranslateModel(`${this.url}/TranslationCsv/${epId}.csv`);
+    },
+};
+TranslationController.addReader(idReader);
