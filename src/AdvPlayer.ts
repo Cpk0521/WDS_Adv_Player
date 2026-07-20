@@ -370,10 +370,13 @@ export class AdvPlayer extends Container<any> {
     let movie_process = this._movieView.execute(this.currentTrack);
     if (movie_process) {
       this._characterView.hideCharacter(); //隱藏在場上的角色
-      await this._textView.hideTextPanelAnimation();//
-      await movie_process(); //確保影片跑完
+      await this._textView.hideTextPanelAnimation();
+      this._processing.push(movie_process)
+      await Promise.all(this._processing.map((_p)=>_p())).then(() => {
+          this._processing = [];
+      }); //確保影片跑完
     }
-    
+
     //spine處理
     //如果有characterImage，則不顯示spine
     this._characterView.execute(this.currentTrack);

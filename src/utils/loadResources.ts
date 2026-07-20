@@ -1,4 +1,4 @@
-import { Assets, AssetsBundle, ProgressCallback } from "pixi.js";
+import { Assets, AssetsBundle, ProgressCallback, UnresolvedAsset } from "pixi.js";
 import "@pixi/sound";
 import '@esotericsoftware/spine-pixi-v8'
 import './PackLoader'
@@ -41,7 +41,8 @@ export async function loadResourcesFromEpisode(
     isVoice?: boolean,
     callback?: ProgressCallback,
 ) {
-    const resources = {} as Record<string, string>;
+    
+    const resources = [] as UnresolvedAsset[];
 
     const bgmlist = await loadJson<string[]>(resPath.bgmMaster);
     const selist = await loadJson<string[]>(resPath.seMaster);
@@ -49,35 +50,44 @@ export async function loadResourcesFromEpisode(
     episodeTrack.EpisodeDetail.forEach((unit) => {
         //Backgorund
         if (unit.BackgroundImageFileName) {
-            if (!resources[`bg_${unit.BackgroundImageFileName}`]) {
-                resources[`bg_${unit.BackgroundImageFileName}`] =
-                    resPath.background(unit.BackgroundImageFileName);
+            if(!resources.some(res => res.alias === `bg_${unit.BackgroundImageFileName}`)){
+                resources.push({
+                    alias : `bg_${unit.BackgroundImageFileName}`,
+                    src : resPath.background(unit.BackgroundImageFileName)
+                })
             }
         }
 
         //CharacterImages
         if (unit.BackgroundCharacterImageFileName) {
-            if (!resources[`card_${unit.BackgroundCharacterImageFileName}`]) {
-                resources[`card_${unit.BackgroundCharacterImageFileName}`] =
-                    resPath.cards(unit.BackgroundCharacterImageFileName);
+            if(!resources.some(res => res.alias === `card_${unit.BackgroundCharacterImageFileName}`)){
+                resources.push({
+                    alias : `card_${unit.BackgroundCharacterImageFileName}`,
+                    src : resPath.cards(unit.BackgroundCharacterImageFileName)
+                })
             }
         }
 
         //still
         if (unit.StillPhotoFileName) {
-            if (!resources[`still_${unit.StillPhotoFileName}`]) {
-                resources[`still_${unit.StillPhotoFileName}`] = resPath.still(
-                    unit.StillPhotoFileName
-                );
+            if(!resources.some(res => res.alias === `still_${unit.StillPhotoFileName}`)){
+                resources.push({
+                    alias : `still_${unit.StillPhotoFileName}`,
+                    src : resPath.still(unit.StillPhotoFileName)
+                })
             }
         }
 
         //movie
         if (unit.MovieFileName) {
-            if (!resources[`movie_${unit.MovieFileName}`]) {
-                resources[`movie_${unit.MovieFileName}`] = resPath.movie(
-                    unit.MovieFileName
-                );
+            if(!resources.some(res => res.alias === `movie_${unit.MovieFileName}`)){
+                resources.push({
+                    alias : `movie_${unit.MovieFileName}`,
+                    src : resPath.movie(unit.MovieFileName),
+                    data : {
+                        autoPlay : false
+                    }
+                })
             }
         }
 
@@ -86,11 +96,12 @@ export async function loadResourcesFromEpisode(
             if (
                 bgmlist.includes(unit.BgmFileName) &&
                 unit.BgmFileName != "999" &&
-                !resources[`bgm_${unit.BgmFileName}`]
+                !resources.some(res => res.alias === `bgm_${unit.BgmFileName}`)
             ) {
-                resources[`bgm_${unit.BgmFileName}`] = resPath.bgm(
-                    unit.BgmFileName
-                );
+                resources.push({
+                    alias : `bgm_${unit.BgmFileName}`,
+                    src : resPath.bgm(unit.BgmFileName),
+                })
             }
         }
 
@@ -98,39 +109,40 @@ export async function loadResourcesFromEpisode(
         if (unit.SeFileName) {
             if (
                 selist.includes(unit.SeFileName) &&
-                !resources[`se_${unit.SeFileName}`]
+                !resources.some(res => res.alias === `se_${unit.SeFileName}`)
             ) {
-                resources[`se_${unit.SeFileName}`] = resPath.se(
-                    unit.SeFileName
-                );
+                resources.push({
+                    alias : `se_${unit.SeFileName}`,
+                    src : resPath.se(unit.SeFileName),
+                });
             }
         }
 
         //spine
         unit.CharacterMotions.forEach((motion) => {
-            if (motion.SpineId != 0 && !resources[`spine_${motion.SpineId}`]) {
-                resources[`spine_${motion.SpineId}`] = resPath.spine(
-                    motion.SpineId
-                );
-                resources[`spine_atlas_${motion.SpineId}`] = resPath.spine_atlas(
-                    motion.SpineId
-                );
+            if (motion.SpineId != 0 && !resources.some(res => res.alias === `spine_${motion.SpineId}`)) {
+                resources.push({
+                    alias : `spine_${motion.SpineId}`,
+                    src : resPath.spine(motion.SpineId),
+                });
+                resources.push({
+                    alias : `spine_atlas_${motion.SpineId}`,
+                    src : resPath.spine_atlas( motion.SpineId),
+                });
             }
         });
     });
 
     // voice
     if (isVoice) {
-        resources[`voicepack_${episodeTrack.EpisodeId}`] = resPath.voicePack(episodeTrack.EpisodeId);
-        // try {
-        //     const voicefile = await fetch(resPath.voicePack(episodeTrack.EpisodeId));
-        //     if (!voicefile.ok) {
-        //         throw new Error(`Failed to load voice pack for episode ${episodeTrack.EpisodeId}`);
-        //     }
-        //     resources[`voicepack_${episodeTrack.EpisodeId}`] = resPath.voicePack(episodeTrack.EpisodeId);
-        // } catch (error) {
-        //     isVoice = false;
-        // }
+        resources.push({
+            alias : `voicepack_${episodeTrack.EpisodeId}`,
+            src : resPath.voicePack(episodeTrack.EpisodeId),
+            data : {
+                onerror : () => {isVoice = false},
+                strategy: 'skip',
+            }
+        });
     }
 
     Assets.addBundle(`${episodeTrack.EpisodeId}_bundle`, resources);
