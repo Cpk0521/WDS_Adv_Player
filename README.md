@@ -43,6 +43,7 @@ Currently supported languages :
   - `zhcn` - [DreamGallery/WDS-Translation-Csv](https://github.com/DreamGallery/WDS-Translation-Csv)
   - `zhcnai` - [huang207/WDS-Translation-Csv](https://github.com/huang207/WDS-Translation-Csv/tree/ai)
   - `zhai` - [littletoxic/wds-translation](https://github.com/littletoxic/wds-translation)
+  - `id` - [Ryota537/WDS-Translation-Csv](https://github.com/Ryota537/WDS-Translation-Csv)
 
 Or you can create a new TranslateReader in [translationReader.ts](./src/constant/translationReader.ts) file
   ```ts
